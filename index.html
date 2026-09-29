@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Universal Anime, Hentai & AI Prompt Studio Ultra</title>
+<style>
+:root {
+  --bg: #05070c;
+  --panel: rgba(15, 18, 30, 0.75);
+  --panel2: rgba(24, 29, 46, 0.85);
+  --panel-glow: rgba(168, 85, 247, 0.15);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-glow: rgba(168, 85, 247, 0.4);
+  --text: #f8fafc;
+  --mute: #94a3b8;
+  
+  --sfw-color: #3b82f6;
+  --sfw-glow: rgba(59, 130, 246, 0.4);
+  --sfw-grad: linear-gradient(135deg, #2563eb, #7c3aed);
+  
+  --nsfw-color: #ff2e93;
+  --nsfw-glow: rgba(255, 46, 147, 0.5);
+  --nsfw-grad: linear-gradient(135deg, #ff2e93, #d946ef, #ff0055);
+  
+  --lora-color: #06b6d4;
+  --lora-glow: rgba(6, 182, 212, 0.4);
+  --lora-grad: linear-gradient(135deg, #0891b2, #0d9488);
+
+  --custom-color: #f59e0b;
+  --custom-grad: linear-gradient(135deg, #d97706, #b45309);
+
+  --preset-color: #8b5cf6;
+  --preset-grad: linear-gradient(135deg, #8b5cf6, #ec4899);
+  
+  --rose: #f43f5e;
+  --success: #10b981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #1e2538; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+body {
+  background: radial-gradient(1400px 900px at 10% -10%, #2e1065, transparent),
+              radial-gradient(1200px 800px at 90% 20%, #4c0519, transparent),
+              radial-gradient(1000px 700px at 50% 100%, #064e3b, transparent),
+              var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  overflow-x: hidden;
+}
+
+header {
+  padding: 32px 20px 12px;
+  text-align: center;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #c084fc, #ff2e93, #38bdf8, #a855f7);
+  background-size: 300% 300%;
+  animation: gradientText 8s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 35px rgba(192, 132, 252, 0.25);
+}
+
+@keyframes gradientText {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+header p {
+  color: var(--mute);
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 20px;
+  max-width: 1650px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: 1fr; }
+  .out { position: static !important; }
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.6);
+  backdrop-filter: blur(20px);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover { 
+  border-color: rgba(255, 255, 255, 0.18); 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 20px var(--panel-glow);
+}
+
+.card h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  margin-bottom: 14px;
+}
+
+.card h2 b {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sfw-grad);
+  color: #fff;
+  font-size: 0.8rem;
+  box-shadow: 0 0 10px var(--sfw-glow);
+}
+
+/* Modellauswahl & Style Switcher */
+.models { display: flex; gap: 10px; flex-wrap: wrap; }
+.model {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+.model:hover { border-color: var(--sfw-color); transform: translateY(-2px); }
+.model.active {
+  background: var(--sfw-grad);
+  border-color: transparent;
+  box-shadow: 0 6px 20px var(--sfw-glow);
+}
+
+.style-switch {
+  display: flex;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 4px;
+  margin-top: 12px;
+  gap: 4px;
+}
+.style-btn {
+  flex: 1;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mute);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-size: 0.88rem;
+}
+.style-btn.active[data-style="anime"] {
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+}
+.style-btn.active[data-style="realistic"] {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
+}
+
+.settings-info {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  background: rgba(10, 15, 28, 0.7);
+  border-left: 3px solid var(--sfw-color);
+  border-radius: 8px;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+/* Inputs & Buttons */
+input[type=text], input[type=search], input[type=number], textarea {
+  width: 100%;
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: inherit;
+  transition: all 0.2s ease;
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--sfw-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+textarea {
+  resize: vertical;
+  min-height: 110px;
+  font-family: 'Fira Code', ui-monospace, Consolas, monospace;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+label.l { display: block; margin: 12px 0 6px; font-size: 0.82rem; color: var(--mute); font-weight: 600; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row input { flex: 1; min-width: 160px; }
+
+.btn {
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+.btn:hover { border-color: var(--sfw-color); transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn.primary { background: var(--sfw-grad); border-color: transparent; }
+.btn.lora-btn { background: var(--lora-grad); border-color: transparent; color: #fff; }
+.btn.preset-btn { background: var(--preset-grad); border-color: transparent; color: #fff; }
+.btn.ok { background: var(--success); border-color: transparent; color: #002215; }
+.btn.danger { border-color: rgba(239, 68, 68, 0.3); color: #f87171; }
+.btn.danger:hover { background: rgba(239, 68, 68, 0.2); border-color: var(--rose); color: #fff; }
+
+.hint { font-size: 0.8rem; color: var(--mute); margin-top: 4px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+  background: #1e263d;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 4px 10px 4px 12px;
+  font-size: 0.82rem;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  animation: fadeIn 0.2s ease;
+}
+.chip button { background: none; border: 0; color: var(--mute); cursor: pointer; font-size: 1rem; }
+.chip button:hover { color: var(--rose); }
+
+/* LoRAs Section */
+.lora-card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(12, 20, 36, 0.8);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+.lora-card-item.active {
+  border-color: var(--lora-color);
+  box-shadow: 0 0 12px var(--lora-glow);
+  background: rgba(12, 30, 50, 0.9);
+}
+.lora-info { flex: 1; }
+.lora-name { font-weight: 700; font-size: 0.9rem; color: #38bdf8; display: block; }
+.lora-trigger { font-size: 0.78rem; color: var(--mute); }
+.lora-controls { display: flex; align-items: center; gap: 8px; }
+.lora-slider { width: 90px; accent-color: var(--lora-color); cursor: pointer; }
+.lora-val { font-size: 0.82rem; font-weight: bold; width: 32px; text-align: right; color: var(--lora-color); }
+
+/* Filter Modes */
+.filter-modes {
+  display: flex;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 3px;
+}
+.filter-btn {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--mute);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.filter-btn.active[data-filter="all"] { background: var(--line); color: #fff; }
+.filter-btn.active[data-filter="sfw"] { background: var(--sfw-grad); color: #fff; }
+.filter-btn.active[data-filter="nsfw"] { background: var(--nsfw-grad); color: #fff; box-shadow: 0 0 12px var(--nsfw-glow); }
+
+/* Control Bar & Legend */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.legend { display: flex; gap: 14px; font-size: 0.78rem; color: var(--mute); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+/* Akkordeons & Tags */
+details {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: var(--panel2);
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+  user-select: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "▾"; transition: transform 0.25s ease; color: var(--mute); font-size: 1.1rem; }
+details[open] summary::after { transform: rotate(180deg); }
+summary:hover { background: rgba(255, 255, 255, 0.04); }
+
+.count {
+  font-size: 0.72rem;
+  background: var(--sfw-grad);
+  border-radius: 12px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  display: none;
+  color: #fff;
+}
+.count.show { display: inline-block; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 14px 14px; }
+.grp { width: 100%; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mute); margin-top: 8px; }
+
+/* Tag Buttons Styling */
+.tag {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.tag:hover { border-color: var(--sfw-color); background: #1a233d; transform: translateY(-1px); }
+.tag.on {
+  background: var(--sfw-grad);
+  border-color: transparent;
+  font-weight: 600;
+  box-shadow: 0 4px 12px var(--sfw-glow);
+  animation: tagPulse 0.3s ease;
+}
+
+@keyframes tagPulse {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Custom Saved Tags */
+.tag.custom-saved { border-color: #78350f; background: #22150a; color: #fcd34d; }
+.tag.custom-saved:hover { border-color: var(--custom-color); background: #321e0b; }
+.tag.custom-saved.on {
+  background: var(--custom-grad);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+.tag.custom-saved .del-custom {
+  color: #f87171;
+  font-weight: bold;
+  margin-left: 3px;
+  font-size: 0.9rem;
+  border-radius: 50%;
+  padding: 0 3px;
+}
+.tag.custom-saved .del-custom:hover { background: rgba(239, 68, 68, 0.3); color: #fff; }
+
+/* NSFW Tags Styling */
+.tag.nsfw { border-color: #4c1d3d; background: #1a0b16; color: #f472b6; }
+.tag.nsfw:hover { border-color: var(--nsfw-color); background: #2d0e24; color: #fff; }
+.tag.nsfw.on {
+  background: var(--nsfw-grad);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 14px var(--nsfw-glow);
+}
+
+/* Extras Styling */
+.tag.xtra { border-color: #113835; background: #081a18; color: #38bdf8; }
+.tag.xtra:hover { border-color: var(--lora-color); background: #0f2b28; }
+.tag.xtra.on {
+  background: var(--lora-grad);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 4px 12px var(--lora-glow);
+}
+
+.tag.neg.on { background: linear-gradient(135deg, #a855f7, #ef4444); color: #fff; }
+.tag.hide { display: none !important; }
+
+/* Sticky Output Area */
+.out { position: sticky; top: 16px; align-self: start; }
+.label { display: flex; justify-content: space-between; align-items: center; margin: 12px 0 6px; font-weight: 700; }
+.counter-badge { font-size: 0.75rem; color: var(--mute); font-weight: normal; background: var(--panel2); padding: 2px 7px; border-radius: 6px; }
+.actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.empty { color: var(--mute); font-size: 0.88rem; padding: 12px 2px; display: none; text-align: center; }
+.sel { font-size: 0.82rem; color: var(--mute); }
+
+/* Preset List Item */
+.preset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-bottom: 5px;
+}
+.preset-item span { font-weight: 600; font-size: 0.85rem; }
+.preset-item div { display: flex; gap: 4px; }
+
+/* Toast Notifications */
+#toastContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid var(--sfw-color);
+  padding: 10px 18px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  font-weight: 600;
+  font-size: 0.85rem;
+  animation: slideIn 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28), fadeOut 0.3s ease 2.7s forwards;
+}
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { to { opacity: 0; transform: translateY(8px); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Universal Anime &amp; Hentai Prompt Studio Ultra</h1>
+  <p>Perfekt abgestimmt für <b>Draw Things</b>, <b>Pony XL</b>, <b>Illustrious</b> &amp; <b>SDXL</b></p>
+</header>
+
+<div class="layout">
+  <main>
+    <!-- 1. MODELL & RENDER-STIL -->
+    <section class="card">
+      <h2><b>1</b>Modell &amp; Render-Stil</h2>
+      <div class="models" id="models"></div>
+
+      <label class="l">Visual Style (Anime/Hentai vs. Realistisch)</label>
+      <div class="style-switch">
+        <button class="style-btn active" data-style="anime">🌸 Anime / Hentai (2D)</button>
+        <button class="style-btn" data-style="realistic">📸 Realistisch / 3D</button>
+      </div>
+
+      <div class="settings-info" id="settingsInfo"></div>
+    </section>
+
+    <!-- 2. LORA STUDIO (NEU) -->
+    <section class="card">
+      <h2><b>2</b>🎨 LoRA Studio &amp; Manager</h2>
+      <div class="row" style="margin-bottom:10px">
+        <input type="text" id="loraNameInput" placeholder="LoRA Dateiname (z. B. 'ahegao_v2' oder 'style_ghibli')">
+        <input type="number" id="loraWeightInput" placeholder="Stärke" value="0.8" step="0.05" min="0.1" max="1.5" style="max-width:90px">
+        <input type="text" id="loraTriggerInput" placeholder="Trigger-Tag (optional)">
+        <button class="btn lora-btn" id="btnAddLora">➕ LoRA Hinzufügen</button>
+      </div>
+      <div class="hint">LoRAs werden automatisch als <code>&lt;lora:dateiname:stärke&gt;</code> in den Prompt eingefügt!</div>
+      <div id="loraListContainer" style="margin-top:12px"></div>
+    </section>
+
+    <!-- 3. PROMPT RANDOMIZER & PRESETS -->
+    <section class="card">
+      <h2><b>3</b>🎲 Zufalls-Generator &amp; Presets</h2>
+      <div class="row" style="margin-bottom:10px">
+        <button class="btn preset-btn" id="btnRandomize" style="flex:1">🎲 Zufälligen Prompt generieren</button>
+        <button class="btn primary" id="btnSavePreset">💾 Prompt als Preset speichern</button>
+      </div>
+
+      <div id="presetListContainer" style="max-height:140px; overflow-y:auto; margin-top:8px;"></div>
+
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="btnExportData">📤 Backup Exportieren (.json)</button>
+        <button class="btn" id="btnImportTrigger">📥 Backup Importieren</button>
+        <input type="file" id="importFileInput" accept=".json" style="display:none">
+      </div>
+    </section>
+
+    <!-- 4. CUSTOM TAG CREATOR -->
+    <section class="card">
+      <h2><b>4</b>Eigene Tags speichern</h2>
+      <div class="row">
+        <input type="text" id="newCustomTagInput" placeholder="Neuen Tag eingeben (z. B. 'demon horns', 'tentacle harness')...">
+        <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--mute);white-space:nowrap;cursor:pointer">
+          <input type="checkbox" id="newCustomTagIsNsfw"> 🔞 NSFW?
+        </label>
+        <button class="btn primary" id="btnSaveCustomTag">💾 Tag Speichern</button>
+      </div>
+    </section>
+
+    <!-- 5. MODELL-EXTRAS -->
+    <section class="card">
+      <h2><b>5</b>Modell-Spezifische Quality &amp; Rating Tags</h2>
+      <div class="tags" style="padding:0" id="extras"></div>
+    </section>
+
+    <!-- 6. DEUTSCH-ÜBERSETZER & SCHNELLEINGABE -->
+    <section class="card">
+      <h2><b>6</b>Eigene Ideen &amp; Übersetzer</h2>
+      <label class="l" for="deInput">Eigene Idee auf Deutsch eingeben</label>
+      <div class="row">
+        <input type="text" id="deInput" placeholder="z. B. Dämonen-Mädchen mit Hörnern im verschneiten Wald">
+        <button class="btn primary" id="btnTranslate">Übersetzen &amp; Hinzufügen</button>
+      </div>
+      <div class="hint" id="transHint"></div>
+
+      <label class="l" for="manualInput">Manuelle Schnelleingabe (Komma-getrennt)</label>
+      <input type="text" id="manualInput" placeholder="cyberpunk theme, glowing eyes, cinematic detail">
+      <div class="chips" id="customChips"></div>
+    </section>
+
+    <!-- 7. TAG BIBLIOTHEK -->
+    <section class="card">
+      <h2><b>7</b>Tag-Bibliothek</h2>
+      <div class="bar">
+        <div class="legend">
+          <span><i style="background:var(--sfw-color)"></i>SFW Tag</span>
+          <span><i style="background:var(--nsfw-color)"></i>NSFW Tag (18+)</span>
+          <span><i style="background:var(--custom-color)"></i>Saved Tag</span>
+        </div>
+
+        <div class="filter-modes">
+          <button class="filter-btn active" data-filter="all">Alle</button>
+          <button class="filter-btn" data-filter="sfw">Nur SFW</button>
+          <button class="filter-btn" data-filter="nsfw">🔥 Nur NSFW</button>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:12px">
+        <input type="search" id="search" placeholder="🔍 Tags durchsuchen (z.B. 'ahegao', 'tentacles', 'creampie', 'school uniform')...">
+        <button class="btn danger" id="btnClearTags">Alle Tags abwählen</button>
+      </div>
+
+      <div class="sel" id="selCount" style="margin-bottom:12px"></div>
+      <div id="library"></div>
+      <div class="empty" id="emptyMsg">Keine passenden Tags gefunden.</div>
+    </section>
+  </main>
+
+  <!-- RECHTE SPALTE: PROMPT AUSGABE -->
+  <aside class="out">
+    <section class="card">
+      <h2><b>★</b>Generierter Prompt</h2>
+
+      <div class="label">
+        <span>Positive Prompt</span>
+        <span class="counter-badge" id="posCounter">0 Zeichen | ~0 Tokens</span>
+      </div>
+      <textarea id="posOutput" readonly></textarea>
+
+      <div class="label">
+        <span>Negative Prompt</span>
+        <span class="counter-badge" id="negCounter">0 Zeichen | ~0 Tokens</span>
+      </div>
+      <textarea id="negOutput" readonly style="min-height:90px"></textarea>
+
+      <label class="l" for="negCustom">Eigene Negative Tags</label>
+      <input type="text" id="negCustom" placeholder="z. B. text, watermark, signature">
+
+      <div class="label" style="margin-top:12px">
+        <span style="font-size:0.82rem;color:var(--mute)">Negative Schnellauswahl</span>
+      </div>
+      <div class="tags" style="padding:4px 0 0" id="negExtras"></div>
+
+      <div class="actions">
+        <button class="btn primary" style="flex:1" id="btnCopyPos">📋 Positive Kopieren</button>
+        <button class="btn danger" id="btnResetAll">⚡ Reset All</button>
+      </div>
+    </section>
+  </aside>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+"use strict";
+
+const parseList = str => str.split("|").map(s => s.trim()).filter(Boolean);
+
+/* ===== MODELL DEFINITIONEN ===== */
+const MODELS = {
+  pony: {
+    label: "🦄 Pony XL",
+    prefix: "score_9, score_8_up, score_7_up, ",
+    negative: "score_6, score_5, score_4, ugly, bad anatomy, deformed",
+    info: "📌 <b>Pony XL Tipps:</b> Verwendet <code>score_9, score_8_up, score_7_up</code> zwingend ganz am Anfang! Nutze <b>KEIN</b> <code>masterpiece</code> bei Pony XL.",
+    extras: {
+      "Score Ergänzung": parseList("score_6_up|score_5_up|score_4_up"),
+      "Source Tag": parseList("source_anime|source_cartoon|source_furry|source_pony"),
+      "Rating Tag": parseList("rating_safe|rating_questionable|rating_explicit")
+    },
+    neg: parseList("score_5_up|score_4_up|source_furry|source_pony|text|watermark|signature|extra fingers|jpeg artifacts")
+  },
+  illustrious: {
+    label: "🌟 Illustrious",
+    prefix: "masterpiece, newest, best quality, highres, ",
+    negative: "lowres, bad anatomy, bad hands, worst quality, low quality, blurry",
+    info: "📌 <b>Illustrious Tipps:</b> Reihenfolge: <i>1girl/1boy</i> → Charakter → Artist → Outfits/Posen → Hintergrund → Quality.",
+    extras: {
+      "Qualität": parseList("masterpiece|best quality|amazing quality|very aesthetic|absurdres"),
+      "Epoche & Jahr": parseList("newest|recent|year 2024|year 2023|oldest"),
+      "Rating Tag": parseList("general|sensitive|nsfw|explicit")
+    },
+    neg: parseList("signature|watermark|username|logo|text|jpeg artifacts|multiple views|censored|extra digits|furry")
+  },
+  sdxl: {
+    label: "📷 Universal / SDXL",
+    prefix: "masterpiece, highly detailed, sharp focus, ",
+    negative: "ugly, blurry, low quality, bad anatomy, distorted, watermark",
+    info: "📌 <b>Universal SDXL Tipps:</b> Perfekt für allgemeine Checkpoints und SDXL Turbo / Lightning Stile.",
+    extras: {
+      "Qualität": parseList("masterpiece|highly detailed|sharp focus|8k uhd|professional|award winning|photorealistic")
+    },
+    neg: parseList("watermark|text|jpeg artifacts|extra fingers|cropped|out of frame|oversaturated|blurry")
+  }
+};
+
+/* ===== ERWEITERTE TAG BIBLIOTHEK (MASSIV MEHR NSFW & DETAIL) ===== */
+const LIBRARY = {
+  "✨ Qualität & Rendering": {
+    sfw: parseList("masterpiece|best quality|highres|absurdres|ultra detailed|highly detailed|detailed background|detailed face|sharp focus|clean lines|intricate details|official art|key visual|8k uhd|vivid|aesthetic|beautiful|perfect anatomy|perfect hands|simple background|white background|transparent background|no text|no watermark|newest|year 2024"),
+    nsfw: parseList("uncensored|censored|mosaic censorship|bar censorship|high quality nsfw|detailed body|detailed skin texture|erotic masterpiece|highly detailed intimate areas|explicit content|fine erotic details")
+  },
+  "🌸 Anime, Hentai & Stile": {
+    sfw: parseList("anime style|anime coloring|cel shading|90s anime|retro anime|studio ghibli style|kyoto animation style|trigger style|manga style|lineart|flat color|soft shading|vibrant colors|pastel colors|chibi|kawaii|game CG|visual novel CG|light novel cover|artbook|pixiv"),
+    nsfw: parseList("hentai|hentai style|ecchi|doujinshi style|erotic anime artwork|erotic manga style|pin-up art|sensual anime painting|fanservice|suggestive art|ahegao art|succubus style|erotic cg|mind break style")
+  },
+  "👤 Charakter & Hentai Traits": {
+    sfw: parseList("1girl|1boy|2girls|2boys|multiple girls|solo|couple|young adult|muscular|slim|athletic|tall|short|chibi|detailed eyes|expressive eyes|heterochromia|blue eyes|green eyes|brown eyes|red eyes|purple eyes|golden eyes|glowing eyes|long hair|very long hair|short hair|ponytail|twin tails|braid|bob cut|hair bun|curly hair|straight hair|bangs|ahoge|blonde hair|black hair|brown hair|white hair|silver hair|pink hair|blue hair|red hair|green hair|purple hair|gradient hair|multicolored hair|freckles|tattoo|scar|pale skin|tan skin|dark skin|elf ears|horns|wings|tail|cat ears|fox ears|monster girl|succubus|demon girl|angel|vampire|witch|maid|princess"),
+    nsfw: parseList("ahegao|heart-shaped pupils|flushed face|drooling|saliva|sweat|flushed cheeks|panting|heavy breathing|biting lip|tongue out|eyeball roll|mind break|flustered|lactation|large breasts|medium breasts|small breasts|huge breasts|gigantic breasts|flat chest|cleavage|underboob|sideboob|exposed breasts|bare breasts|nipples|erect nipples|covered nipples|pierced nipples|areolae|pussy|penis|futanari|pubic hair|shaved|toned abs|thick thighs|wide hips|bare shoulders|bare back|bare legs|navel|tan lines|topless|nude|completely nude|wet skin|oiled skin|back dimples|narrow waist|clitoris|anal")
+  },
+  "🔥 NSFW Gestik, Mimik & Liquid": {
+    sfw: parseList("blushing|shy|smirk|wink|pout|open mouth|tongue out|gasping"),
+    nsfw: parseList("ahegao face|rolled back eyes|drooling mouth|saliva trail|heavy sweating|cum|cum on face|cum on body|cum on breasts|cum in mouth|facial|creampie|internal cumshot|cum drip|cum overflow|squirt|female ejaculation|lactating breasts|milk drip|sweat beads|glistening skin|messy hair|bound wrists|blindfolded|gagged|drool string|messy makeup|smeared lipstick")
+  },
+  "🔞 Intimität & Sex-Posen": {
+    sfw: parseList("hugging|cuddling|holding hands|kissing on cheek|forehead kiss|romantic embrace"),
+    nsfw: parseList("missionary|doggystyle|cowgirl position|reverse cowgirl|standing sex|against wall|69 position|lotus position|mating press|paizuri|breast smothered|fellatio|blowjob|cunnilingus|anal sex|double penetration|gangbang|threesome|after sex|deepthroat|fingering|self touch|spreading legs|ass focus|crotch focus|presenting ass|presenting pussy|straddling|grabbing breasts|pulling hair|spanking|grope")
+  },
+  "👗 Kleidung, Fetisch & Nudity": {
+    sfw: parseList("casual wear|streetwear|hoodie|t-shirt|tank top|dress shirt|sweater|blazer|jeans|shorts|skirt|pleated skirt|summer dress|evening gown|kimono|yukata|school uniform|sailor uniform|business suit|military uniform|plate armor|robe|cloak|space suit|techwear|gothic outfit|lolita fashion|maid outfit|swimsuit|sportswear|pajamas|apron|crown|witch hat|glasses|sunglasses|headband|hair ribbon|gloves|choker|necklace|stockings|thighhighs|high heels|boots"),
+    nsfw: parseList("lingerie|lace lingerie|open lingerie|bra|panties|no panties|garter belt|garter straps|stockings|thighhighs|fishnets|pantyhose|babydoll|negligee|bikini|micro bikini|sling bikini|see-through|transparent clothes|wet clothes|wet shirt|open shirt|unbuttoned|off shoulder|crop top|side slit|backless dress|corset|latex outfit|leather harness|bondage outfit|rope bondage|shibari|bunny suit|bodystocking|towel only|partially clothed|undressing|revealing clothes|sheer clothing|nip slip|no bra|panties aside|clothes lift|skirt lift|shirt lift|torn clothes|virgin killer sweater|apron only|open crotch|leotard|latex catsuit|harness")
+  },
+  "🐙 Fetisch, BDSM & Tropes": {
+    sfw: parseList("gothic|steampunk|cyberpunk|fantasy|magic|superhero"),
+    nsfw: parseList("tentacles|tentacle hold|tentacle sex|bondage|tied up|rope bondage|shibari|leather restraints|handcuffs|collar and leash|blindfold|ball gag|bit gag|spanking|whipping|mind control|hypnosis|x-ray|cross-section|public exposure|exhibitionism|gloryhole|pet play|cow girl outfit|succubus tail|demon wings|slime girl|monster girl sex")
+  },
+  "🏛️ Umgebung & Locations": {
+    sfw: parseList("bustling city|city street|neon city|cyberpunk street|rooftop|alley|train station|cafe|library|classroom|school rooftop|bedroom|kitchen|laboratory|spaceship interior|throne room|tavern|castle|shrine|pagoda|skyscraper|tranquil forest|bamboo forest|snowy forest|meadow|flower field|cherry blossoms|garden|mountain|desert|tropical beach|ocean|waterfall|lake|ruins|fantasy village|medieval town"),
+    nsfw: parseList("bedroom|dark bedroom|hotel room|love hotel|bathroom|steamy bathroom|bathtub|shower|hot spring|onsen|jacuzzi|dungeon|dungeon chamber|satin sheets|canopy bed|bound on bed|private suite|balcony at night|candlelit room|steamy mirror|backstage|public restroom")
+  },
+  "💡 Beleuchtung & Stimmung": {
+    sfw: parseList("cinematic lighting|soft lighting|dramatic lighting|studio lighting|rim light|backlighting|volumetric lighting|god rays|sunbeams|natural light|golden hour|blue hour|sunrise|sunset|moonlight|candlelight|neon lights|neon glow|bioluminescence|glowing|bloom|glow effect|low key|high key|shadowed face|rain|snowfall|starry sky|aurora|warm tones|cold tones|moody|dreamy|ethereal|atmospheric|cozy|serene"),
+    nsfw: parseList("boudoir lighting|dim lighting|warm glow|red light|neon pink glow|soft window light|steam|sweat highlights|moody shadows|silhouette|backlit sheer curtain|candlelight on skin|erotic ambience|sensual mood")
+  }
+};
+
+/* ===== STATE MANAGEMENT ===== */
+const STORAGE_KEY = "anime_prompt_gen_v6";
+const $ = selector => document.querySelector(selector);
+const uniq = array => [...new Set(array)];
+
+const getDefaultState = () => ({
+  model: "pony",
+  styleMode: "anime",
+  filterMode: "all",
+  tags: [],
+  customLibrary: [],
+  loras: [
+    { id: "l1", name: "ahegao_v2", weight: 0.8, active: false, trigger: "ahegao" }
+  ],
+  presets: [],
+  extras: [],
+  negExtras: [],
+  custom: [],
+  manual: "",
+  negCustom: "",
+  de: ""
+});
+
+let state = getDefaultState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const loaded = JSON.parse(raw);
+      state = { ...getDefaultState(), ...loaded };
+    }
+  } catch (e) { console.error("LocalStorage Load Error:", e); }
+  if (!MODELS[state.model]) state.model = "pony";
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function showToast(msg) {
+  const container = $("#toastContainer");
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function catId(name) {
+  return "cat-" + name.replace(/\W+/g, "-").toLowerCase();
+}
+
+/* ===== RENDERING ===== */
+function createTagBtn(tag, typeClass, isActive, onClick, customData = null) {
+  const btn = document.createElement("button");
+  btn.className = `tag ${typeClass} ${isActive ? "on" : ""}`;
+  btn.dataset.tag = tag;
+  
+  const spanText = document.createElement("span");
+  spanText.textContent = tag;
+  btn.appendChild(spanText);
+
+  if (customData) {
+    const delSpan = document.createElement("span");
+    delSpan.className = "del-custom";
+    delSpan.textContent = "×";
+    delSpan.title = "Dauerhaft löschen";
+    delSpan.onclick = (e) => {
+      e.stopPropagation();
+      deleteCustomLibraryTag(customData.id);
+    };
+    btn.appendChild(delSpan);
+  }
+
+  btn.onclick = onClick;
+  return btn;
+}
+
+function renderModels() {
+  const container = $("#models");
+  container.innerHTML = "";
+  Object.entries(MODELS).forEach(([id, m]) => {
+    const btn = document.createElement("button");
+    btn.className = `model ${state.model === id ? "active" : ""}`;
+    btn.textContent = m.label;
+    btn.onclick = () => {
+      state.model = id;
+      saveState();
+      renderModels();
+      renderExtras();
+      updatePromptOutputs();
+    };
+    container.appendChild(btn);
+  });
+  $("#settingsInfo").innerHTML = MODELS[state.model].info;
+}
+
+function renderStyleSwitch() {
+  document.querySelectorAll(".style-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.style === state.styleMode);
+    btn.onclick = () => {
+      state.styleMode = btn.dataset.style;
+      renderStyleSwitch();
+      updatePromptOutputs();
+    };
+  });
+}
+
+function renderFilterModes() {
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.filter === state.filterMode);
+    btn.onclick = () => {
+      state.filterMode = btn.dataset.filter;
+      renderFilterModes();
+      filterTags();
+      saveState();
+    };
+  });
+}
+
+function renderExtras() {
+  const model = MODELS[state.model];
+  const extrasBox = $("#extras");
+  extrasBox.innerHTML = "";
+
+  Object.entries(model.extras).forEach(([groupName, tags]) => {
+    const title = document.createElement("div");
+    title.className = "grp";
+    title.textContent = groupName;
+    extrasBox.appendChild(title);
+
+    tags.forEach(tag => {
+      extrasBox.appendChild(
+        createTagBtn(tag, "xtra", state.extras.includes(tag), () => toggleItem("extras", tag))
+      );
+    });
+  });
+
+  const negBox = $("#negExtras");
+  negBox.innerHTML = "";
+  model.neg.forEach(tag => {
+    negBox.appendChild(
+      createTagBtn(tag, "xtra neg", state.negExtras.includes(tag), () => toggleItem("negExtras", tag))
+    );
+  });
+}
+
+/* LoRA Management Rendering */
+function renderLoras() {
+  const container = $("#loraListContainer");
+  container.innerHTML = "";
+
+  if (!state.loras || state.loras.length === 0) {
+    container.innerHTML = `<div style="font-size:0.82rem;color:var(--mute);padding:4px">Keine LoRAs hinzugefügt. Nutze die Felder oben!</div>`;
+    return;
+  }
+
+  state.loras.forEach((lora, idx) => {
+    const div = document.createElement("div");
+    div.className = `lora-card-item ${lora.active ? "active" : ""}`;
+    div.innerHTML = `
+      <div class="lora-info">
+        <span class="lora-name">&lt;lora:${lora.name}:${lora.weight}&gt;</span>
+        <span class="lora-trigger">${lora.trigger ? 'Trigger: ' + lora.trigger : 'Kein Trigger-Tag'}</span>
+      </div>
+      <div class="lora-controls">
+        <input type="range" class="lora-slider" min="0.1" max="1.5" step="0.05" value="${lora.weight}">
+        <span class="lora-val">${lora.weight}</span>
+        <button class="btn ${lora.active ? "ok" : ""}" style="padding:4px 10px;font-size:0.78rem">${lora.active ? "Aktiv" : "An"}</button>
+        <button class="btn danger" style="padding:4px 10px;font-size:0.78rem">✕</button>
+      </div>
+    `;
+
+    const slider = div.querySelector(".lora-slider");
+    const valText = div.querySelector(".lora-val");
+    const [btnToggle, btnDel] = div.querySelectorAll("button");
+
+    slider.oninput = (e) => {
+      const val = parseFloat(e.target.value).toFixed(2);
+      lora.weight = parseFloat(val);
+      valText.textContent = val;
+      div.querySelector(".lora-name").textContent = `<lora:${lora.name}:${lora.weight}>`;
+      updatePromptOutputs();
+    };
+
+    btnToggle.onclick = () => {
+      lora.active = !lora.active;
+      renderLoras();
+      updatePromptOutputs();
+    };
+
+    btnDel.onclick = () => {
+      state.loras.splice(idx, 1);
+      renderLoras();
+      updatePromptOutputs();
+      showToast("🗑️ LoRA entfernt.");
+    };
+
+    container.appendChild(div);
+  });
+}
+
+function renderLibrary() {
+  const libBox = $("#library");
+  libBox.innerHTML = "";
+
+  /* Custom Saved Tags Category */
+  const customDetails = document.createElement("details");
+  customDetails.id = "cat-custom-saved-tags";
+  customDetails.open = true;
+  customDetails.innerHTML = `<summary><span>🏷️ Meine Custom-Tags <span class="count" id="count-custom"></span></span></summary>`;
+  
+  const customTagContainer = document.createElement("div");
+  customTagContainer.className = "tags";
+  customTagContainer.id = "customSavedContainer";
+  customDetails.appendChild(customTagContainer);
+  libBox.appendChild(customDetails);
+
+  renderCustomLibraryTags();
+
+  /* Main Library Categories */
+  Object.entries(LIBRARY).forEach(([catName, catData], index) => {
+    const details = document.createElement("details");
+    details.id = catId(catName);
+    if (index < 3) details.open = true;
+
+    details.innerHTML = `<summary><span>${catName} <span class="count"></span></span></summary>`;
+
+    const tagContainer = document.createElement("div");
+    tagContainer.className = "tags";
+
+    catData.sfw.forEach(tag => {
+      tagContainer.appendChild(createTagBtn(tag, "sfw", false, () => toggleItem("tags", tag)));
+    });
+
+    catData.nsfw.forEach(tag => {
+      tagContainer.appendChild(createTagBtn(tag, "nsfw", false, () => toggleItem("tags", tag)));
+    });
+
+    details.appendChild(tagContainer);
+    libBox.appendChild(details);
+  });
+}
+
+function renderCustomLibraryTags() {
+  const container = $("#customSavedContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (state.customLibrary.length === 0) {
+    container.innerHTML = `<div style="font-size:0.82rem;color:var(--mute);padding:4px">Noch keine eigenen Tags gespeichert. Nutze Feld #4 oben!</div>`;
+    return;
+  }
+
+  state.customLibrary.forEach(item => {
+    const typeClass = `custom-saved ${item.isNsfw ? "nsfw" : "sfw"}`;
+    container.appendChild(
+      createTagBtn(item.text, typeClass, state.tags.includes(item.text), () => toggleItem("tags", item.text), item)
+    );
+  });
+}
+
+function renderPresets() {
+  const container = $("#presetListContainer");
+  container.innerHTML = "";
+
+  if (!state.presets || state.presets.length === 0) {
+    container.innerHTML = `<div style="font-size:0.82rem;color:var(--mute);padding:4px">Keine Presets gespeichert.</div>`;
+    return;
+  }
+
+  state.presets.forEach((p, idx) => {
+    const div = document.createElement("div");
+    div.className = "preset-item";
+    div.innerHTML = `
+      <span>📌 ${p.name}</span>
+      <div>
+        <button class="btn ok" style="padding:3px 8px;font-size:0.75rem">Laden</button>
+        <button class="btn danger" style="padding:3px 8px;font-size:0.75rem">✕</button>
+      </div>
+    `;
+
+    const [btnLoad, btnDel] = div.querySelectorAll("button");
+    btnLoad.onclick = () => loadPreset(p);
+    btnDel.onclick = () => deletePreset(idx);
+
+    container.appendChild(div);
+  });
+}
+
+function renderCustomChips() {
+  const container = $("#customChips");
+  container.innerHTML = "";
+  state.custom.forEach((tag, idx) => {
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.appendChild(document.createTextNode(tag));
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "×";
+    removeBtn.title = "Entfernen";
+    removeBtn.onclick = () => {
+      state.custom.splice(idx, 1);
+      renderCustomChips();
+      updatePromptOutputs();
+    };
+
+    chip.appendChild(removeBtn);
+    container.appendChild(chip);
+  });
+}
+
+function syncActiveStates() {
+  document.querySelectorAll("#library .tag").forEach(btn => {
+    btn.classList.toggle("on", state.tags.includes(btn.dataset.tag));
+  });
+  document.querySelectorAll("#extras .tag").forEach(btn => {
+    btn.classList.toggle("on", state.extras.includes(btn.dataset.tag));
+  });
+  document.querySelectorAll("#negExtras .tag").forEach(btn => {
+    btn.classList.toggle("on", state.negExtras.includes(btn.dataset.tag));
+  });
+
+  const customCount = state.customLibrary.filter(item => state.tags.includes(item.text)).length;
+  const customBadge = $("#count-custom");
+  if (customBadge) {
+    customBadge.textContent = customCount;
+    customBadge.classList.toggle("show", customCount > 0);
+  }
+
+  Object.entries(LIBRARY).forEach(([catName, catData]) => {
+    const allTags = [...catData.sfw, ...catData.nsfw];
+    const activeCount = allTags.filter(t => state.tags.includes(t)).length;
+    const badge = document.querySelector(`#${catId(catName)} .count`);
+    if (badge) {
+      badge.textContent = activeCount;
+      badge.classList.toggle("show", activeCount > 0);
+    }
+  });
+
+  const totalSelected = state.tags.length + state.extras.length + state.loras.filter(l => l.active).length;
+  $("#selCount").textContent = totalSelected
+    ? `${totalSelected} Element${totalSelected === 1 ? "" : "e"} aktiv`
+    : "Keine Tags oder LoRAs ausgewählt.";
+}
+
+/* ===== PROMPT BUILDERS ===== */
+function buildPositivePrompt() {
+  const model = MODELS[state.model];
+  const modelExtras = Object.values(model.extras).flat().filter(t => state.extras.includes(t));
+  const manualTags = parseList(state.manual);
+  
+  // Aktive LoRAs & deren Triggers
+  const activeLoras = state.loras.filter(l => l.active);
+  const loraStrings = activeLoras.map(l => `<lora:${l.name}:${l.weight}>`);
+  const loraTriggers = activeLoras.map(l => l.trigger).filter(Boolean);
+
+  let styleTags = [];
+  if (state.styleMode === "anime") {
+    if (state.model === "pony") styleTags = ["source_anime", "2d"];
+    else if (state.model === "illustrious") styleTags = ["anime style", "2d"];
+    else styleTags = ["anime artwork", "2d", "illustration"];
+  } else {
+    styleTags = ["photorealistic", "realistic", "3d render", "hyperrealistic"];
+  }
+
+  const allParts = [
+    ...parseList(model.prefix),
+    ...loraStrings,
+    ...styleTags,
+    ...modelExtras,
+    ...loraTriggers,
+    ...state.tags,
+    ...state.custom,
+    ...manualTags
+  ];
+  return uniq(allParts).join(", ");
+}
+
+function buildNegativePrompt() {
+  const model = MODELS[state.model];
+  const activeNegExtras = model.neg.filter(t => state.negExtras.includes(t));
+  const manualNeg = parseList(state.negCustom);
+
+  let styleNeg = [];
+  if (state.styleMode === "realistic") {
+    styleNeg = ["anime", "cartoon", "2d", "sketch", "drawing", "illustration"];
+  }
+
+  const allParts = [
+    ...parseList(model.negative),
+    ...styleNeg,
+    ...activeNegExtras,
+    ...manualNeg
+  ];
+  return uniq(allParts).join(", ");
+}
+
+function updatePromptOutputs() {
+  const posText = buildPositivePrompt();
+  const negText = buildNegativePrompt();
+
+  $("#posOutput").value = posText;
+  $("#negOutput").value = negText;
+
+  const posTokens = Math.ceil(posText.length / 4);
+  const negTokens = Math.ceil(negText.length / 4);
+  
+  $("#posCounter").textContent = `${posText.length} Zeichen | ~${posTokens} Tokens`;
+  $("#negCounter").textContent = `${negText.length} Zeichen | ~${negTokens} Tokens`;
+
+  syncActiveStates();
+  saveState();
+}
+
+/* ===== ACTIONS & HANDLERS ===== */
+function toggleItem(key, tag) {
+  const arr = state[key];
+  const index = arr.indexOf(tag);
+  if (index > -1) arr.splice(index, 1);
+  else arr.push(tag);
+  updatePromptOutputs();
+}
+
+function addLora() {
+  const nameInput = $("#loraNameInput");
+  const weightInput = $("#loraWeightInput");
+  const triggerInput = $("#loraTriggerInput");
+
+  const name = nameInput.value.trim().replace(/^<lora:|>$|\s+/g, "");
+  const weight = parseFloat(weightInput.value) || 0.8;
+  const trigger = triggerInput.value.trim();
+
+  if (!name) {
+    alert("Bitte einen LoRA Dateinamen eingeben!");
+    return;
+  }
+
+  state.loras.push({
+    id: "l_" + Date.now(),
+    name,
+    weight,
+    active: true,
+    trigger
+  });
+
+  nameInput.value = "";
+  triggerInput.value = "";
+  weightInput.value = "0.8";
+
+  renderLoras();
+  updatePromptOutputs();
+  showToast("✨ LoRA hinzugefügt & aktiviert!");
+}
+
+function randomizePrompt() {
+  const pickRandom = arr => arr[Math.floor(Math.random() * arr.length)];
+  state.tags = [];
+  
+  Object.values(LIBRARY).forEach(catData => {
+    const pool = state.filterMode === "sfw" ? catData.sfw :
+                 state.filterMode === "nsfw" ? catData.nsfw :
+                 [...catData.sfw, ...catData.nsfw];
+    if (pool.length > 0 && Math.random() > 0.3) {
+      state.tags.push(pickRandom(pool));
+      if (Math.random() > 0.6) state.tags.push(pickRandom(pool));
+    }
+  });
+
+  state.tags = uniq(state.tags);
+  updatePromptOutputs();
+  showToast("🎲 Zufälliger Prompt generiert!");
+}
+
+function savePreset() {
+  const name = prompt("Name für das Preset eingeben:", "Mein Preset " + (state.presets.length + 1));
+  if (!name) return;
+
+  const presetObj = {
+    name: name,
+    model: state.model,
+    styleMode: state.styleMode,
+    tags: [...state.tags],
+    extras: [...state.extras],
+    custom: [...state.custom],
+    manual: state.manual,
+    negCustom: state.negCustom
+  };
+
+  state.presets.push(presetObj);
+  renderPresets();
+  saveState();
+  showToast("💾 Preset '" + name + "' gespeichert!");
+}
+
+function loadPreset(p) {
+  state.model = p.model || "pony";
+  state.styleMode = p.styleMode || "anime";
+  state.tags = [...(p.tags || [])];
+  state.extras = [...(p.extras || [])];
+  state.custom = [...(p.custom || [])];
+  state.manual = p.manual || "";
+  state.negCustom = p.negCustom || "";
+
+  renderModels();
+  renderStyleSwitch();
+  renderExtras();
+  renderCustomChips();
+  $("#manualInput").value = state.manual;
+  $("#negCustom").value = state.negCustom;
+
+  updatePromptOutputs();
+  showToast("📌 Preset '" + p.name + "' geladen!");
+}
+
+function deletePreset(idx) {
+  state.presets.splice(idx, 1);
+  renderPresets();
+  saveState();
+  showToast("🗑️ Preset gelöscht.");
+}
+
+function saveNewCustomTag() {
+  const input = $("#newCustomTagInput");
+  const isNsfwCheck = $("#newCustomTagIsNsfw");
+  const text = input.value.trim().toLowerCase();
+
+  if (!text) return;
+
+  if (state.customLibrary.some(item => item.text === text)) {
+    alert("Dieser Tag existiert bereits in deiner Custom-Bibliothek!");
+    return;
+  }
+
+  const newTagObj = {
+    id: "c_" + Date.now(),
+    text: text,
+    isNsfw: isNsfwCheck.checked
+  };
+
+  state.customLibrary.push(newTagObj);
+  input.value = "";
+  isNsfwCheck.checked = false;
+
+  renderCustomLibraryTags();
+  filterTags();
+  updatePromptOutputs();
+  showToast("💾 Tag '" + text + "' dauerhaft gespeichert!");
+}
+
+function deleteCustomLibraryTag(id) {
+  const itemIndex = state.customLibrary.findIndex(i => i.id === id);
+  if (itemIndex > -1) {
+    const item = state.customLibrary[itemIndex];
+    const activeIdx = state.tags.indexOf(item.text);
+    if (activeIdx > -1) state.tags.splice(activeIdx, 1);
+
+    state.customLibrary.splice(itemIndex, 1);
+    renderCustomLibraryTags();
+    filterTags();
+    updatePromptOutputs();
+    showToast("🗑️ Tag gelöscht.");
+  }
+}
+
+/* Backup Export & Import */
+function exportBackup() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", `prompt_studio_backup_${new Date().toISOString().slice(0,10)}.json`);
+  document.body.appendChild(dlAnchor);
+  dlAnchor.click();
+  dlAnchor.remove();
+  showToast("📤 Backup erfolgreich heruntergeladen!");
+}
+
+function importBackup(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    try {
+      const importedState = JSON.parse(event.target.result);
+      state = { ...getDefaultState(), ...importedState };
+      saveState();
+
+      renderModels();
+      renderStyleSwitch();
+      renderFilterModes();
+      renderExtras();
+      renderLoras();
+      renderLibrary();
+      renderPresets();
+      renderCustomChips();
+
+      $("#manualInput").value = state.manual || "";
+      $("#negCustom").value = state.negCustom || "";
+      filterTags();
+      updatePromptOutputs();
+      showToast("📥 Backup erfolgreich importiert!");
+    } catch (err) {
+      alert("Fehler beim Lesen der JSON-Datei.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function translateGermanInput() {
+  const text = $("#deInput").value.trim();
+  const hint = $("#transHint");
+  const btn = $("#btnTranslate");
+
+  if (!text) {
+    hint.textContent = "Bitte zuerst einen deutschen Text eingeben.";
+    return;
+  }
+
+  btn.disabled = true;
+  hint.textContent = "Übersetze...";
+
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=de|en`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Netzwerkfehler");
+    const data = await res.json();
+    
+    const translated = ((data.responseData && data.responseData.translatedText) || "").trim();
+    if (!translated || (data.responseStatus && Number(data.responseStatus) !== 200)) {
+      throw new Error(data.responseDetails || "Übersetzung fehlgeschlagen");
+    }
+
+    const cleanTag = translated.toLowerCase().replace(/[.!?]+$/, "");
+    if (!state.custom.includes(cleanTag)) {
+      state.custom.push(cleanTag);
+    }
+
+    hint.textContent = `✅ Hinzugefügt: "${cleanTag}"`;
+    $("#deInput").value = "";
+    state.de = "";
+    renderCustomChips();
+    updatePromptOutputs();
+    showToast("🌐 Übersetzt & Hinzugefügt!");
+  } catch (err) {
+    hint.textContent = `❌ Fehler bei der Übersetzung (${err.message}).`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function copyToClipboard(text) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("📋 In die Zwischenablage kopiert!");
+  });
+}
+
+function filterTags() {
+  const query = $("#search").value.trim().toLowerCase();
+  const mode = state.filterMode;
+  let totalVisible = 0;
+
+  const checkVisibility = (isNsfw, tagText) => {
+    const matchesSearch = !query || tagText.toLowerCase().includes(query);
+    if (!matchesSearch) return false;
+
+    if (mode === "sfw" && isNsfw) return false;
+    if (mode === "nsfw" && !isNsfw) return false;
+
+    return true;
+  };
+
+  const customCatEl = $("#cat-custom-saved-tags");
+  let customVisible = 0;
+  customCatEl.querySelectorAll(".tag").forEach(btn => {
+    const isNsfw = btn.classList.contains("nsfw");
+    const isVisible = checkVisibility(isNsfw, btn.dataset.tag);
+    btn.classList.toggle("hide", !isVisible);
+    if (isVisible) customVisible++;
+  });
+  customCatEl.style.display = (customVisible > 0 || state.customLibrary.length === 0) ? "" : "none";
+  totalVisible += customVisible;
+
+  Object.keys(LIBRARY).forEach(catName => {
+    const catEl = document.getElementById(catId(catName));
+    let catVisibleCount = 0;
+
+    catEl.querySelectorAll(".tag").forEach(btn => {
+      const isNsfw = btn.classList.contains("nsfw");
+      const isVisible = checkVisibility(isNsfw, btn.dataset.tag);
+
+      btn.classList.toggle("hide", !isVisible);
+      if (isVisible) catVisibleCount++;
+    });
+
+    catEl.style.display = catVisibleCount > 0 ? "" : "none";
+    if (query && catVisibleCount > 0) catEl.open = true;
+    totalVisible += catVisibleCount;
+  });
+
+  $("#emptyMsg").style.display = totalVisible === 0 ? "block" : "none";
+}
+
+function clearAllSelectedTags() {
+  state.tags = [];
+  state.extras = [];
+  state.negExtras = [];
+  updatePromptOutputs();
+  showToast("🧹 Alle Tags abgewählt.");
+}
+
+function resetEntireState() {
+  if (!confirm("Alle Einstellungen und ausgewählten Tags zurücksetzen? (Gespeicherte Tags & Presets bleiben erhalten)")) return;
+  
+  const savedCustomLib = [...state.customLibrary];
+  const savedPresets = [...state.presets];
+  const savedLoras = [...state.loras];
+  
+  state = getDefaultState();
+  state.customLibrary = savedCustomLib;
+  state.presets = savedPresets;
+  state.loras = savedLoras;
+  saveState();
+
+  $("#deInput").value = "";
+  $("#manualInput").value = "";
+  $("#search").value = "";
+  $("#negCustom").value = "";
+  $("#transHint").textContent = "";
+
+  renderModels();
+  renderStyleSwitch();
+  renderFilterModes();
+  renderExtras();
+  renderLoras();
+  renderCustomChips();
+  filterTags();
+  updatePromptOutputs();
+  showToast("⚡ System zurückgesetzt.");
+}
+
+/* ===== INITIALISIERUNG ===== */
+function init() {
+  loadState();
+
+  renderModels();
+  renderStyleSwitch();
+  renderFilterModes();
+  renderExtras();
+  renderLoras();
+  renderLibrary();
+  renderPresets();
+  renderCustomChips();
+
+  $("#manualInput").value = state.manual || "";
+  $("#deInput").value = state.de || "";
+  $("#negCustom").value = state.negCustom || "";
+
+  /* Event Listeners */
+  $("#btnAddLora").onclick = addLora;
+  $("#loraNameInput").addEventListener("keydown", e => { if (e.key === "Enter") addLora(); });
+
+  $("#btnRandomize").onclick = randomizePrompt;
+  $("#btnSavePreset").onclick = savePreset;
+  $("#btnExportData").onclick = exportBackup;
+  $("#btnImportTrigger").onclick = () => $("#importFileInput").click();
+  $("#importFileInput").onchange = importBackup;
+
+  $("#btnSaveCustomTag").onclick = saveNewCustomTag;
+  $("#newCustomTagInput").addEventListener("keydown", e => { if (e.key === "Enter") saveNewCustomTag(); });
+
+  $("#btnTranslate").onclick = translateGermanInput;
+  $("#deInput").addEventListener("keydown", e => { if (e.key === "Enter") translateGermanInput(); });
+  $("#deInput").addEventListener("input", e => { state.de = e.target.value; saveState(); });
+  $("#manualInput").addEventListener("input", e => { state.manual = e.target.value; updatePromptOutputs(); });
+  $("#negCustom").addEventListener("input", e => { state.negCustom = e.target.value; updatePromptOutputs(); });
+  
+  $("#search").addEventListener("input", filterTags);
+
+  $("#btnClearTags").onclick = clearAllSelectedTags;
+  $("#btnResetAll").onclick = resetEntireState;
+
+  $("#btnCopyPos").onclick = () => copyToClipboard($("#posOutput").value);
+
+  filterTags();
+  updatePromptOutputs();
+}
+
+init();
+</script>
+</body>
+</html>
