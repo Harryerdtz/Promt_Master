@@ -586,6 +586,48 @@ details[open] .tags .tag:nth-child(-n+30){animation-delay:calc(var(--i,0)*12ms)}
 textarea.flash{animation:txtFlash .6s ease}
 @keyframes txtFlash{0%{box-shadow:0 0 0 0 rgba(139,92,246,.7);border-color:#a78bfa}100%{box-shadow:0 0 0 14px rgba(139,92,246,0);border-color:var(--line)}}
 .toast{animation:slideIn .4s cubic-bezier(.34,1.56,.64,1),fadeOut .3s ease 2.7s forwards}
+
+
+/* ===== Assistent-Modus ===== */
+.wz-launch{margin-top:16px;padding:12px 26px;border:0;border-radius:30px;color:#fff;font-weight:700;font-size:.95rem;cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#ec4899,#f59e0b);background-size:200% 200%;animation:wzGrad 6s ease infinite,wzPulse 2.6s ease-in-out infinite;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.wz-launch:hover{transform:translateY(-3px) scale(1.05)}
+.wz-launch:active{transform:scale(.96)}
+@keyframes wzGrad{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+@keyframes wzPulse{0%,100%{box-shadow:0 6px 20px rgba(124,58,237,.4)}50%{box-shadow:0 6px 34px rgba(236,72,153,.65)}}
+.wz{position:fixed;inset:0;z-index:6000;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(3,4,10,.72);backdrop-filter:blur(10px)}
+.wz.open{display:flex;animation:fadeIn .25s ease}
+.wz-panel{width:min(900px,100%);max-height:94vh;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;
+  background:linear-gradient(170deg,rgba(22,24,44,.98),rgba(9,11,22,.98));border:1px solid rgba(139,92,246,.4);box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(139,92,246,.18);
+  animation:wzPop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes wzPop{from{opacity:0;transform:translateY(30px) scale(.94)}to{opacity:1;transform:none}}
+.wz-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 22px 10px}
+.wz-step{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--mute)}
+.wz-top h3{font-size:1.35rem;margin-top:2px;background:linear-gradient(90deg,#c4b5fd,#f9a8d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wz-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font-size:1.3rem;cursor:pointer;transition:.3s}
+.wz-x:hover{transform:rotate(90deg);background:rgba(239,68,68,.3);border-color:rgba(239,68,68,.6)}
+.wz-prog{height:5px;margin:0 22px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+.wz-prog i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,#7c3aed,#ec4899,#f59e0b);background-size:200% 100%;animation:wzGrad 3s linear infinite;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.wz-body{flex:1;overflow-y:auto;padding:16px 22px}
+.wz-sub{color:var(--mute);margin-bottom:14px;font-size:.9rem}
+.wz-page.fw{animation:wzInR .45s cubic-bezier(.2,.8,.2,1)}
+.wz-page.bw{animation:wzInL .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes wzInR{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:none}}
+@keyframes wzInL{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:none}}
+.wz-page.enter .wz-grid .tag{animation:tagIn .4s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i,0)*14ms)}
+.wz-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.wz-tools input{flex:1;min-width:180px}
+.wz-grid{padding:0!important}
+.wz-empty{padding:20px;text-align:center;color:var(--mute)}
+.wz-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;border-top:1px solid var(--line);background:rgba(0,0,0,.25)}
+.wz-foot .btn{min-width:130px}
+.wz-foot .btn.primary{animation:wzPulse 2.6s ease-in-out infinite}
+.wz-count{font-size:.8rem;color:var(--mute);text-align:center}
+.wz-sum{display:inline-block;margin-bottom:10px;padding:5px 14px;border-radius:20px;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.35);font-size:.82rem;color:#ddd6fe}
+.wz-done{animation:wzInR .5s cubic-bezier(.2,.8,.2,1),wzGlow 2.4s ease-out}
+@keyframes wzGlow{0%{filter:drop-shadow(0 0 0 rgba(236,72,153,0))}30%{filter:drop-shadow(0 0 26px rgba(236,72,153,.55))}100%{filter:none}}
+.wz-body .actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:600px){.wz{padding:0}.wz-panel{max-height:100vh;height:100vh;border-radius:0}.wz-foot .btn{min-width:0;padding:10px 12px}}
 </style>
 </head>
 <body>
@@ -593,6 +635,7 @@ textarea.flash{animation:txtFlash .6s ease}
 <header>
   <h1>Universal Anime &amp; Hentai Prompt Studio Ultra</h1>
   <p>Perfekt abgestimmt für <b>Draw Things</b>, <b>Pony XL</b>, <b>Illustrious</b> &amp; <b>SDXL</b></p>
+  <button class="wz-launch" id="btnWizard">🧙 Assistent-Modus starten</button>
 </header>
 
 <div class="layout">
@@ -697,7 +740,7 @@ textarea.flash{animation:txtFlash .6s ease}
         <button class="btn danger" id="btnClearTags">Alle Tags abwählen</button>
       </div>
 
-      <div class="hint" style="margin:0 0 8px">💡 Maus über einen Tag (Handy: gedrückt halten, PC: Rechtsklick) zeigt Übersetzung, Beschreibung &amp; Gewichtung.</div>
+      <div class="hint" style="margin:0 0 8px">ℹ️ Info zu einem Tag: <b>Rechtsklick</b> oder <b>Shift+Klick</b> (Handy: <b>gedrückt halten</b>) zeigt Übersetzung, Bedeutung &amp; Gewichtung.</div>
       <div class="sel" id="selCount" style="margin-bottom:12px"></div>
       <div class="active-bar" id="activeBar"></div>
       <div id="library"></div>
@@ -739,6 +782,21 @@ textarea.flash{animation:txtFlash .6s ease}
   </aside>
 </div>
 
+<div id="wz" class="wz" role="dialog" aria-modal="true" aria-labelledby="wzTitle">
+  <div class="wz-panel">
+    <div class="wz-top">
+      <div><div class="wz-step" id="wzStepLbl"></div><h3 id="wzTitle"></h3></div>
+      <button class="wz-x" id="wzClose" title="Schließen (Esc)">×</button>
+    </div>
+    <div class="wz-prog"><i id="wzBar"></i></div>
+    <div class="wz-body" id="wzBody"></div>
+    <div class="wz-foot">
+      <button class="btn" id="wzBack">← Zurück</button>
+      <span class="wz-count" id="wzCount"></span>
+      <button class="btn primary" id="wzNext">Weiter →</button>
+    </div>
+  </div>
+</div>
 <div id="tip" role="tooltip"></div>
 <div id="toastContainer"></div>
 
@@ -746,6 +804,7 @@ textarea.flash{animation:txtFlash .6s ease}
 "use strict";
 
 const parseList = str => str.split("|").map(s => s.trim()).filter(Boolean);
+const commaList = str => (str || "").split(",").map(s => s.trim()).filter(Boolean);
 
 /* ===== MODELL DEFINITIONEN ===== */
 const MODELS = {
@@ -944,6 +1003,7 @@ function renderFilterModes() {
       renderFilterModes();
       filterTags();
       saveState();
+      if (typeof wzApplyFilter === "function") wzApplyFilter();
     };
   });
 }
@@ -1179,7 +1239,7 @@ function syncActiveStates() {
 function buildPositivePrompt() {
   const model = MODELS[state.model];
   const modelExtras = Object.values(model.extras).flat().filter(t => state.extras.includes(t));
-  const manualTags = parseList(state.manual);
+  const manualTags = commaList(state.manual);
   
   // Aktive LoRAs & deren Triggers
   const activeLoras = state.loras.filter(l => l.active);
@@ -1196,7 +1256,7 @@ function buildPositivePrompt() {
   }
 
   const allParts = [
-    ...parseList(model.prefix),
+    ...commaList(model.prefix),
     ...loraStrings,
     ...styleTags,
     ...modelExtras,
@@ -1211,7 +1271,7 @@ function buildPositivePrompt() {
 function buildNegativePrompt() {
   const model = MODELS[state.model];
   const activeNegExtras = model.neg.filter(t => state.negExtras.includes(t));
-  const manualNeg = parseList(state.negCustom);
+  const manualNeg = commaList(state.negCustom);
 
   let styleNeg = [];
   if (state.styleMode === "realistic") {
@@ -1219,7 +1279,7 @@ function buildNegativePrompt() {
   }
 
   const allParts = [
-    ...parseList(model.negative),
+    ...commaList(model.negative),
     ...styleNeg,
     ...activeNegExtras,
     ...manualNeg
@@ -1620,6 +1680,7 @@ function init() {
   $("#btnCopyNeg").onclick = () => copyToClipboard($("#negOutput").value);
   initTips();
   initShortcuts();
+  initWizard();
 
   filterTags();
   updatePromptOutputs();
@@ -1933,21 +1994,11 @@ function hideTip(now) {
 }
 
 function initTips() {
-  document.addEventListener("pointerover", e => {
-    if (e.pointerType === "touch") return;
+  /* Info öffnet nur nach einer Aktion: Rechtsklick, Shift+Klick oder (Handy) gedrückt halten */
+  document.addEventListener("click", e => {
     const b = e.target.closest && e.target.closest(".tag");
-    if (!b) return;
-    clearTimeout(hideTimer); clearTimeout(tipTimer);
-    prefetchTag(b.dataset.tag);
-    tipTimer = setTimeout(() => showTip(b), 120);
-  });
-  document.addEventListener("pointerout", e => {
-    if (e.pointerType === "touch") return;
-    const b = e.target.closest && e.target.closest(".tag");
-    if (b) { clearTimeout(tipTimer); hideTip(); }
-  });
-  tip.addEventListener("pointerenter", () => clearTimeout(hideTimer));
-  tip.addEventListener("pointerleave", () => hideTip());
+    if (b && e.shiftKey) { e.preventDefault(); e.stopPropagation(); prefetchTag(b.dataset.tag); showTip(b); }
+  }, true);
   tip.addEventListener("click", e => {
     if (e.target.closest("[data-retry]") && tipBtn) { showTip(tipBtn); return; }
     const act = e.target.closest("[data-act]");
@@ -1981,7 +2032,7 @@ function initTips() {
   /* PC: Rechtsklick öffnet Info sofort */
   document.addEventListener("contextmenu", e => {
     const b = e.target.closest && e.target.closest(".tag");
-    if (b) { e.preventDefault(); clearTimeout(tipTimer); showTip(b); }
+    if (b) { e.preventDefault(); clearTimeout(tipTimer); prefetchTag(b.dataset.tag); showTip(b); }
   });
   window.addEventListener("scroll", () => hideTip(true), { passive: true });
 }
@@ -2027,6 +2078,222 @@ function initShortcuts() {
     if (e.key === "/" && !typing) { e.preventDefault(); $("#search").focus(); }
     else if (e.key === "Escape") { hideTip(true); if (typing) document.activeElement.blur(); }
     else if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); copyToClipboard($("#posOutput").value); }
+  });
+}
+
+/* ===== ASSISTENT-MODUS: Kategorie für Kategorie durch den Prompt ===== */
+const WZ = { step: 0, dir: 1, q: "" };
+
+function wzSteps() {
+  const st = [{ type: "model", title: "🎛️ Modell & Stil", sub: "Womit erzeugst du das Bild? Das bestimmt die Start-Tags." }];
+  Object.entries(LIBRARY).forEach(([cat, d]) => st.push({ type: "cat", title: cat, sfw: d.sfw, nsfw: d.nsfw, sub: "Wähle beliebig viele Tags – oder gehe einfach weiter." }));
+  if (state.customLibrary.length) st.push({
+    type: "cat", title: "⭐ Deine gespeicherten Tags", sub: "Deine eigenen Tags.",
+    sfw: state.customLibrary.filter(i => !i.isNsfw).map(i => i.text),
+    nsfw: state.customLibrary.filter(i => i.isNsfw).map(i => i.text)
+  });
+  st.push({ type: "extras", title: "🏷️ Qualität & Rating", sub: "Spezielle Tags für " + MODELS[state.model].label + "." });
+  st.push({ type: "own", title: "✍️ Eigene Ideen", sub: "Fehlt noch etwas? Schreib es auf Deutsch oder Englisch." });
+  st.push({ type: "result", title: "✨ Dein Prompt ist fertig", sub: "" });
+  return st;
+}
+
+function wzOpen() {
+  WZ.step = 0; WZ.dir = 1; WZ.q = "";
+  $("#wz").classList.add("open");
+  document.body.style.overflow = "hidden";
+  wzRender(true);
+}
+function wzClose() {
+  $("#wz").classList.remove("open");
+  document.body.style.overflow = "";
+  hideTip(true);
+}
+function wzGo(d) {
+  const n = wzSteps().length, ns = Math.min(n - 1, Math.max(0, WZ.step + d));
+  if (ns === WZ.step) return;
+  WZ.dir = d; WZ.step = ns; WZ.q = "";
+  hideTip(true);
+  wzRender(true);
+}
+function wzNext() { WZ.step === wzSteps().length - 1 ? wzClose() : wzGo(1); }
+
+function wzRender(animate = true) {
+  const steps = wzSteps(), st = steps[WZ.step], body = $("#wzBody");
+  $("#wzStepLbl").textContent = `Schritt ${WZ.step + 1} von ${steps.length}`;
+  $("#wzTitle").textContent = st.title;
+  $("#wzBar").style.width = ((WZ.step + 1) / steps.length * 100) + "%";
+  body.innerHTML = "";
+  const page = document.createElement("div");
+  page.className = "wz-page" + (animate ? (WZ.dir > 0 ? " fw enter" : " bw enter") : "");
+  if (st.sub) { const p = document.createElement("p"); p.className = "wz-sub"; p.textContent = st.sub; page.appendChild(p); }
+  ({ model: wzModel, cat: wzCat, extras: wzExtras, own: wzOwn, result: wzResult })[st.type](page, st);
+  body.appendChild(page);
+  body.scrollTop = 0;
+  renderFilterModes(); renderStyleSwitch(); wzApplyFilter();
+  if (animate) setTimeout(() => page.classList.remove("enter"), 1300);
+  $("#wzBack").disabled = WZ.step === 0;
+  wzMark();
+}
+
+function wzModel(page) {
+  const g = document.createElement("div"); g.className = "models";
+  Object.entries(MODELS).forEach(([id, m]) => {
+    const b = document.createElement("button");
+    b.className = "model" + (state.model === id ? " active" : "");
+    b.textContent = m.label;
+    b.onclick = () => { state.model = id; saveState(); renderModels(); renderExtras(); updatePromptOutputs(); wzRender(false); };
+    g.appendChild(b);
+  });
+  page.appendChild(g);
+  const sw = document.createElement("div"); sw.className = "style-switch"; sw.style.marginTop = "14px";
+  sw.innerHTML = '<button class="style-btn" data-style="anime">🌸 Anime / Hentai (2D)</button><button class="style-btn" data-style="realistic">📸 Realistisch / 3D</button>';
+  page.appendChild(sw);
+  const info = document.createElement("div"); info.className = "settings-info"; info.innerHTML = MODELS[state.model].info;
+  page.appendChild(info);
+}
+
+function wzTagBtn(tag, cls, key, i) {
+  const b = createTagBtn(tag, cls, state[key].includes(tag), () => { toggleItem(key, tag); wzMark(); });
+  b.dataset.k = key; b.style.setProperty("--i", Math.min(i, 40));
+  return b;
+}
+
+function wzCat(page, st) {
+  const tools = document.createElement("div"); tools.className = "wz-tools";
+  const fm = document.createElement("div"); fm.className = "filter-modes";
+  [["all", "Alle"], ["sfw", "Nur SFW"], ["nsfw", "🔥 Nur NSFW"]].forEach(([k, l]) => {
+    const b = document.createElement("button"); b.className = "filter-btn"; b.dataset.filter = k; b.textContent = l; fm.appendChild(b);
+  });
+  const q = document.createElement("input"); q.type = "search"; q.placeholder = "🔍 In dieser Kategorie suchen …"; q.value = WZ.q;
+  q.oninput = () => { WZ.q = q.value.trim().toLowerCase(); wzApplyFilter(); };
+  tools.append(fm, q); page.appendChild(tools);
+  const grid = document.createElement("div"); grid.className = "tags wz-grid"; grid.id = "wzGrid";
+  let i = 0;
+  st.sfw.forEach(t => grid.appendChild(wzTagBtn(t, "sfw", "tags", i++)));
+  st.nsfw.forEach(t => grid.appendChild(wzTagBtn(t, "nsfw", "tags", i++)));
+  page.appendChild(grid);
+  const em = document.createElement("div"); em.id = "wzEmpty"; em.className = "wz-empty"; em.textContent = "Keine passenden Tags."; em.style.display = "none";
+  page.appendChild(em);
+}
+
+function wzApplyFilter() {
+  const grid = $("#wzGrid"); if (!grid) return;
+  let vis = 0;
+  grid.querySelectorAll(".tag").forEach(b => {
+    const n = b.classList.contains("nsfw");
+    const ok = (!WZ.q || b.dataset.tag.toLowerCase().includes(WZ.q)) && !(state.filterMode === "sfw" && n) && !(state.filterMode === "nsfw" && !n);
+    b.classList.toggle("hide", !ok); if (ok) vis++;
+  });
+  const em = $("#wzEmpty"); if (em) em.style.display = vis ? "none" : "block";
+}
+
+function wzExtras(page) {
+  const m = MODELS[state.model];
+  const group = (label, list, key, cls) => {
+    const h = document.createElement("div"); h.className = "grp"; h.textContent = label; page.appendChild(h);
+    const g = document.createElement("div"); g.className = "tags wz-grid"; g.style.padding = "0 0 8px";
+    list.forEach((t, i) => g.appendChild(wzTagBtn(t, cls, key, i)));
+    page.appendChild(g);
+  };
+  Object.entries(m.extras).forEach(([name, list]) => group(name, list, "extras", "xtra"));
+  group("Negative Schnellauswahl", m.neg, "negExtras", "xtra neg");
+}
+
+function wzOwn(page) {
+  page.insertAdjacentHTML("beforeend",
+    `<label class="l">Idee auf Deutsch</label>
+     <div class="row"><input type="text" id="wzDe" placeholder="z. B. Dämonen-Mädchen im verschneiten Wald"><button class="btn primary" id="wzTr">Übersetzen &amp; hinzufügen</button></div>
+     <div class="hint" id="wzHint"></div>
+     <label class="l">Englische Tags (Komma-getrennt, z. B. LoRA-Trigger)</label>
+     <input type="text" id="wzManual" placeholder="glowing eyes, cinematic detail">
+     <div class="active-bar has" id="wzChips" style="margin-top:14px"></div>`);
+  const de = page.querySelector("#wzDe"), hint = page.querySelector("#wzHint"), btn = page.querySelector("#wzTr"), man = page.querySelector("#wzManual"), chips = page.querySelector("#wzChips");
+  man.value = state.manual || "";
+  man.oninput = () => { state.manual = man.value; $("#manualInput").value = man.value; updatePromptOutputs(); };
+  const drawChips = () => {
+    chips.innerHTML = "";
+    chips.style.display = state.custom.length ? "flex" : "none";
+    state.custom.forEach((t, i) => {
+      const c = document.createElement("span"); c.className = "achip"; c.textContent = t;
+      const x = document.createElement("button"); x.textContent = "×";
+      x.onclick = () => { state.custom.splice(i, 1); renderCustomChips(); updatePromptOutputs(); drawChips(); wzMark(); };
+      c.appendChild(x); chips.appendChild(c);
+    });
+  };
+  const go = async () => {
+    const text = de.value.trim();
+    if (!text) { hint.textContent = "Bitte erst etwas eingeben."; return; }
+    btn.disabled = true; hint.textContent = "Übersetze …";
+    try {
+      const en = await translateText(text, "de", "en");
+      const clean = en.toLowerCase().replace(/[.!?]+$/, "");
+      if (!state.custom.includes(clean)) state.custom.push(clean);
+      hint.textContent = `✅ Hinzugefügt: „${clean}“`;
+      de.value = ""; renderCustomChips(); updatePromptOutputs(); drawChips(); wzMark();
+    } catch (e) { hint.textContent = `❌ Übersetzung nicht möglich (${e.message}).`; }
+    finally { btn.disabled = false; }
+  };
+  btn.onclick = go;
+  de.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+  drawChips();
+}
+
+function wzType(el, text) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { el.value = text; return; }
+  let i = 0; const step = Math.max(3, Math.ceil(text.length / 50));
+  el.value = "";
+  const iv = setInterval(() => { i += step; el.value = text.slice(0, i); if (i >= text.length) { clearInterval(iv); el.value = text; } }, 16);
+}
+
+function wzResult(page) {
+  page.classList.add("wz-done");
+  const pos = buildPositivePrompt(), neg = buildNegativePrompt();
+  const cnt = t => `${t.length} Zeichen | ~${Math.ceil(t.length / 4)} Tokens`;
+  page.insertAdjacentHTML("beforeend",
+    `<div class="wz-sum">${esc(MODELS[state.model].label)} · ${state.styleMode === "anime" ? "Anime / 2D" : "Realistisch / 3D"} · ${state.tags.length} Tags gewählt</div>
+     <div class="label"><span>Positive Prompt</span><span class="counter-badge">${cnt(pos)}</span></div>
+     <textarea id="wzPos" readonly style="min-height:150px"></textarea>
+     <div class="label"><span>Negative Prompt</span><span class="counter-badge">${cnt(neg)}</span></div>
+     <textarea id="wzNeg" readonly style="min-height:80px"></textarea>
+     <div class="actions">
+       <button class="btn primary" id="wzCopyPos" style="flex:1">📋 Positive kopieren</button>
+       <button class="btn" id="wzCopyNeg">📋 Negative kopieren</button>
+     </div>
+     <div class="actions">
+       <button class="btn" id="wzRestart">🔁 Von vorn beginnen</button>
+       <button class="btn" id="wzEditor">✏️ Im Editor weiterbearbeiten</button>
+     </div>`);
+  page.querySelector("#wzNeg").value = neg;
+  wzType(page.querySelector("#wzPos"), pos);
+  page.querySelector("#wzCopyPos").onclick = () => copyToClipboard(pos);
+  page.querySelector("#wzCopyNeg").onclick = () => copyToClipboard(neg);
+  page.querySelector("#wzRestart").onclick = () => { WZ.dir = -1; WZ.step = 0; WZ.q = ""; wzRender(true); };
+  page.querySelector("#wzEditor").onclick = wzClose;
+}
+
+function wzMark() {
+  document.querySelectorAll("#wzBody .tag").forEach(b => b.classList.toggle("on", (state[b.dataset.k || "tags"] || []).includes(b.dataset.tag)));
+  const steps = wzSteps(), st = steps[WZ.step]; let n = 0;
+  if (st.type === "cat") n = uniq([...st.sfw, ...st.nsfw]).filter(t => state.tags.includes(t)).length;
+  else if (st.type === "extras") n = Object.values(MODELS[state.model].extras).flat().filter(t => state.extras.includes(t)).length + MODELS[state.model].neg.filter(t => state.negExtras.includes(t)).length;
+  else if (st.type === "own") n = state.custom.length;
+  $("#wzCount").textContent = (st.type === "model" || st.type === "result") ? `${state.tags.length} Tags gesamt` : `${n} hier · ${state.tags.length} gesamt`;
+  const last = WZ.step === steps.length - 1, beforeLast = WZ.step === steps.length - 2;
+  $("#wzNext").textContent = last ? "✔ Fertig" : beforeLast ? "✨ Prompt erstellen" : (n || st.type === "model") ? "Weiter →" : "Überspringen →";
+}
+
+function initWizard() {
+  $("#btnWizard").onclick = wzOpen;
+  $("#wzClose").onclick = wzClose;
+  $("#wzBack").onclick = () => wzGo(-1);
+  $("#wzNext").onclick = wzNext;
+  document.addEventListener("keydown", e => {
+    if (!$("#wz").classList.contains("open")) return;
+    const typing = /^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
+    if (e.key === "Escape") wzClose();
+    else if (!typing && e.key === "ArrowRight") wzNext();
+    else if (!typing && e.key === "ArrowLeft") wzGo(-1);
   });
 }
 
