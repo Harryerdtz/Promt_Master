@@ -35,6 +35,8 @@
   
   --rose: #f43f5e;
   --success: #10b981;
+  --accent: #7c8ca8;
+  --accent-soft: rgba(124, 140, 168, .22);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -73,6 +75,47 @@ h1 {
   color: transparent;
   text-shadow: 0 0 35px rgba(192, 132, 252, 0.25);
 }
+
+/* Ruhige Design-Profile – alle grellen Akzente werden hier zentral gedimmt. */
+body[data-theme="calm"] {
+  --bg: #11151d; --panel: rgba(25, 31, 42, .92); --panel2: #1c2431;
+  --panel-glow: rgba(124, 140, 168, .08); --line: rgba(202, 213, 225, .12);
+  --line-glow: rgba(137, 153, 177, .35); --text: #e4e9ef; --mute: #aab5c3;
+  --sfw-color: var(--accent); --sfw-glow: var(--accent-soft); --sfw-grad: linear-gradient(135deg, #56677d, var(--accent));
+  --nsfw-color: #b27c91; --nsfw-glow: rgba(178, 124, 145, .22); --nsfw-grad: linear-gradient(135deg, #896174, #b27c91);
+  --lora-color: #6e9a9d; --lora-glow: rgba(110, 154, 157, .2); --lora-grad: linear-gradient(135deg, #53777b, #6e9a9d);
+  --custom-color: #b89b68; --custom-grad: linear-gradient(135deg, #8f764f, #b89b68);
+  --preset-color: #8b829f; --preset-grad: linear-gradient(135deg, #706782, #8b829f);
+}
+body[data-theme="night"] {
+  --bg: #0c1017; --panel: rgba(18, 23, 33, .94); --panel2: #151c27;
+  --panel-glow: rgba(104, 122, 151, .06); --line: rgba(205, 216, 230, .1);
+  --text: #dce4ed; --mute: #94a1b1; --sfw-color: var(--accent); --sfw-glow: var(--accent-soft);
+  --sfw-grad: linear-gradient(135deg, #44546b, var(--accent)); --nsfw-color: #9f7183; --nsfw-glow: rgba(159, 113, 131, .18);
+  --nsfw-grad: linear-gradient(135deg, #765363, #9f7183); --lora-color: #619092; --lora-grad: linear-gradient(135deg, #486e72, #619092);
+  --custom-color: #a88d61; --custom-grad: linear-gradient(135deg, #806a48, #a88d61); --preset-grad: linear-gradient(135deg, #625b76, #817895);
+}
+body[data-theme="soft"] {
+  --bg: #202126; --panel: rgba(42, 43, 50, .94); --panel2: #35363e;
+  --panel-glow: rgba(178, 166, 143, .06); --line: rgba(239, 232, 218, .12);
+  --text: #f0ece4; --mute: #c1baae; --sfw-color: var(--accent); --sfw-glow: var(--accent-soft);
+  --sfw-grad: linear-gradient(135deg, #706c63, var(--accent)); --nsfw-color: #ad7780; --nsfw-glow: rgba(173, 119, 128, .18);
+  --nsfw-grad: linear-gradient(135deg, #866069, #ad7780); --lora-color: #76938b; --lora-grad: linear-gradient(135deg, #5c766f, #76938b);
+  --custom-color: #b3996c; --custom-grad: linear-gradient(135deg, #8e774f, #b3996c); --preset-grad: linear-gradient(135deg, #777080, #968b9f);
+}
+/* Der ursprüngliche, leuchtende Stil bleibt als bewusstes Neon-Profil erhalten. */
+body[data-theme="neon"] {
+  --bg: #05070c; --panel: rgba(15, 18, 30, .75); --panel2: rgba(24, 29, 46, .85);
+  --panel-glow: rgba(168, 85, 247, .15); --line: rgba(255, 255, 255, .08); --line-glow: rgba(168, 85, 247, .4);
+  --text: #f8fafc; --mute: #94a3b8; --sfw-color: #3b82f6; --sfw-glow: rgba(59, 130, 246, .4);
+  --sfw-grad: linear-gradient(135deg, #2563eb, #7c3aed); --nsfw-color: #ff2e93; --nsfw-glow: rgba(255, 46, 147, .5);
+  --nsfw-grad: linear-gradient(135deg, #ff2e93, #d946ef, #ff0055); --lora-color: #06b6d4; --lora-glow: rgba(6, 182, 212, .4);
+  --lora-grad: linear-gradient(135deg, #0891b2, #0d9488); --custom-color: #f59e0b; --custom-grad: linear-gradient(135deg, #d97706, #b45309);
+  --preset-color: #8b5cf6; --preset-grad: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+body[data-theme]:not([data-theme="neon"]) { background: var(--bg); }
+body[data-theme]:not([data-theme="neon"]) h1 { background: linear-gradient(90deg, #d9dee5, var(--accent), #c9d1dc); -webkit-background-clip:text; background-clip:text; text-shadow:none; }
+body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 
 @keyframes gradientText {
   0% { background-position: 0% 50%; }
@@ -259,6 +302,13 @@ label.l { display: block; margin: 12px 0 6px; font-size: 0.82rem; color: var(--m
 .btn.danger:hover { background: rgba(239, 68, 68, 0.2); border-color: var(--rose); color: #fff; }
 
 .hint { font-size: 0.8rem; color: var(--mute); margin-top: 4px; }
+.dt-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.dt-result { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: rgba(0,0,0,.25); }
+.dt-result a { display: block; }
+.dt-result img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; background: #080a10; }
+.dt-result .btn { width: calc(100% - 16px); margin: 8px; }
+.dt-empty { grid-column: 1 / -1; }
+@media (max-width: 600px) { .dt-results { grid-template-columns: 1fr; } }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .chip {
@@ -299,6 +349,8 @@ label.l { display: block; margin: 12px 0 6px; font-size: 0.82rem; color: var(--m
 .lora-controls { display: flex; align-items: center; gap: 8px; }
 .lora-slider { width: 90px; accent-color: var(--lora-color); cursor: pointer; }
 .lora-val { font-size: 0.82rem; font-weight: bold; width: 32px; text-align: right; color: var(--lora-color); }
+.lora-random-toggle{display:inline-flex;align-items:center;gap:4px;color:var(--mute);font-size:.7rem;white-space:nowrap;cursor:pointer}
+.lora-random-toggle input{accent-color:var(--lora-color)}
 
 /* Filter Modes */
 .filter-modes {
@@ -582,6 +634,8 @@ details[open] .tags .tag:nth-child(-n+30){animation-delay:calc(var(--i,0)*12ms)}
 .tip-act button:hover{transform:translateY(-1px);border-color:var(--line-glow);background:rgba(139,92,246,.2)}
 .tip-act button.add{background:var(--sfw-grad);border-color:transparent}
 .tip-act button.off{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.4)}
+.tip-act.random-exclude button{border-color:rgba(239,68,68,.35);color:#fecaca}
+.tip-act.random-exclude button.excluded{border-color:rgba(34,197,94,.4);color:#86efac;background:rgba(34,197,94,.1)}
 .tip-act button:active{transform:scale(.95)}
 textarea.flash{animation:txtFlash .6s ease}
 @keyframes txtFlash{0%{box-shadow:0 0 0 0 rgba(139,92,246,.7);border-color:#a78bfa}100%{box-shadow:0 0 0 14px rgba(139,92,246,0);border-color:var(--line)}}
@@ -628,14 +682,220 @@ textarea.flash{animation:txtFlash .6s ease}
 @keyframes wzGlow{0%{filter:drop-shadow(0 0 0 rgba(236,72,153,0))}30%{filter:drop-shadow(0 0 26px rgba(236,72,153,.55))}100%{filter:none}}
 .wz-body .actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
 @media (max-width:600px){.wz{padding:0}.wz-panel{max-height:100vh;height:100vh;border-radius:0}.wz-foot .btn{min-width:0;padding:10px 12px}}
+.automation-modal{position:fixed;inset:0;z-index:6100;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,4,10,.76);backdrop-filter:blur(10px)}
+.automation-modal.open{display:flex;animation:fadeIn .2s ease}
+.automation-panel{width:min(560px,100%);max-height:92vh;overflow:auto;border:1px solid rgba(6,182,212,.4);border-radius:14px;background:linear-gradient(160deg,rgba(18,25,38,.98),rgba(8,11,19,.99));box-shadow:0 24px 70px rgba(0,0,0,.72)}
+.automation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+.automation-head h2{font-size:1.2rem;color:var(--text)}
+.automation-kicker{font-size:.7rem;text-transform:uppercase;color:#67e8f9;margin-bottom:3px}
+.automation-content{display:grid;gap:16px;padding:20px 22px}
+.automation-content label,.automation-content legend{font-size:.84rem;font-weight:650;color:#e2e8f0}
+.automation-content select,.automation-content input[type=number]{width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
+.automation-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;border:0;padding:0}
+.automation-mode{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.03);cursor:pointer}
+.automation-mode input{accent-color:var(--lora-color)}
+.automation-content input[type=number]:disabled{opacity:.5}
+.automation-status{min-height:44px;padding:10px 12px;border-left:3px solid var(--lora-color);background:rgba(6,182,212,.08);color:#cbd5e1;font-size:.82rem;line-height:1.4}
+.automation-actions{display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px 20px;border-top:1px solid var(--line)}
+.automation-actions .btn{flex:1;min-width:130px}
+.header-actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.header-actions .wz-launch{margin-top:0}
+.wz-launch.automation-launch{background:linear-gradient(135deg,#0891b2,#0d9488);animation:wzPulse 2.6s ease-in-out infinite}
+.randomizer-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 12px}
+.randomizer-options label{display:grid;gap:5px;color:var(--mute);font-size:.76rem;font-weight:650}
+.randomizer-options select,.randomizer-options input[type=number]{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
+.randomizer-options .randomizer-check{display:flex;align-items:center;gap:8px}
+.randomizer-check input{accent-color:var(--lora-color)}
+.automation-settings>.randomizer-options{grid-column:1/-1}
+.randomizer-exclusions{grid-column:1/-1;display:grid;gap:7px;min-width:0}
+.randomizer-exclusions>label{color:var(--mute);font-size:.76rem;font-weight:650}
+.random-exclude-search{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
+.random-excluded-chips,.random-exclude-suggestions{display:flex;flex-wrap:wrap;gap:6px}
+.random-exclude-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:4px 5px 4px 9px;border:1px solid rgba(239,68,68,.35);border-radius:14px;background:rgba(239,68,68,.1);color:#fecaca;font-size:.75rem}
+.random-exclude-chip span{overflow-wrap:anywhere}
+.random-exclude-chip button,.random-exclude-option{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-size:.74rem}
+.random-exclude-chip button{width:19px;height:19px;padding:0;color:#fca5a5}
+.random-exclude-suggestions{max-height:112px;overflow:auto}
+.random-exclude-option{padding:5px 9px}
+.random-exclude-option:hover{border-color:var(--lora-color);color:#67e8f9}
+@media(max-width:600px){.randomizer-options{grid-template-columns:1fr 1fr}.randomizer-options .randomizer-check{grid-column:1/-1}}
+.prompt-label-tools{display:flex;align-items:center;gap:7px}
+.positive-label>span:first-child{white-space:nowrap}
+.prompt-label-tools{flex:1 1 auto;min-width:0;flex-wrap:wrap;justify-content:flex-end}
+.prompt-label-tools .counter-badge{white-space:nowrap}
+.prompt-label-tools .btn{padding:5px 9px;font-size:.76rem}
+.automation-workspace{display:grid;grid-template-columns:minmax(340px,.8fr) minmax(0,1.2fr);gap:14px;align-items:start}
+.automation-workspace>.card{margin:0;min-width:0}
+.automation-workspace>.card:nth-child(1){grid-column:1;grid-row:1}
+.automation-workspace>.card:nth-child(2){grid-column:1;grid-row:2}
+.automation-workspace>.card:nth-child(3){grid-column:2;grid-row:1 / span 2}
+body.automation-view{padding:0;overflow-x:hidden}
+body.automation-view header,body.automation-view .layout{display:none}
+body.automation-view .automation-modal{position:static;inset:auto;display:block;padding:18px;background:transparent;backdrop-filter:none}
+body.automation-view .automation-panel{width:min(1700px,100%);max-height:none;margin:0 auto;overflow:visible}
+body.automation-view .automation-content{grid-template-columns:minmax(0,1fr);align-items:start}
+body.automation-view .automation-settings{display:grid;grid-template-columns:minmax(92px,.55fr) minmax(130px,.8fr) minmax(260px,1.5fr) minmax(110px,.6fr) minmax(100px,.5fr);align-content:start;align-items:center;gap:10px}
+body.automation-view .automation-settings>label[for="automationFilter"]{grid-column:1}
+body.automation-view .automation-settings>#automationFilter{grid-column:2}
+body.automation-view .automation-settings>.automation-modes{grid-column:3}
+body.automation-view .automation-settings>label[for="automationCount"]{grid-column:4}
+body.automation-view .automation-settings>#automationCount{grid-column:5}
+body.automation-view .automation-settings>.hint,body.automation-view .automation-settings>.automation-status{grid-column:1/-1}
+body.automation-view .automation-workspace{grid-column:1;grid-row:auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr);width:100%}
+body.automation-view .automation-workspace>.card{padding:16px}
+body.automation-view .automation-workspace #posOutput{min-height:260px}
+body.automation-view .automation-workspace #dtResults{grid-template-columns:minmax(0,1fr)}
+body.automation-view .automation-workspace .dt-result img{aspect-ratio:auto;max-height:68vh}
+body.automation-view .automation-actions{position:sticky;bottom:0;background:rgba(8,11,19,.96)}
+@media(max-width:900px){body.automation-view .automation-settings{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}body.automation-view .automation-settings>label[for="automationFilter"]{grid-column:1}body.automation-view .automation-settings>#automationFilter{grid-column:2}body.automation-view .automation-settings>.automation-modes,body.automation-view .automation-settings>.hint,body.automation-view .automation-settings>.automation-status{grid-column:1/-1}body.automation-view .automation-settings>label[for="automationCount"]{grid-column:1}body.automation-view .automation-settings>#automationCount{grid-column:2}body.automation-view .automation-workspace{grid-template-columns:minmax(0,1fr)}body.automation-view .automation-workspace>.card:nth-child(n){grid-column:1;grid-row:auto}}
+@media(max-width:600px){.automation-modal{padding:0}.automation-panel{width:100%;height:100%;max-height:100%;border-radius:0}.automation-modes{grid-template-columns:1fr}}
+.lora-file{display:block;margin-top:3px;font-size:.72rem;color:var(--mute)}
+.lora-file code{color:#67e8f9;word-break:break-all}
+.lora-test{margin-top:6px;padding:3px 10px!important;font-size:.72rem!important}
+.lora-test-toggle{margin-top:6px;padding:3px 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mute);cursor:pointer;font-size:.72rem;transition:.2s}
+.lora-test-toggle:hover{color:#fff;border-color:var(--lora-color)}
+.lora-test-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s cubic-bezier(.2,.8,.2,1),opacity .3s;opacity:1}
+.lora-test-wrap.collapsed .lora-test-body{grid-template-rows:0fr;opacity:0}
+.lora-test-out{min-height:0;overflow:hidden;margin-top:5px;font-size:.76rem;line-height:1.45;color:#cbd5e1;white-space:pre-wrap}
+.t-imgs{display:flex;gap:10px;margin-top:8px;white-space:normal}
+.t-imgs figure{flex:1;max-width:170px;margin:0}
+.t-imgs img{width:100%;border-radius:10px;display:block;border:1px solid var(--line)}
+.t-imgs figcaption{margin-top:3px;text-align:center;font-size:.7rem;color:var(--mute)}
+
+/* ===== LoRA-Karten: Layout-Fix (kein Überlaufen mehr) + LoRA-Seite ===== */
+.lora-card-item{flex-wrap:wrap;align-items:flex-start;margin-bottom:0}
+.lora-info{flex:1 1 240px;min-width:0}
+.lora-name{overflow-wrap:anywhere;word-break:break-word}
+.lora-file{overflow-wrap:anywhere}
+.lora-controls{flex:0 1 auto;flex-wrap:wrap;justify-content:flex-end;min-width:0;max-width:100%}
+#loraListContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:12px;align-items:start}
+.lora-modal{display:none}
+body.lora-view{padding:0;overflow-x:hidden}
+body.lora-view header,body.lora-view .layout{display:none}
+body.lora-view .lora-modal{display:block;padding:18px;animation:fadeIn .25s ease}
+.lora-page{width:min(1500px,100%);margin:0 auto;border:1px solid rgba(6,182,212,.4);border-radius:14px;background:linear-gradient(160deg,rgba(18,22,36,.98),rgba(8,11,19,.98));box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.lora-content{padding:20px 22px}
+.lora-content>.card{margin:0;border:0;background:transparent;box-shadow:none;padding:0}
+.lora-launch{background:linear-gradient(135deg,#0891b2,#0d9488)!important}
+@media(max-width:600px){body.lora-view .lora-modal{padding:0}.lora-page{border-radius:0}.lora-content{padding:14px}}
+
+/* ===== Fortschritts-Dock, Lightbox, Ergebnisse ===== */
+.gen-dock{position:fixed;top:12px;left:50%;z-index:5500;width:min(600px,calc(100% - 24px));padding:12px 14px 10px;border-radius:16px;
+  background:linear-gradient(160deg,rgba(18,22,40,.97),rgba(8,11,22,.97));border:1px solid rgba(6,182,212,.5);backdrop-filter:blur(14px);
+  box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 30px rgba(6,182,212,.2);
+  transform:translate(-50%,-150%);opacity:0;pointer-events:none;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .3s,border-color .3s}
+.gen-dock.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.gen-dock.done{border-color:rgba(34,197,94,.6);box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 30px rgba(34,197,94,.25)}
+.gen-dock.err{border-color:rgba(239,68,68,.6);box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 30px rgba(239,68,68,.25)}
+.gd-top{display:flex;align-items:center;gap:10px}
+.gd-spin{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#22d3ee;animation:gdSpin .8s linear infinite}
+.gen-dock.done .gd-spin{animation:none;border-color:#22c55e;background:#22c55e}
+.gen-dock.err .gd-spin{animation:none;border-color:#ef4444;background:#ef4444}
+@keyframes gdSpin{to{transform:rotate(360deg)}}
+.gd-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.gd-text b{font-size:.92rem}
+.gd-text span{font-size:.74rem;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd-pct{min-width:48px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;color:#67e8f9}
+.gen-dock.done .gd-pct{color:#4ade80}.gen-dock.err .gd-pct{color:#f87171}
+.gd-sound{display:flex;align-items:center;gap:3px;font-size:.8rem;color:var(--mute);cursor:pointer}
+.gd-sound input{accent-color:#22d3ee}
+.gd-stop{padding:5px 12px!important;font-size:.76rem!important}
+.gd-bar{height:10px;margin-top:10px;border-radius:10px;background:rgba(255,255,255,.08);overflow:hidden}
+.gd-bar i{display:block;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,#0891b2,#22d3ee,#a855f7,#0891b2);background-size:250% 100%;animation:wzGrad 2.2s linear infinite;transition:width .25s linear}
+.gd-bar.total{height:5px;margin-top:6px}
+.gd-bar.total i{background:linear-gradient(90deg,#7c3aed,#ec4899);animation:none}
+.gen-dock.done .gd-bar i{background:#22c55e;animation:none}
+.gen-dock.err .gd-bar i{background:#ef4444;animation:none}
+.gd-meta{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:.73rem;color:var(--mute)}
+.card h2 .res-clear{margin-left:auto;padding:3px 10px;font-size:.72rem;text-transform:none;letter-spacing:0}
+.dt-result .btn+.btn{margin-top:0}
+.dt-result a{cursor:zoom-in}
+.dt-result{transition:transform .25s,border-color .25s}
+.dt-result:hover{transform:translateY(-3px);border-color:var(--lora-color)}
+.dt-result{animation:cardIn .5s cubic-bezier(.2,.8,.2,1) both}
+.lightbox{position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;gap:12px;padding:18px 60px 80px;background:rgba(3,4,10,.9);backdrop-filter:blur(8px)}
+.lightbox.open{display:flex;animation:fadeIn .2s ease}
+.lightbox figure{margin:0;max-width:100%;max-height:100%;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:0}
+.lightbox img{max-width:100%;max-height:calc(100vh - 220px);border-radius:12px;box-shadow:0 20px 70px rgba(0,0,0,.7);animation:tagIn .35s cubic-bezier(.34,1.56,.64,1)}
+.lightbox figcaption{max-width:min(900px,100%);max-height:84px;overflow:auto;font-size:.76rem;line-height:1.45;color:var(--mute);text-align:center}
+.lb-x,.lb-nav{position:absolute;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;cursor:pointer;transition:.25s}
+.lb-x{top:14px;right:14px;width:40px;height:40px;border-radius:50%;font-size:1.4rem}
+.lb-x:hover{transform:rotate(90deg);background:rgba(239,68,68,.35)}
+.lb-nav{top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:12px;font-size:2rem}
+.lb-nav.prev{left:10px}.lb-nav.next{right:10px}
+.lb-nav:hover{background:rgba(6,182,212,.3);border-color:var(--lora-color)}
+.lb-actions{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+@media(max-width:600px){.lightbox{padding:60px 8px 90px}.lb-nav{width:36px;height:52px}.gd-sound{display:none}}
+.save-pill{display:inline-flex;align-items:center;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mute);cursor:help;transition:.3s}
+.save-pill.ok{color:#86efac;border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.1)}
+.save-pill.warn{color:#fde68a;border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1)}
+.save-pill.bad{color:#fca5a5;border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.1)}
+.gd-src{flex:none;padding:2px 9px;border-radius:12px;border:1px solid var(--line);font-size:.66rem;font-weight:700;letter-spacing:.04em;color:var(--mute);background:rgba(255,255,255,.04)}
+.gd-src.live{color:#4ade80;border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.1);animation:auBlink 1.6s ease-in-out infinite}
+.gen-dock:not(.show) .gd-src{animation:none}
+.gen-dock.done,.gen-dock.err{cursor:pointer}
+.card h2 .res-save{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:.72rem;text-transform:none;letter-spacing:0;color:var(--mute);cursor:pointer}
+.card h2 .res-save input{accent-color:#22d3ee}
+.card h2 .res-save+.res-clear{margin-left:8px}
+.appearance-modal{position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(5,8,13,.64);backdrop-filter:blur(8px)}
+.appearance-modal.open{display:flex}.appearance-panel{width:min(520px,100%);background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.appearance-head{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:18px}.appearance-head h2{font-size:1.1rem;color:var(--text)}.appearance-head p{color:var(--mute);font-size:.86rem;margin-top:4px;line-height:1.45}
+.appearance-options{display:grid;gap:14px}.appearance-options label{display:grid;gap:7px;color:var(--mute);font-size:.85rem;font-weight:650}.appearance-options select,.appearance-options input[type=color]{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit}.appearance-options input[type=color]{padding:3px;width:60px;height:36px;cursor:pointer}.appearance-check{display:flex !important;align-items:center;gap:9px}.appearance-foot{display:flex;justify-content:flex-end;margin-top:20px}
+
+/* ===== Pflicht-Tags, Ausschließen-Modus ===== */
+.randomizer-pinned{display:grid;gap:8px;margin-top:10px}
+.random-pin-search{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
+.random-pinned-chips,.random-pin-suggestions{display:flex;flex-wrap:wrap;gap:6px}
+.random-pin-suggestions{max-height:112px;overflow:auto}
+.random-pin-empty{font-size:.78rem;color:var(--mute)}
+.random-pin-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:4px 5px 4px 10px;border:1px solid rgba(34,211,238,.45);border-radius:14px;background:rgba(34,211,238,.1);color:#a5f3fc;font-size:.8rem}
+.random-pin-chip span{overflow-wrap:anywhere}
+.random-pin-chip button{width:19px;height:19px;padding:0;border:1px solid var(--line);border-radius:50%;background:rgba(255,255,255,.06);color:#fca5a5;cursor:pointer}
+.random-pin-option{padding:5px 9px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-size:.8rem}
+.random-pin-option:hover{border-color:#22d3ee;color:#67e8f9}
+.tip-act.random-exclude button.pinned{border-color:rgba(34,211,238,.5);color:#a5f3fc;background:rgba(34,211,238,.1)}
+.tagmode-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.tagmode-toolbar .btn{padding:6px 12px;font-size:.8rem}
+.tagmode-toolbar .btn.active{border-color:transparent;color:#fff}
+#btnModeExclude.active{background:linear-gradient(135deg,#dc2626,#f97316)}
+#btnModePin.active{background:linear-gradient(135deg,#0891b2,#22d3ee);color:#042f2e}
+.tagmode-toolbar kbd,.tagmode-bar kbd{padding:0 6px;border-radius:5px;border:1px solid var(--line);background:rgba(0,0,0,.3);font-size:.72rem}
+.tagmode-hint{font-size:.74rem;color:var(--mute)}
+.tag.is-excluded{opacity:.55;text-decoration:line-through;text-decoration-color:#ef4444;border-color:rgba(239,68,68,.55)!important}
+.tag.is-excluded::before{content:"⊘ ";color:#f87171;text-decoration:none;display:inline-block}
+.tag.is-pinned{border-color:rgba(34,211,238,.85)!important;box-shadow:0 0 0 1px rgba(34,211,238,.4)}
+.tag.is-pinned::before{content:"📌 ";display:inline-block}
+body.tagmode-exclude .tag,body.tagmode-pin .tag{cursor:crosshair}
+body.tagmode-exclude .tag:hover{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.35)}
+body.tagmode-pin .tag:hover{border-color:#22d3ee!important;box-shadow:0 0 0 3px rgba(34,211,238,.35)}
+.tagmode-bar{position:fixed;left:50%;bottom:16px;z-index:6500;display:flex;align-items:center;gap:12px;max-width:min(760px,calc(100% - 24px));padding:10px 14px;border-radius:14px;
+  background:rgba(12,15,28,.96);border:1px solid var(--line);backdrop-filter:blur(12px);box-shadow:0 14px 40px rgba(0,0,0,.6);font-size:.82rem;
+  transform:translate(-50%,160%);opacity:0;pointer-events:none;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .25s}
+.tagmode-bar.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+body.tagmode-exclude .tagmode-bar{border-color:rgba(239,68,68,.65);box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 24px rgba(239,68,68,.3)}
+body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 24px rgba(34,211,238,.3)}
+.tagmode-bar .btn{padding:5px 12px;font-size:.76rem;flex:none}
+
+.randomizer-partner{display:grid;gap:8px;margin-top:10px}
+.randomizer-partner>label:first-child{font-weight:600}
+.partner-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.partner-row select{flex:1 1 230px;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
+.partner-chk{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--text);cursor:pointer}
+.partner-note{margin:8px 0 4px;padding:8px 12px;border-radius:10px;border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);color:#a5f3fc;font-size:.78rem;line-height:1.45}
 </style>
 </head>
-<body>
+<body data-theme="calm">
 
 <header>
   <h1>Universal Anime &amp; Hentai Prompt Studio Ultra</h1>
   <p>Perfekt abgestimmt für <b>Draw Things</b>, <b>Pony XL</b>, <b>Illustrious</b> &amp; <b>SDXL</b></p>
-  <button class="wz-launch" id="btnWizard">🧙 Assistent-Modus starten</button>
+  <div class="header-actions">
+    <button class="wz-launch" id="btnWizard">🧙 Assistent-Modus starten</button>
+    <button class="wz-launch automation-launch" id="btnAutomationMenu" type="button">⚙ Automationen öffnen</button>
+    <button class="wz-launch lora-launch" id="btnLoraPage" type="button">🎨 LoRAs verwalten</button>
+    <button class="wz-launch" id="btnAppearance" type="button">⚙ Einstellungen</button>
+    <span class="save-pill" id="saveStatus" role="status">⏳ Speicher wird geprüft …</span>
+  </div>
 </header>
 
 <div class="layout">
@@ -655,26 +915,63 @@ textarea.flash{animation:txtFlash .6s ease}
       <div class="res"><span>📐 Auflösung (Klick = kopieren):</span><span id="resChips" style="display:contents"></span></div>
     </section>
 
-    <!-- 2. LORA STUDIO (NEU) -->
-    <section class="card">
-      <h2><b>2</b>🎨 LoRA Studio &amp; Manager</h2>
-      <div class="row" style="margin-bottom:10px">
-        <input type="text" id="loraNameInput" placeholder="LoRA Dateiname (z. B. 'ahegao_v2' oder 'style_ghibli')">
-        <input type="number" id="loraWeightInput" placeholder="Stärke" value="0.8" step="0.05" min="0.1" max="1.5" style="max-width:90px">
-        <input type="text" id="loraTriggerInput" placeholder="Trigger-Tag (optional)">
-        <button class="btn lora-btn" id="btnAddLora">➕ LoRA Hinzufügen</button>
-      </div>
-      <div class="hint">LoRAs werden automatisch als <code>&lt;lora:dateiname:stärke&gt;</code> in den Prompt eingefügt!</div>
-      <div id="loraListContainer" style="margin-top:12px"></div>
-    </section>
+
 
     <!-- 3. PROMPT RANDOMIZER & PRESETS -->
     <section class="card">
-      <h2><b>3</b>🎲 Zufalls-Generator &amp; Presets</h2>
+      <h2><b>2</b>🎲 Zufalls-Generator &amp; Presets</h2>
       <div class="row" style="margin-bottom:10px">
         <button class="btn preset-btn" id="btnRandomize" style="flex:1">🎲 Zufälligen Prompt generieren</button>
         <button class="btn primary" id="btnSavePreset">💾 Prompt als Preset speichern</button>
       </div>
+      <div class="randomizer-options">
+        <label>Fokus
+          <select data-random-setting="randomProfile">
+            <option value="balanced">Ausgewogen</option>
+            <option value="character">Charakter</option>
+            <option value="scene">Szene &amp; Licht</option>
+            <option value="style">Stil &amp; Qualität</option>
+          </select>
+        </label>
+        <label>Tags pro Prompt
+          <input type="number" min="3" max="20" step="1" value="10" data-random-setting="randomTagCount">
+        </label>
+        <label class="randomizer-check"><input type="checkbox" checked data-random-setting="randomAvoidRepeats"> Wiederholungen vermeiden</label>
+        <label class="randomizer-check"><input type="checkbox" data-random-setting="randomUseCustom"> Eigene Tags einmischen</label>
+        <label class="randomizer-check"><input type="checkbox" data-random-setting="randomizeLoraWeights"> Aktive LoRA-Stärken würfeln</label>
+        <label>LoRA-Minimum
+          <input type="number" min="0.1" max="1.5" step="0.05" value="0.5" data-random-setting="loraWeightMin">
+        </label>
+        <label>LoRA-Maximum
+          <input type="number" min="0.1" max="1.5" step="0.05" value="1.0" data-random-setting="loraWeightMax">
+        </label>
+      </div>
+      <div class="randomizer-partner">
+          <label>👥 Partner-Automatik – wenn ein Tag eine zweite Person braucht</label>
+          <div class="partner-row">
+            <select data-random-setting="partnerMode">
+              <option value="hetero">Frau + Mann (1girl, 1boy, hetero)</option>
+              <option value="yuri">Frau + Frau (2girls, yuri)</option>
+              <option value="yaoi">Mann + Mann (2boys, yaoi)</option>
+              <option value="off">Aus</option>
+            </select>
+            <label class="partner-chk"><input type="checkbox" data-random-setting="partnerFaceless"> Mann ohne Gesicht</label>
+          </div>
+          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein (👥).</p>
+        </div>
+        <div class="randomizer-pinned">
+          <label>📌 Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
+          <input type="search" class="random-pin-search" placeholder="Tag suchen und als Pflicht-Tag auswählen …" autocomplete="off">
+          <div class="random-pinned-chips" aria-live="polite"></div>
+          <div class="random-pin-suggestions" hidden></div>
+        </div>
+        <div class="randomizer-exclusions">
+        <label>Tags vom Zufallswurf ausschließen</label>
+        <input type="search" class="random-exclude-search" placeholder="Tag suchen und zum Ausschließen auswählen …" autocomplete="off">
+        <div class="random-excluded-chips" aria-live="polite"></div>
+        <div class="random-exclude-suggestions" hidden></div>
+      </div>
+      <div class="hint" id="dtStatus" role="status" aria-live="polite">Bereit für Draw Things. Für die Verbindung diese Seite über dt_bridge.py öffnen.</div>
 
       <div id="presetListContainer" style="max-height:140px; overflow-y:auto; margin-top:8px;"></div>
 
@@ -687,7 +984,7 @@ textarea.flash{animation:txtFlash .6s ease}
 
     <!-- 4. CUSTOM TAG CREATOR -->
     <section class="card">
-      <h2><b>4</b>Eigene Tags speichern</h2>
+      <h2><b>3</b>Eigene Tags speichern</h2>
       <div class="row">
         <input type="text" id="newCustomTagInput" placeholder="Neuen Tag eingeben (z. B. 'demon horns', 'tentacle harness')...">
         <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--mute);white-space:nowrap;cursor:pointer">
@@ -699,28 +996,13 @@ textarea.flash{animation:txtFlash .6s ease}
 
     <!-- 5. MODELL-EXTRAS -->
     <section class="card">
-      <h2><b>5</b>Modell-Spezifische Quality &amp; Rating Tags</h2>
+      <h2><b>4</b>Modell-Spezifische Quality &amp; Rating Tags</h2>
       <div class="tags" style="padding:0" id="extras"></div>
-    </section>
-
-    <!-- 6. DEUTSCH-ÜBERSETZER & SCHNELLEINGABE -->
-    <section class="card">
-      <h2><b>6</b>Eigene Ideen &amp; Übersetzer</h2>
-      <label class="l" for="deInput">Eigene Idee auf Deutsch eingeben</label>
-      <div class="row">
-        <input type="text" id="deInput" placeholder="z. B. Dämonen-Mädchen mit Hörnern im verschneiten Wald">
-        <button class="btn primary" id="btnTranslate">Übersetzen &amp; Hinzufügen</button>
-      </div>
-      <div class="hint" id="transHint"></div>
-
-      <label class="l" for="manualInput">Manuelle Schnelleingabe (Komma-getrennt)</label>
-      <input type="text" id="manualInput" placeholder="cyberpunk theme, glowing eyes, cinematic detail">
-      <div class="chips" id="customChips"></div>
     </section>
 
     <!-- 7. TAG BIBLIOTHEK -->
     <section class="card">
-      <h2><b>7</b>Tag-Bibliothek</h2>
+      <h2><b>6</b>Tag-Bibliothek</h2>
       <div class="bar">
         <div class="legend">
           <span><i style="background:var(--sfw-color)"></i>SFW Tag</span>
@@ -740,7 +1022,12 @@ textarea.flash{animation:txtFlash .6s ease}
         <button class="btn danger" id="btnClearTags">Alle Tags abwählen</button>
       </div>
 
-      <div class="hint" style="margin:0 0 8px">ℹ️ Info zu einem Tag: <b>Rechtsklick</b> oder <b>Shift+Klick</b> (Handy: <b>gedrückt halten</b>) zeigt Übersetzung, Bedeutung &amp; Gewichtung.</div>
+      <div class="hint" style="margin:0 0 8px">ℹ️ <b>Rechtsklick</b> oder <b>Shift+Klick</b> (Handy: gedrückt halten) auf einen Tag öffnet Info und die Aktion zum Ausschließen vom Zufallswurf.</div>
+      <div class="tagmode-toolbar">
+        <button class="btn" id="btnModeExclude" type="button" title="Taste X">⊘ Ausschließen-Modus <kbd>X</kbd></button>
+        <button class="btn" id="btnModePin" type="button" title="Taste P">📌 Immer-dabei-Modus <kbd>P</kbd></button>
+        <span class="tagmode-hint">Taste drücken, dann Tags anklicken · Alt/Option + Klick schließt sofort aus</span>
+      </div>
       <div class="sel" id="selCount" style="margin-bottom:12px"></div>
       <div class="active-bar" id="activeBar"></div>
       <div id="library"></div>
@@ -753,11 +1040,16 @@ textarea.flash{animation:txtFlash .6s ease}
     <section class="card">
       <h2><b>★</b>Generierter Prompt</h2>
 
-      <div class="label">
+      <div class="label positive-label">
         <span>Positive Prompt</span>
-        <span class="counter-badge" id="posCounter">0 Zeichen | ~0 Tokens</span>
+        <div class="prompt-label-tools">
+          <span class="counter-badge" id="posCounter">0 Zeichen | ~0 Tokens</span>
+          <button class="btn" id="btnCopyPosInline" type="button">📋 Positiv kopieren</button>
+          <button class="btn primary" id="btnGenerateFromPrompt" type="button">▶ Erzeugen</button>
+        </div>
       </div>
       <textarea id="posOutput" readonly></textarea>
+      <div class="partner-note" id="partnerNote" hidden></div>
 
       <div class="label">
         <span>Negative Prompt</span>
@@ -774,9 +1066,28 @@ textarea.flash{animation:txtFlash .6s ease}
       <div class="tags" style="padding:4px 0 0" id="negExtras"></div>
 
       <div class="actions">
-        <button class="btn primary" style="flex:1" id="btnCopyPos">📋 Positive Kopieren</button>
         <button class="btn" id="btnCopyNeg">📋 Negative</button>
         <button class="btn danger" id="btnResetAll">⚡ Reset All</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><b>5</b>Eigene Ideen &amp; Übersetzer</h2>
+      <label class="l" for="deInput">Eigene Idee auf Deutsch eingeben</label>
+      <div class="row">
+        <input type="text" id="deInput" placeholder="z. B. Dämonen-Mädchen mit Hörnern im verschneiten Wald">
+        <button class="btn primary" id="btnTranslate">Übersetzen &amp; Hinzufügen</button>
+      </div>
+      <div class="hint" id="transHint"></div>
+      <label class="l" for="manualInput">Manuelle Schnelleingabe (Komma-getrennt)</label>
+      <input type="text" id="manualInput" placeholder="cyberpunk theme, glowing eyes, cinematic detail">
+      <div class="chips" id="customChips"></div>
+    </section>
+
+    <section class="card">
+      <h2><b>★</b>Draw Things Ergebnisse <label class="res-save" title="Speichert jedes neue Bild automatisch im Ordner ps_images neben dt_bridge.py (nur wenn die Seite über dt_bridge.py geöffnet ist)"><input type="checkbox" id="chkAutoSave"> 💾 Auto-Speichern</label><button class="btn res-clear" id="btnClearResults" type="button" title="Alle Ergebnisse entfernen">🗑 Leeren</button></h2>
+      <div class="dt-results" id="dtResults">
+        <p class="hint dt-empty">Generierte Bilder erscheinen hier.</p>
       </div>
     </section>
   </aside>
@@ -797,14 +1108,153 @@ textarea.flash{animation:txtFlash .6s ease}
     </div>
   </div>
 </div>
+<div id="genDock" class="gen-dock" role="status" aria-live="polite">
+  <div class="gd-top">
+    <span class="gd-spin"></span>
+    <div class="gd-text"><b id="gdTitle">Bild wird erzeugt</b><span id="gdStatus"></span></div>
+    <span class="gd-src" id="gdSrc" title="Live = echter Fortschritt von Draw Things, Schätzung = berechnet aus bisherigen Zeiten">Schätzung</span>
+    <span class="gd-pct" id="gdPct">0 %</span>
+    <label class="gd-sound" title="Ton abspielen, wenn fertig"><input type="checkbox" id="gdSound"> 🔔</label>
+    <button class="btn danger gd-stop" id="gdStop" type="button">■ Stopp</button>
+  </div>
+  <div class="gd-bar"><i id="gdBar"></i></div>
+  <div class="gd-bar total" id="gdTotalWrap" hidden><i id="gdTotalBar"></i></div>
+  <div class="gd-meta"><span id="gdMeta"></span><span id="gdTotalMeta"></span></div>
+</div>
+<div id="lightbox" class="lightbox" aria-modal="true" role="dialog">
+  <button class="lb-x" id="lbClose" type="button" title="Schließen (Esc)">×</button>
+  <button class="lb-nav prev" id="lbPrev" type="button" title="Vorheriges (←)">‹</button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lb-nav next" id="lbNext" type="button" title="Nächstes (→)">›</button>
+  <div class="lb-actions"><button class="btn" id="lbSave" type="button">💾 Speichern</button><button class="btn" id="lbCopy" type="button">📋 Prompt kopieren</button></div>
+</div>
+<div id="loraModal" class="lora-modal" role="dialog" aria-modal="true" aria-labelledby="loraTitle">
+  <div class="lora-page">
+    <div class="automation-head">
+      <div><p class="automation-kicker">Draw Things</p><h2 id="loraTitle">LoRA-Manager</h2></div>
+      <button class="btn" id="btnCloseLoras" type="button">Zur Hauptseite</button>
+    </div>
+    <div class="lora-content">
+    <!-- 2. LORA STUDIO (NEU) -->
+    <section class="card">
+      <h2><b>🎨</b>LoRA hinzufügen &amp; verwalten</h2>
+      <div class="row" style="margin-bottom:10px">
+        <input type="text" id="loraNameInput" placeholder="LoRA Dateiname (z. B. 'ahegao_v2' oder 'style_ghibli')">
+        <input type="number" id="loraWeightInput" placeholder="Stärke" value="0.8" step="0.05" min="0.1" max="1.5" style="max-width:90px">
+        <input type="text" id="loraTriggerInput" placeholder="Trigger-Tag (optional)">
+        <button class="btn lora-btn" id="btnAddLora">➕ LoRA Hinzufügen</button>
+      </div>
+      <div class="hint">LoRA zuerst in Draw Things importieren (dort wird sie als <code>name_lora_f16.ckpt</code> abgelegt). Hier reicht der Name (z. B. <code>ahegao_v2</code>), die Endung wird ergänzt. Unter jeder LoRA siehst du den gesendeten Dateinamen. Aktive LoRAs ersetzen die LoRAs, die in der App ausgewählt sind. Das Basismodell muss zur LoRA passen (z. B. beide SDXL), sonst wird sie ohne Fehlermeldung ignoriert.</div>
+      <div id="loraListContainer" style="margin-top:12px"></div>
+    </section>
+    </div>
+  </div>
+</div>
+<div id="automationModal" class="automation-modal" role="dialog" aria-modal="true" aria-labelledby="automationTitle">
+  <div class="automation-panel">
+    <div class="automation-head">
+      <div><p class="automation-kicker">Draw Things</p><h2 id="automationTitle">Automations-Menü</h2></div>
+      <button class="btn" id="btnCloseAutomation" type="button">Zur Hauptseite</button>
+    </div>
+    <div class="automation-content">
+      <div class="automation-settings">
+        <label for="automationFilter">Zufällige Tags</label>
+        <select id="automationFilter">
+          <option value="all">Alle Tags</option>
+          <option value="sfw">Nur SFW</option>
+          <option value="nsfw">Nur NSFW</option>
+        </select>
+        <fieldset class="automation-modes">
+          <legend style="grid-column:1/-1">Automatik-Lauf</legend>
+          <label class="automation-mode"><input type="radio" name="automationMode" value="count" checked> Feste Bildanzahl</label>
+          <label class="automation-mode"><input type="radio" name="automationMode" value="infinite"> Endlos bis Abbrechen</label>
+        </fieldset>
+        <label for="automationCount">Anzahl der Bilder</label>
+        <input id="automationCount" type="number" min="1" max="100" step="1" value="10">
+        <div class="randomizer-options">
+          <label>Fokus
+            <select data-random-setting="randomProfile">
+              <option value="balanced">Ausgewogen</option>
+              <option value="character">Charakter</option>
+              <option value="scene">Szene &amp; Licht</option>
+              <option value="style">Stil &amp; Qualität</option>
+            </select>
+          </label>
+          <label>Tags pro Prompt
+            <input type="number" min="3" max="20" step="1" value="10" data-random-setting="randomTagCount">
+          </label>
+          <label class="randomizer-check"><input type="checkbox" checked data-random-setting="randomAvoidRepeats"> Wiederholungen vermeiden</label>
+          <label class="randomizer-check"><input type="checkbox" data-random-setting="randomUseCustom"> Eigene Tags einmischen</label>
+          <label class="randomizer-check"><input type="checkbox" data-random-setting="randomizeLoraWeights"> Aktive LoRA-Stärken würfeln</label>
+          <label>LoRA-Minimum
+            <input type="number" min="0.1" max="1.5" step="0.05" value="0.5" data-random-setting="loraWeightMin">
+          </label>
+          <label>LoRA-Maximum
+            <input type="number" min="0.1" max="1.5" step="0.05" value="1.0" data-random-setting="loraWeightMax">
+          </label>
+        </div>
+        <div class="randomizer-partner">
+          <label>👥 Partner-Automatik – wenn ein Tag eine zweite Person braucht</label>
+          <div class="partner-row">
+            <select data-random-setting="partnerMode">
+              <option value="hetero">Frau + Mann (1girl, 1boy, hetero)</option>
+              <option value="yuri">Frau + Frau (2girls, yuri)</option>
+              <option value="yaoi">Mann + Mann (2boys, yaoi)</option>
+              <option value="off">Aus</option>
+            </select>
+            <label class="partner-chk"><input type="checkbox" data-random-setting="partnerFaceless"> Mann ohne Gesicht</label>
+          </div>
+          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein (👥).</p>
+        </div>
+        <div class="randomizer-pinned">
+          <label>📌 Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
+          <input type="search" class="random-pin-search" placeholder="Tag suchen und als Pflicht-Tag auswählen …" autocomplete="off">
+          <div class="random-pinned-chips" aria-live="polite"></div>
+          <div class="random-pin-suggestions" hidden></div>
+        </div>
+        <div class="randomizer-exclusions">
+          <label>Tags vom Zufallswurf ausschließen</label>
+          <input type="search" class="random-exclude-search" placeholder="Tag suchen und zum Ausschließen auswählen …" autocomplete="off">
+          <div class="random-excluded-chips" aria-live="polite"></div>
+          <div class="random-exclude-suggestions" hidden></div>
+        </div>
+        <p class="hint">Es wird jeweils ein Bild erzeugt. Der nächste Zufallsprompt startet erst nach Abschluss des vorherigen Bildes.</p>
+        <div class="automation-status" id="automationStatus" role="status" aria-live="polite">Bereit für Draw Things.</div>
+      </div>
+      <div class="automation-workspace" id="automationWorkspace"></div>
+    </div>
+    <div class="automation-actions">
+      <button class="btn" id="btnGenerateOnce" type="button">🖼️ Aktuellen Prompt erzeugen</button>
+      <button class="btn primary" id="btnAutoGenerate" type="button" aria-pressed="false">▶ Automatik starten</button>
+      <button class="btn danger" id="btnCancelGeneration" type="button" disabled>✕ Abbrechen</button>
+    </div>
+  </div>
+</div>
 <div id="tip" role="tooltip"></div>
+<div id="tagModeBar" class="tagmode-bar"><span id="tmText"></span><button class="btn" id="tmExit" type="button">Beenden (Esc)</button></div>
 <div id="toastContainer"></div>
+<div id="appearanceModal" class="appearance-modal" role="dialog" aria-modal="true" aria-labelledby="appearanceTitle" aria-hidden="true">
+  <section class="appearance-panel">
+    <div class="appearance-head"><div><h2 id="appearanceTitle">Einstellungen</h2><p>Wähle eine Farbwelt und passe die Oberfläche an.</p></div><button class="btn" id="btnCloseAppearance" type="button" aria-label="Einstellungen schließen">×</button></div>
+    <div class="appearance-options">
+      <label for="themeSelect">Farbprofil
+        <select id="themeSelect"><option value="calm">Ruhig (empfohlen)</option><option value="night">Nacht</option><option value="soft">Warm &amp; weich</option><option value="neon">Neon (ursprüngliches Design)</option></select>
+      </label>
+      <label for="accentColor">Akzentfarbe <input id="accentColor" type="color" value="#7c8ca8"></label>
+      <label class="appearance-check"><input id="reduceMotion" type="checkbox"> Animationen reduzieren</label>
+    </div>
+    <div class="appearance-foot"><button class="btn primary" id="btnSaveAppearance" type="button">Übernehmen</button></div>
+  </section>
+</div>
 
 <script>
 "use strict";
 
 const parseList = str => str.split("|").map(s => s.trim()).filter(Boolean);
 const commaList = str => (str || "").split(",").map(s => s.trim()).filter(Boolean);
+const AUTOMATION_VIEW = new URLSearchParams(location.search).get("automation") === "1";
+const automationChannel = typeof BroadcastChannel === "function" ? new BroadcastChannel("prompt-studio-automation") : null;
+let applyingSyncedState = false;
 
 /* ===== MODELL DEFINITIONEN ===== */
 const MODELS = {
@@ -847,40 +1297,40 @@ const MODELS = {
 /* ===== ERWEITERTE TAG BIBLIOTHEK (MASSIV MEHR NSFW & DETAIL) ===== */
 const LIBRARY = {
   "✨ Qualität & Rendering": {
-    sfw: parseList("masterpiece|best quality|highres|absurdres|ultra detailed|highly detailed|detailed background|detailed face|sharp focus|clean lines|intricate details|official art|key visual|8k uhd|vivid|aesthetic|beautiful|perfect anatomy|perfect hands|simple background|white background|transparent background|no text|no watermark|newest|year 2024"),
-    nsfw: parseList("uncensored|censored|mosaic censorship|bar censorship|high quality nsfw|detailed body|detailed skin texture|erotic masterpiece|highly detailed intimate areas|explicit content|fine erotic details")
+    sfw: parseList("masterpiece|best quality|highres|absurdres|ultra detailed|highly detailed|detailed background|detailed face|sharp focus|clean lines|intricate details|official art|key visual|8k uhd|vivid|aesthetic|beautiful|perfect anatomy|perfect hands|simple background|white background|transparent background|no text|no watermark|newest|year 2024|rich colors|dynamic lighting|dramatic shadows|soft focus|cinematic composition|depth of field|bokeh|film grain|chromatic aberration|vibrant colors|high contrast|pastel colors|muted colors|symmetrical composition|rule of thirds|golden ratio|wallpaper|artbook|concept art|sharp lines|soft shading|detailed shading|glossy|matte finish|hdr|raytracing|global illumination|subsurface scattering|volumetric lighting|lens flare|motion blur|light rays|hyperdetailed|photorealistic|realistic|studio quality|professional lighting|clean background|gradient background|black background|very aesthetic|amazing quality|good quality|recent|year 2023|extremely detailed|beautiful composition|dynamic angle|wide shot|close-up|portrait|full body|upper body|cowboy shot|from above|from below|from side|from behind|dutch angle|looking at viewer"),
+    nsfw: parseList("uncensored|censored|mosaic censorship|bar censorship|high quality nsfw|detailed body|detailed skin texture|erotic masterpiece|highly detailed intimate areas|explicit content|fine erotic details|detailed anatomy|glossy skin|wet skin shine|skin pores|soft skin|sensual lighting|erotic photography|boudoir quality|adult content|mature content|realistic skin|smooth skin")
   },
   "🌸 Anime, Hentai & Stile": {
-    sfw: parseList("anime style|anime coloring|cel shading|90s anime|retro anime|studio ghibli style|kyoto animation style|trigger style|manga style|lineart|flat color|soft shading|vibrant colors|pastel colors|chibi|kawaii|game CG|visual novel CG|light novel cover|artbook|pixiv"),
-    nsfw: parseList("hentai|hentai style|ecchi|doujinshi style|erotic anime artwork|erotic manga style|pin-up art|sensual anime painting|fanservice|suggestive art|ahegao art|succubus style|erotic cg|mind break style")
+    sfw: parseList("anime style|anime coloring|cel shading|90s anime|retro anime|studio ghibli style|kyoto animation style|trigger style|manga style|lineart|flat color|soft shading|vibrant colors|pastel colors|chibi|kawaii|game CG|visual novel CG|light novel cover|artbook|pixiv|anime screencap|retro artstyle|90s anime style|80s anime style|2000s anime style|modern anime style|slice of life|shounen style|shoujo style|seinen style|josei style|isekai style|mecha style|magical girl style|super deformed|moe|sketch|watercolor (medium)|oil painting (medium)|gouache (medium)|colored pencil (medium)|marker (medium)|pastel (medium)|ink wash painting|sumi-e|ukiyo-e|pixel art|low poly|vaporwave|synthwave|cyberpunk|steampunk|fantasy art|dark fantasy|gothic style|art nouveau|art deco|impressionism|expressionism|surrealism|pop art|minimalism|comic style|manga panel|webtoon style|light novel illustration|makoto shinkai style|ufotable style|painterly|digital painting|3d render|chibi style|western cartoon style|storybook illustration|risograph|screen print|stained glass style|paper cut style"),
+    nsfw: parseList("hentai|hentai style|ecchi|doujinshi style|erotic anime artwork|erotic manga style|pin-up art|sensual anime painting|fanservice|suggestive art|ahegao art|succubus style|erotic cg|mind break style|eroge cg|adult game cg|visual novel nsfw cg|pin-up style|retro erotic art|suggestive illustration|nsfw illustration|oekaki|90s hentai style|oil painting nude|life drawing|figure study|nude study|sensual painting|boudoir illustration")
   },
   "👤 Charakter & Hentai Traits": {
-    sfw: parseList("1girl|1boy|2girls|2boys|multiple girls|solo|couple|young adult|muscular|slim|athletic|tall|short|chibi|detailed eyes|expressive eyes|heterochromia|blue eyes|green eyes|brown eyes|red eyes|purple eyes|golden eyes|glowing eyes|long hair|very long hair|short hair|ponytail|twin tails|braid|bob cut|hair bun|curly hair|straight hair|bangs|ahoge|blonde hair|black hair|brown hair|white hair|silver hair|pink hair|blue hair|red hair|green hair|purple hair|gradient hair|multicolored hair|freckles|tattoo|scar|pale skin|tan skin|dark skin|elf ears|horns|wings|tail|cat ears|fox ears|monster girl|succubus|demon girl|angel|vampire|witch|maid|princess"),
-    nsfw: parseList("ahegao|heart-shaped pupils|flushed face|drooling|saliva|sweat|flushed cheeks|panting|heavy breathing|biting lip|tongue out|eyeball roll|mind break|flustered|lactation|large breasts|medium breasts|small breasts|huge breasts|gigantic breasts|flat chest|cleavage|underboob|sideboob|exposed breasts|bare breasts|nipples|erect nipples|covered nipples|pierced nipples|areolae|pussy|penis|futanari|pubic hair|shaved|toned abs|thick thighs|wide hips|bare shoulders|bare back|bare legs|navel|tan lines|topless|nude|completely nude|wet skin|oiled skin|back dimples|narrow waist|clitoris|anal")
+    sfw: parseList("1girl|1boy|2girls|2boys|multiple girls|solo|couple|young adult|muscular|slim|athletic|tall|short|chibi|detailed eyes|expressive eyes|heterochromia|blue eyes|green eyes|brown eyes|red eyes|purple eyes|golden eyes|glowing eyes|long hair|very long hair|short hair|ponytail|twin tails|braid|bob cut|hair bun|curly hair|straight hair|bangs|ahoge|blonde hair|black hair|brown hair|white hair|silver hair|pink hair|blue hair|red hair|green hair|purple hair|gradient hair|multicolored hair|freckles|tattoo|scar|pale skin|tan skin|dark skin|elf ears|horns|wings|tail|cat ears|fox ears|monster girl|succubus|demon girl|angel|vampire|witch|maid|princess|twin braids|side ponytail|low ponytail|high ponytail|hime cut|drill hair|double bun|hair over one eye|hair between eyes|asymmetrical bangs|blunt bangs|sidelocks|long bangs|wavy hair|messy hair|medium hair|pixie cut|undercut|braided ponytail|french braid|side braid|hair ribbon|hair flower|two-tone hair|streaked hair|colored inner hair|grey hair|orange hair|aqua hair|amber eyes|pink eyes|teal eyes|slit pupils|star-shaped pupils|sparkling eyes|long eyelashes|eyeliner|eyeshadow|lipstick|beauty mark|mole under eye|fang|pointy ears|wolf ears|bunny ears|dog ears|animal ears|fox tail|cat tail|angel wings|demon wings|halo|glasses|round glasses|monocle|tall female|athletic build|toned|facial mark|group"),
+    nsfw: parseList("ahegao|heart-shaped pupils|flushed face|drooling|saliva|sweat|flushed cheeks|panting|heavy breathing|biting lip|tongue out|eyeball roll|mind break|flustered|lactation|large breasts|medium breasts|small breasts|huge breasts|gigantic breasts|flat chest|cleavage|underboob|sideboob|exposed breasts|bare breasts|nipples|erect nipples|covered nipples|pierced nipples|areolae|pussy|penis|futanari|pubic hair|shaved|toned abs|thick thighs|wide hips|bare shoulders|bare back|bare legs|navel|tan lines|topless|nude|completely nude|wet skin|oiled skin|back dimples|narrow waist|clitoris|anal|curvy|hourglass figure|muscular female|collarbone|wet hair|glistening skin|blush|toned body|slim waist|long legs|mature woman|adult woman|adult man|belly button piercing|body freckles")
   },
   "🔥 NSFW Gestik, Mimik & Liquid": {
-    sfw: parseList("blushing|shy|smirk|wink|pout|open mouth|tongue out|gasping"),
-    nsfw: parseList("ahegao face|rolled back eyes|drooling mouth|saliva trail|heavy sweating|cum|cum on face|cum on body|cum on breasts|cum in mouth|facial|creampie|internal cumshot|cum drip|cum overflow|squirt|female ejaculation|lactating breasts|milk drip|sweat beads|glistening skin|messy hair|bound wrists|blindfolded|gagged|drool string|messy makeup|smeared lipstick")
+    sfw: parseList("blushing|shy|smirk|wink|pout|open mouth|tongue out|gasping|smile|gentle smile|grin|laughing|embarrassed|surprised|tearful|closed eyes|looking away|looking at viewer|head tilt|nervous|confident|playful|serious|sleepy|determined|worried|happy|calm|expressionless|one eye closed|puffed cheeks|sweatdrop"),
+    nsfw: parseList("ahegao face|rolled back eyes|drooling mouth|saliva trail|heavy sweating|cum|cum on face|cum on body|cum on breasts|cum in mouth|facial|creampie|internal cumshot|cum drip|cum overflow|squirt|female ejaculation|lactating breasts|milk drip|sweat beads|glistening skin|messy hair|bound wrists|blindfolded|gagged|drool string|messy makeup|smeared lipstick|seductive smile|bedroom eyes|half-closed eyes|parted lips|biting lip|licking lips|sultry gaze|flustered|heavy breathing|teasing smile|hand over mouth|finger to mouth|hand in hair|sensual pose|water droplets|wet body|dripping water|shower water|soap bubbles|foam|massage oil|oil sheen|steam|sweat drops|heavy blush|lip gloss|half-lidded eyes|over the shoulder glance")
   },
   "🔞 Intimität & Sex-Posen": {
-    sfw: parseList("hugging|cuddling|holding hands|kissing on cheek|forehead kiss|romantic embrace"),
-    nsfw: parseList("missionary|doggystyle|cowgirl position|reverse cowgirl|standing sex|against wall|69 position|lotus position|mating press|paizuri|breast smothered|fellatio|blowjob|cunnilingus|anal sex|double penetration|gangbang|threesome|after sex|deepthroat|fingering|self touch|spreading legs|ass focus|crotch focus|presenting ass|presenting pussy|straddling|grabbing breasts|pulling hair|spanking|grope")
+    sfw: parseList("hugging|cuddling|holding hands|kissing on cheek|forehead kiss|romantic embrace|couple|romantic|kiss on cheek|hand on cheek|slow dance|embrace|leaning on shoulder|sharing umbrella|back-to-back|head on shoulder|lap pillow|piggyback|romantic dinner|date|wedding|candlelight dinner|stargazing together|picnic date"),
+    nsfw: parseList("missionary|doggystyle|cowgirl position|reverse cowgirl|standing sex|against wall|69 position|lotus position|mating press|paizuri|breast smothered|fellatio|blowjob|cunnilingus|anal sex|double penetration|gangbang|threesome|after sex|deepthroat|fingering|self touch|spreading legs|ass focus|crotch focus|presenting ass|presenting pussy|straddling|grabbing breasts|pulling hair|spanking|grope|kissing|passionate kiss|neck kiss|embracing|intimate embrace|cuddling in bed|lying together|face to face|bed scene|on bed|touching|caressing|hand on thigh|hand on waist|back hug|kabedon|whispering in ear|romantic bedroom|couple in bed|sensual embrace|nose to nose|forehead touching")
   },
   "👗 Kleidung, Fetisch & Nudity": {
-    sfw: parseList("casual wear|streetwear|hoodie|t-shirt|tank top|dress shirt|sweater|blazer|jeans|shorts|skirt|pleated skirt|summer dress|evening gown|kimono|yukata|school uniform|sailor uniform|business suit|military uniform|plate armor|robe|cloak|space suit|techwear|gothic outfit|lolita fashion|maid outfit|swimsuit|sportswear|pajamas|apron|crown|witch hat|glasses|sunglasses|headband|hair ribbon|gloves|choker|necklace|stockings|thighhighs|high heels|boots"),
-    nsfw: parseList("lingerie|lace lingerie|open lingerie|bra|panties|no panties|garter belt|garter straps|stockings|thighhighs|fishnets|pantyhose|babydoll|negligee|bikini|micro bikini|sling bikini|see-through|transparent clothes|wet clothes|wet shirt|open shirt|unbuttoned|off shoulder|crop top|side slit|backless dress|corset|latex outfit|leather harness|bondage outfit|rope bondage|shibari|bunny suit|bodystocking|towel only|partially clothed|undressing|revealing clothes|sheer clothing|nip slip|no bra|panties aside|clothes lift|skirt lift|shirt lift|torn clothes|virgin killer sweater|apron only|open crotch|leotard|latex catsuit|harness")
+    sfw: parseList("casual wear|streetwear|hoodie|t-shirt|tank top|dress shirt|sweater|blazer|jeans|shorts|skirt|pleated skirt|summer dress|evening gown|kimono|yukata|school uniform|sailor uniform|business suit|military uniform|plate armor|robe|cloak|space suit|techwear|gothic outfit|lolita fashion|maid outfit|swimsuit|sportswear|pajamas|apron|crown|witch hat|glasses|sunglasses|headband|hair ribbon|gloves|choker|necklace|stockings|thighhighs|high heels|boots|cardigan|vest|long skirt|overalls|leather jacket|denim jacket|bomber jacket|puffer jacket|flannel shirt|trench coat|raincoat|poncho|sundress|wedding dress|cheongsam|dirndl|hanbok|sari|business attire|suit|tuxedo|necktie|bow tie|lab coat|armor|leather armor|gauntlets|cape|hooded cape|tactical gear|cyberpunk outfit|steampunk outfit|punk fashion|yoga pants|chef uniform|fantasy costume|hat|beanie|scarf|mask|eyepatch|earrings|bracelet|watch|backpack|sneakers|thigh boots|knee socks|leggings|turtleneck|off-shoulder top|sleeveless|long sleeves|detached sleeves|kimono sleeves|miko outfit|nun outfit|police uniform|nurse outfit|office lady outfit|race queen outfit|cheerleader outfit|bunny girl outfit|fur coat|bikini top|sarong|sailor collar|ribbon bow"),
+    nsfw: parseList("lingerie|lace lingerie|open lingerie|bra|panties|no panties|garter belt|garter straps|stockings|thighhighs|fishnets|pantyhose|babydoll|negligee|bikini|micro bikini|sling bikini|see-through|transparent clothes|wet clothes|wet shirt|open shirt|unbuttoned|off shoulder|crop top|side slit|backless dress|corset|latex outfit|leather harness|bondage outfit|rope bondage|shibari|bunny suit|bodystocking|towel only|partially clothed|undressing|revealing clothes|sheer clothing|nip slip|no bra|panties aside|clothes lift|skirt lift|shirt lift|torn clothes|virgin killer sweater|apron only|open crotch|leotard|latex catsuit|harness|silk lingerie|lace bra|lace panties|fishnet stockings|silk robe|sheer robe|string bikini|sheer fabric|unbuttoned shirt|latex gloves|dress slipping|strap slip|naked shirt|naked apron|topless|bottomless|nude|artistic nude|implied nudity|covered nipples|bra visible|lingerie set|satin lingerie|open jacket")
   },
   "🐙 Fetisch, BDSM & Tropes": {
-    sfw: parseList("gothic|steampunk|cyberpunk|fantasy|magic|superhero"),
-    nsfw: parseList("tentacles|tentacle hold|tentacle sex|bondage|tied up|rope bondage|shibari|leather restraints|handcuffs|collar and leash|blindfold|ball gag|bit gag|spanking|whipping|mind control|hypnosis|x-ray|cross-section|public exposure|exhibitionism|gloryhole|pet play|cow girl outfit|succubus tail|demon wings|slime girl|monster girl sex")
+    sfw: parseList("gothic|steampunk|cyberpunk|fantasy|magic|superhero|tsundere|kuudere|dandere|genki girl|ojou-sama|bodyguard|rival|enemies to lovers|maid cafe|idol|magical girl|vampire|witch|elf|demon girl|angel|catgirl|fox girl|kitsune|dragon girl|mermaid|cyborg|android|robot girl|fairy|ghost girl|ninja|samurai|pirate|knight|princess|queen|nun|shrine maiden|office lady|teacher|doctor|nurse|police officer|pilot|racer|athlete|gamer|streamer|cosplay|villainess|heroine|fallen angel|monster girl|harpy|lamia|centaur|oni|yokai"),
+    nsfw: parseList("tentacles|tentacle hold|tentacle sex|bondage|tied up|rope bondage|shibari|leather restraints|handcuffs|collar and leash|blindfold|ball gag|bit gag|spanking|whipping|mind control|hypnosis|x-ray|cross-section|public exposure|exhibitionism|gloryhole|pet play|cow girl outfit|succubus tail|demon wings|slime girl|monster girl sex|succubus|dominant female|dominatrix outfit|femdom pose|submissive pose|collar|leash|blindfolded|rope harness|shibari ropes|latex gloves|latex bodysuit|leather corset|leather harness|choker|riding crop|thigh straps|body harness|spiked collar|opera gloves|stiletto heels|fishnet bodysuit|latex stockings")
   },
   "🏛️ Umgebung & Locations": {
-    sfw: parseList("bustling city|city street|neon city|cyberpunk street|rooftop|alley|train station|cafe|library|classroom|school rooftop|bedroom|kitchen|laboratory|spaceship interior|throne room|tavern|castle|shrine|pagoda|skyscraper|tranquil forest|bamboo forest|snowy forest|meadow|flower field|cherry blossoms|garden|mountain|desert|tropical beach|ocean|waterfall|lake|ruins|fantasy village|medieval town"),
-    nsfw: parseList("bedroom|dark bedroom|hotel room|love hotel|bathroom|steamy bathroom|bathtub|shower|hot spring|onsen|jacuzzi|dungeon|dungeon chamber|satin sheets|canopy bed|bound on bed|private suite|balcony at night|candlelit room|steamy mirror|backstage|public restroom")
+    sfw: parseList("bustling city|city street|neon city|cyberpunk street|rooftop|alley|train station|cafe|library|classroom|school rooftop|bedroom|kitchen|laboratory|spaceship interior|throne room|tavern|castle|shrine|pagoda|skyscraper|tranquil forest|bamboo forest|snowy forest|meadow|flower field|cherry blossoms|garden|mountain|desert|tropical beach|ocean|waterfall|lake|ruins|fantasy village|medieval town|dystopian city|steampunk city|subway station|train interior|car interior|bookstore|museum|arcade|convenience store|gym|hospital|greenhouse|observatory|factory|futuristic interior|cathedral|temple|ancient temple|pyramid|colosseum|modern architecture|brutalist|gothic architecture|victorian house|cabin|lighthouse|bridge|ship deck|airship|enchanted forest|autumn forest|jungle|japanese garden|park|snowy mountain|canyon|savanna|glacier|island|beach|sea cliff|underwater|coral reef|river|cave|volcano|tundra|swamp|abandoned ruins|overgrown ruins|post-apocalyptic|wasteland|space station|alien planet|moon surface|nebula|floating island|village|market|harbor|farm|graveyard|ramen shop|izakaya|train crossing|vending machine|shopping street|festival|fireworks|cherry blossom path|rainy street|bus stop|balcony|living room|attic|library tower|castle garden|ice palace|crystal cave|sunflower field|lavender field|rice field|hot air balloon|ferris wheel|carnival|circus|concert stage"),
+    nsfw: parseList("bedroom|dark bedroom|hotel room|love hotel|bathroom|steamy bathroom|bathtub|shower|hot spring|onsen|jacuzzi|dungeon|dungeon chamber|satin sheets|canopy bed|bound on bed|private suite|balcony at night|candlelit room|steamy mirror|backstage|public restroom|sauna|private beach|poolside|yacht deck|rose petals|bedroom at night|messy bed|dressing room|changing room|locker room|spa|massage table|private room|luxury suite|bed with silk sheets|window with curtains|cabin bedroom|tent at night|hammock")
   },
   "💡 Beleuchtung & Stimmung": {
-    sfw: parseList("cinematic lighting|soft lighting|dramatic lighting|studio lighting|rim light|backlighting|volumetric lighting|god rays|sunbeams|natural light|golden hour|blue hour|sunrise|sunset|moonlight|candlelight|neon lights|neon glow|bioluminescence|glowing|bloom|glow effect|low key|high key|shadowed face|rain|snowfall|starry sky|aurora|warm tones|cold tones|moody|dreamy|ethereal|atmospheric|cozy|serene"),
-    nsfw: parseList("boudoir lighting|dim lighting|warm glow|red light|neon pink glow|soft window light|steam|sweat highlights|moody shadows|silhouette|backlit sheer curtain|candlelight on skin|erotic ambience|sensual mood")
+    sfw: parseList("cinematic lighting|soft lighting|dramatic lighting|studio lighting|rim light|backlighting|volumetric lighting|god rays|sunbeams|natural light|golden hour|blue hour|sunrise|sunset|moonlight|candlelight|neon lights|neon glow|bioluminescence|glowing|bloom|glow effect|low key|high key|shadowed face|rain|snowfall|starry sky|aurora|warm tones|cold tones|moody|dreamy|ethereal|atmospheric|cozy|serene|top lighting|split lighting|ambient light|dappled sunlight|midday sun|firelight|lantern light|holographic lighting|fireflies|lens glow|chiaroscuro|harsh shadows|soft shadows|cast shadow|ambient occlusion|reflections|caustics|light leaks|volumetric fog|fog|mist|haze|smoke|dust particles|floating particles|sparkles|embers|heavy rain|storm|lightning|overcast|clear sky|cloudy sky|teal and orange|high contrast|muted colors|epic|eerie|nostalgic|lonely|melancholic|romantic atmosphere|peaceful|mysterious|magical|whimsical|tense|dramatic mood|festive|sunlight through window|window light|street lights|city lights|bokeh lights|colored lights|stage lights|spotlight|lens flare|twilight|dawn|midnight|full moon|crescent moon|shooting star|northern lights|cherry blossom petals falling|falling leaves|drifting snow|soap bubbles|paper lanterns|string lights|fairy lights|lava glow|crystal glow|magic circle glow"),
+    nsfw: parseList("boudoir lighting|dim lighting|warm glow|red light|neon pink glow|soft window light|steam|sweat highlights|moody shadows|silhouette|backlit sheer curtain|candlelight on skin|erotic ambience|sensual mood|intimate atmosphere|romantic mood|seductive atmosphere|golden skin glow|rim light on skin|dark room|bedside lamp|low light|velvet shadows|purple lighting|rose lighting|amber glow|moonlit skin|steamy atmosphere")
   }
 };
 
@@ -893,7 +1343,24 @@ const getDefaultState = () => ({
   model: "pony",
   styleMode: "anime",
   filterMode: "all",
+  randomProfile: "balanced",
+  randomTagCount: 10,
+  randomAvoidRepeats: true,
+  randomUseCustom: false,
+  randomizeLoraWeights: false,
+  loraWeightMin: 0.5,
+  loraWeightMax: 1.0,
+  randomExcludedTags: [],
+  randomPinnedTags: [],
+  partnerMode: "hetero",
+  partnerFaceless: false,
+  partnerTags: [],
+  partnerOff: [],
+  autoSaveImages: false,
+  randomHistory: [],
   tags: [],
+  custom: [],
+  manual: "",
   customLibrary: [],
   loras: [
     { id: "l1", name: "ahegao_v2", weight: 0.8, active: false, trigger: "ahegao" }
@@ -901,11 +1368,10 @@ const getDefaultState = () => ({
   presets: [],
   extras: [],
   negExtras: [],
-  custom: [],
-  manual: "",
   negCustom: "",
   de: "",
-  weights: {}
+  weights: {},
+  appearance: { theme: "calm", accent: "#7c8ca8", reduceMotion: false }
 });
 
 let state = getDefaultState();
@@ -922,7 +1388,10 @@ function loadState() {
 }
 
 function saveState() {
+  state.savedAt = Date.now();
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  if (!applyingSyncedState) pushServerState();
+  if (!applyingSyncedState && automationChannel) automationChannel.postMessage({ type: "state", state });
 }
 
 function showToast(msg) {
@@ -932,6 +1401,34 @@ function showToast(msg) {
   toast.textContent = msg;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
+}
+
+/* ===== ERSCHEINUNGSBILD ===== */
+function applyAppearance() {
+  const appearance = { theme: "calm", accent: "#7c8ca8", reduceMotion: false, ...(state.appearance || {}) };
+  state.appearance = appearance;
+  document.body.dataset.theme = appearance.theme;
+  document.body.style.setProperty("--accent", appearance.accent);
+  document.body.style.setProperty("--accent-soft", `${appearance.accent}38`);
+  document.body.classList.toggle("reduce-motion", Boolean(appearance.reduceMotion));
+}
+
+function setupAppearance() {
+  const modal = $("#appearanceModal"), open = $("#btnAppearance"), close = $("#btnCloseAppearance");
+  const theme = $("#themeSelect"), accent = $("#accentColor"), motion = $("#reduceMotion");
+  const openModal = () => {
+    const a = state.appearance || {};
+    theme.value = a.theme || "calm"; accent.value = a.accent || "#7c8ca8"; motion.checked = Boolean(a.reduceMotion);
+    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); theme.focus();
+  };
+  const closeModal = () => { modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true"); open.focus(); };
+  open.onclick = openModal; close.onclick = closeModal;
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+  $("#btnSaveAppearance").onclick = () => {
+    state.appearance = { theme: theme.value, accent: accent.value, reduceMotion: motion.checked };
+    applyAppearance(); saveState(); closeModal(); showToast("Design gespeichert");
+  };
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
 }
 
 function catId(name) {
@@ -1037,6 +1534,7 @@ function renderExtras() {
 
 /* LoRA Management Rendering */
 function renderLoras() {
+  updateLoraLaunch();
   const container = $("#loraListContainer");
   container.innerHTML = "";
 
@@ -1052,10 +1550,14 @@ function renderLoras() {
       <div class="lora-info">
         <span class="lora-name">&lt;lora:${lora.name}:${lora.weight}&gt;</span>
         <span class="lora-trigger">${lora.trigger ? 'Trigger: ' + lora.trigger : 'Kein Trigger-Tag'}</span>
+        <span class="lora-file">→ sendet Datei: <code></code></span>
+        <button class="btn lora-test" type="button" title="Erzeugt genau zwei Testbilder mit gleichem Seed (ohne und mit LoRA) und vergleicht sie">🔬 Wirkt sie in Draw Things?</button>
+        <div class="lora-test-wrap" hidden><button class="lora-test-toggle" type="button">▾ Testergebnis einklappen</button><div class="lora-test-body"><div class="lora-test-out"></div></div></div>
       </div>
       <div class="lora-controls">
         <input type="range" class="lora-slider" min="0.1" max="1.5" step="0.05" value="${lora.weight}">
         <span class="lora-val">${lora.weight}</span>
+        <label class="lora-random-toggle" title="Diese LoRA beim Zufallswürfeln ändern"><input type="checkbox" class="lora-randomize" ${lora.randomizeWeight !== false ? "checked" : ""}> Würfeln</label>
         <button class="btn ${lora.active ? "ok" : ""}" style="padding:4px 10px;font-size:0.78rem">${lora.active ? "Aktiv" : "An"}</button>
         <button class="btn danger" style="padding:4px 10px;font-size:0.78rem">✕</button>
       </div>
@@ -1063,13 +1565,26 @@ function renderLoras() {
 
     const slider = div.querySelector(".lora-slider");
     const valText = div.querySelector(".lora-val");
-    const [btnToggle, btnDel] = div.querySelectorAll("button");
+    const randomizeToggle = div.querySelector(".lora-randomize");
+    const [btnToggle, btnDel] = div.querySelectorAll(".lora-controls > button");
+    div.querySelector(".lora-file code").textContent = dtLoraFile(lora.name);
+    div.querySelector(".lora-test").onclick = () => testLora(lora, div.querySelector(".lora-test-out"));
+    const tWrap = div.querySelector(".lora-test-wrap"), tToggle = div.querySelector(".lora-test-toggle");
+    tToggle.onclick = () => {
+      const c = tWrap.classList.toggle("collapsed");
+      tToggle.textContent = c ? "▸ Testergebnis anzeigen" : "▾ Testergebnis einklappen";
+    };
 
     slider.oninput = (e) => {
       const val = parseFloat(e.target.value).toFixed(2);
       lora.weight = parseFloat(val);
       valText.textContent = val;
       div.querySelector(".lora-name").textContent = `<lora:${lora.name}:${lora.weight}>`;
+      updatePromptOutputs();
+    };
+
+    randomizeToggle.onchange = () => {
+      lora.randomizeWeight = randomizeToggle.checked;
       updatePromptOutputs();
     };
 
@@ -1228,6 +1743,7 @@ function syncActiveStates() {
     }
   });
 
+  syncTagMarks();
   renderActiveBar();
   const totalSelected = state.tags.length + state.extras.length + state.loras.filter(l => l.active).length;
   $("#selCount").textContent = totalSelected
@@ -1236,14 +1752,14 @@ function syncActiveStates() {
 }
 
 /* ===== PROMPT BUILDERS ===== */
-function buildPositivePrompt() {
+function buildPositivePrompt(includeLoraSyntax = true) {
   const model = MODELS[state.model];
   const modelExtras = Object.values(model.extras).flat().filter(t => state.extras.includes(t));
   const manualTags = commaList(state.manual);
   
   // Aktive LoRAs & deren Triggers
   const activeLoras = state.loras.filter(l => l.active);
-  const loraStrings = activeLoras.map(l => `<lora:${l.name}:${l.weight}>`);
+  const loraStrings = includeLoraSyntax ? activeLoras.map(l => `<lora:${l.name}:${l.weight}>`) : [];
   const loraTriggers = activeLoras.map(l => l.trigger).filter(Boolean);
 
   let styleTags = [];
@@ -1255,13 +1771,17 @@ function buildPositivePrompt() {
     styleTags = ["photorealistic", "realistic", "3d render", "hyperrealistic"];
   }
 
+  const partner = partnerContext();
+  const mainTags = partner ? state.tags.filter(t => !partner.drop.has(t.toLowerCase())) : state.tags;
+
   const allParts = [
     ...commaList(model.prefix),
     ...loraStrings,
     ...styleTags,
     ...modelExtras,
+    ...(partner ? partner.pos : []),
     ...loraTriggers,
-    ...state.tags,
+    ...mainTags,
     ...state.custom,
     ...manualTags
   ];
@@ -1281,13 +1801,14 @@ function buildNegativePrompt() {
   const allParts = [
     ...commaList(model.negative),
     ...styleNeg,
+    ...(partnerContext() ? partnerContext().neg : []),
     ...activeNegExtras,
     ...manualNeg
   ];
   return uniq(allParts).join(", ");
 }
 
-function updatePromptOutputs() {
+function updatePromptOutputs(persist = true) {
   const posText = buildPositivePrompt();
   const negText = buildNegativePrompt();
 
@@ -1296,6 +1817,12 @@ function updatePromptOutputs() {
   if ($("#negOutput").value !== negText) flashEl($("#negOutput"));
   $("#posOutput").value = posText;
   $("#negOutput").value = negText;
+  const pn = $("#partnerNote");
+  if (pn) {
+    const pc = partnerContext();
+    pn.hidden = !pc;
+    if (pc) pn.textContent = `👥 Partner-Automatik: ${pc.pos.join(", ")} wurde ergänzt. Im Negative: ${pc.neg.join(", ")}`;
+  }
 
   const posTokens = Math.ceil(posText.length / 4);
   const negTokens = Math.ceil(negText.length / 4);
@@ -1304,7 +1831,7 @@ function updatePromptOutputs() {
   $("#negCounter").textContent = `${negText.length} Zeichen | ~${negTokens} Tokens`;
 
   syncActiveStates();
-  saveState();
+  if (persist) saveState();
 }
 
 /* ===== ACTIONS & HANDLERS ===== */
@@ -1334,6 +1861,7 @@ function addLora() {
     id: "l_" + Date.now(),
     name,
     weight,
+    randomizeWeight: true,
     active: true,
     trigger
   });
@@ -1347,23 +1875,580 @@ function addLora() {
   showToast("✨ LoRA hinzugefügt & aktiviert!");
 }
 
-function randomizePrompt() {
-  const pickRandom = arr => arr[Math.floor(Math.random() * arr.length)];
-  state.tags = [];
-  
-  Object.values(LIBRARY).forEach(catData => {
-    const pool = state.filterMode === "sfw" ? catData.sfw :
-                 state.filterMode === "nsfw" ? catData.nsfw :
-                 [...catData.sfw, ...catData.nsfw];
-    if (pool.length > 0 && Math.random() > 0.3) {
-      state.tags.push(pickRandom(pool));
-      if (Math.random() > 0.6) state.tags.push(pickRandom(pool));
+function randomCategoryWeight(category, profile) {
+  const name = category.toLowerCase();
+  if (profile === "character") {
+    if (/charakter|kleidung|intimität/.test(name)) return 2.4;
+    if (/qualität|stil|beleuchtung/.test(name)) return 0.7;
+    return 1;
+  }
+  if (profile === "scene") {
+    if (/umgebung|beleuchtung/.test(name)) return 2.7;
+    if (/charakter|kleidung/.test(name)) return 0.7;
+    return 1;
+  }
+  if (profile === "style") {
+    if (/qualität|anime|stile|beleuchtung/.test(name)) return 2.4;
+    if (/intimität|gestik|fetisch/.test(name)) return 0.65;
+    return 1;
+  }
+  return 1;
+}
+
+function randomizeActiveLoraWeights() {
+  const clamp = value => Math.min(1.5, Math.max(0.1, Number(value) || 0.5));
+  const min = clamp(state.loraWeightMin);
+  const max = Math.max(min, clamp(state.loraWeightMax));
+  const steps = Math.round((max - min) / 0.05);
+  state.loras.filter(lora => lora.active && lora.randomizeWeight !== false).forEach(lora => {
+    lora.weight = Number((min + Math.floor(Math.random() * (steps + 1)) * 0.05).toFixed(2));
+  });
+  renderLoras();
+}
+
+function randomizePrompt(showMessage = true, filterMode = state.filterMode) {
+  const profile = state.randomProfile || "balanced";
+  const requested = Math.min(20, Math.max(3, Math.floor(Number(state.randomTagCount) || 10)));
+  const pinned = uniq((state.randomPinnedTags || []).filter(Boolean));
+  const pinnedSet = new Set(pinned.map(tag => String(tag).toLowerCase()));
+  const excluded = new Set((state.randomExcludedTags || []).map(tag => String(tag).toLowerCase()));
+  pinnedSet.forEach(tag => excluded.add(tag));   // Pflicht-Tags kommen fest dazu und werden nicht zusätzlich gewürfelt
+  const candidates = [];
+  Object.entries(LIBRARY).forEach(([category, data]) => {
+    const pool = filterMode === "sfw" ? data.sfw :
+      filterMode === "nsfw" ? data.nsfw : [...data.sfw, ...data.nsfw];
+    const weight = randomCategoryWeight(category, profile);
+    pool.filter(tag => !excluded.has(tag.toLowerCase())).forEach(tag => candidates.push({ tag, weight }));
+  });
+  if (state.randomUseCustom) {
+    state.customLibrary.forEach(item => {
+      const isNsfw = !!(item.isNsfw || item.nsfw);
+      if ((filterMode === "all" || (filterMode === "nsfw") === isNsfw) && !excluded.has(String(item.text).toLowerCase())) {
+        candidates.push({ tag: item.text, weight: 1.2 });
+      }
+    });
+  }
+  const uniqueCandidates = [...new Map(candidates.map(item => [item.tag.toLowerCase(), item])).values()];
+
+  const history = new Set(state.randomHistory || []);
+  let selected = [];
+  let signature = "";
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const pool = [...uniqueCandidates];
+    selected = [];
+    while (selected.length < requested && pool.length) {
+      const totalWeight = pool.reduce((total, item) => total + item.weight, 0);
+      let target = Math.random() * totalWeight;
+      const index = pool.findIndex(item => (target -= item.weight) <= 0);
+      const [picked] = pool.splice(index < 0 ? pool.length - 1 : index, 1);
+      selected.push(picked.tag);
     }
+    signature = [...selected].sort().join("|");
+    if (!state.randomAvoidRepeats || !history.has(signature)) break;
+  }
+
+  state.tags = uniq([...pinned, ...selected]);
+  state.randomHistory = [...(state.randomHistory || []), signature].slice(-20);
+  if (state.randomizeLoraWeights) randomizeActiveLoraWeights();
+  updatePromptOutputs();
+  if (showMessage) showToast(`🎲 ${state.tags.length} zufällige Tags · ${profile === "balanced" ? "Ausgewogen" : profile === "character" ? "Charakter" : profile === "scene" ? "Szene & Licht" : "Stil & Qualität"}`);
+}
+
+function syncRandomizerControls() {
+  document.querySelectorAll("[data-random-setting]").forEach(input => {
+    const key = input.dataset.randomSetting;
+    const value = state[key];
+    if (input.type === "checkbox") input.checked = !!value;
+    else if (value !== undefined) input.value = value;
+  });
+  renderRandomExclusionPickers();
+  renderRandomPinnedPickers();
+  syncTagMarks();
+}
+
+function renderRandomExclusionPickers() {
+  const excluded = state.randomExcludedTags || (state.randomExcludedTags = []);
+  const selected = new Set(excluded.map(tag => tag.toLowerCase()));
+  const catalog = uniq([
+    ...Object.values(LIBRARY).flatMap(category => [...category.sfw, ...category.nsfw]),
+    ...(state.customLibrary || []).map(item => item.text).filter(Boolean)
+  ]);
+
+  document.querySelectorAll(".randomizer-exclusions").forEach(picker => {
+    const chips = picker.querySelector(".random-excluded-chips");
+    const search = picker.querySelector(".random-exclude-search");
+    const suggestions = picker.querySelector(".random-exclude-suggestions");
+    chips.replaceChildren();
+    excluded.forEach(tag => {
+      const chip = document.createElement("span");
+      chip.className = "random-exclude-chip";
+      const text = document.createElement("span"); text.textContent = tag;
+      const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "×"; remove.title = `„${tag}“ wieder zulassen`;
+      remove.onclick = () => {
+        state.randomExcludedTags = state.randomExcludedTags.filter(item => item.toLowerCase() !== tag.toLowerCase());
+        saveState(); syncRandomizerControls();
+      };
+      chip.append(text, remove); chips.appendChild(chip);
+    });
+
+    const query = search.value.trim().toLowerCase();
+    const matches = query ? catalog.filter(tag => tag.toLowerCase().includes(query) && !selected.has(tag.toLowerCase())).slice(0, 10) : [];
+    suggestions.replaceChildren();
+    suggestions.hidden = !query || matches.length === 0;
+    matches.forEach(tag => {
+      const option = document.createElement("button");
+      option.type = "button"; option.className = "random-exclude-option"; option.textContent = tag;
+      option.onclick = () => {
+        state.randomExcludedTags.push(tag);
+        saveState();
+        syncRandomizerControls();
+        search.focus();
+      };
+      suggestions.appendChild(option);
+    });
+  });
+}
+
+function initRandomizerControls() {
+  document.querySelectorAll("[data-random-setting]").forEach(input => {
+    const update = () => {
+      const key = input.dataset.randomSetting;
+      state[key] = input.type === "checkbox" ? input.checked :
+        input.type === "number" ? Math.max(Number(input.min) || 0, Math.min(Number(input.max) || 100, Math.floor(Number(input.value) || 10))) : input.value;
+      syncRandomizerControls();
+      saveState();
+      if (key.startsWith("partner")) updatePromptOutputs();
+    };
+    input.addEventListener("change", update);
+  });
+  document.querySelectorAll(".random-exclude-search").forEach(input => input.addEventListener("input", renderRandomExclusionPickers));
+  document.querySelectorAll(".random-pin-search").forEach(input => input.addEventListener("input", renderRandomPinnedPickers));
+  syncRandomizerControls();
+}
+
+let drawGenerationInProgress = false;
+let autoGenerationRunning = false;
+let autoStopRequested = false;
+let autoGenerationTarget = Infinity;
+let autoGenerationFilter = "all";
+let activeDrawController = null;
+let drawCancelPending = false;
+let drawCancelRequested = false;
+let drawCancelFallback = false;
+
+function setDrawStatus(message) {
+  $("#dtStatus").textContent = message;
+  $("#automationStatus").textContent = message;
+  const g = $("#gdStatus"); if (g) g.textContent = message;
+}
+
+function moveAutomationWorkspace(visible) {
+  const workspace = $("#automationWorkspace");
+  const cards = [
+    $("#posOutput").closest(".card"),
+    $("#deInput").closest(".card"),
+    $("#dtResults").closest(".card")
+  ];
+  if (visible) {
+    workspace.append(...cards);
+    document.body.classList.add("automation-view");
+    $("#automationModal").classList.add("open");
+    return;
+  }
+  document.querySelector(".out").append(...cards);
+  document.body.classList.remove("automation-view");
+  $("#automationModal").classList.remove("open");
+}
+
+function openAutomationMenu(updateHistory = true) {
+  if (updateHistory && new URLSearchParams(location.search).get("automation") !== "1") {
+    const url = new URL(location.href);
+    url.searchParams.set("automation", "1");
+    history.pushState({ automation: true }, "", url);
+  }
+  $("#automationFilter").value = state.filterMode || "all";
+  syncRandomizerControls();
+  $("#automationStatus").textContent = $("#dtStatus").textContent;
+  const useCount = $("input[name='automationMode']:checked").value === "count";
+  $("#automationCount").disabled = !useCount;
+  moveAutomationWorkspace(true);
+  document.body.style.overflow = document.body.classList.contains("automation-view") ? "" : "hidden";
+}
+
+function closeAutomationMenu(updateHistory = true) {
+  if (updateHistory && new URLSearchParams(location.search).get("automation") === "1") {
+    const url = new URL(location.href);
+    url.searchParams.delete("automation");
+    history.replaceState(null, "", url);
+  }
+  moveAutomationWorkspace(false);
+  document.body.style.overflow = "";
+}
+
+function applySyncedState(sharedState) {
+  if (!sharedState || typeof sharedState !== "object") return;
+  applyingSyncedState = true;
+  state = { ...getDefaultState(), ...sharedState };
+  applyAppearance();
+  renderModels();
+  renderStyleSwitch();
+  renderFilterModes();
+  renderExtras();
+  renderLoras();
+  renderLibrary();
+  renderPresets();
+  renderCustomChips();
+  $("#manualInput").value = state.manual || "";
+  $("#deInput").value = state.de || "";
+  $("#negCustom").value = state.negCustom || "";
+  $("#automationFilter").value = state.filterMode || "all";
+  syncRandomizerControls();
+  updatePromptOutputs(false);
+  applyingSyncedState = false;
+}
+
+function initAutomationMenu() {
+  $("#btnAutomationMenu").onclick = () => openAutomationMenu();
+  $("#btnCloseAutomation").onclick = closeAutomationMenu;
+  $("#automationModal").addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeAutomationMenu();
+  });
+  $("#automationFilter").onchange = e => {
+    state.filterMode = e.target.value;
+    renderFilterModes();
+    filterTags();
+    saveState();
+  };
+  document.querySelectorAll("input[name='automationMode']").forEach(input => {
+    input.addEventListener("change", () => {
+      $("#automationCount").disabled = $("input[name='automationMode']:checked").value !== "count";
+    });
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && $("#automationModal").classList.contains("open")) closeAutomationMenu();
+  });
+  window.addEventListener("popstate", () => {
+    if (new URLSearchParams(location.search).get("automation") === "1") openAutomationMenu(false);
+    else if (document.body.classList.contains("automation-view")) closeAutomationMenu(false);
   });
 
-  state.tags = uniq(state.tags);
-  updatePromptOutputs();
-  showToast("🎲 Zufälliger Prompt generiert!");
+  if (automationChannel) {
+    automationChannel.onmessage = event => {
+      const message = event.data || {};
+      if (message.type === "state") applySyncedState(message.state);
+      else if (message.type === "result") renderDrawResults(message.images || [], message.prompt || "", false);
+    };
+  }
+
+  $("#automationFilter").value = state.filterMode || "all";
+  if (AUTOMATION_VIEW) openAutomationMenu(false);
+}
+
+function renderDrawResults(images, prompt, publish = true) {
+  const results = $("#dtResults");
+  const empty = results.querySelector(".dt-empty");
+  if (empty) empty.remove();
+
+  images.forEach((encoded, index) => {
+    if (typeof encoded !== "string" || !encoded) return;
+    const source = encoded.startsWith("data:") ? encoded : `data:image/png;base64,${encoded}`;
+    const card = document.createElement("article");
+    card.className = "dt-result";
+    const preview = document.createElement("a");
+    DR_LIST.unshift({ src: source, prompt });
+    preview.href = "#";
+    preview.title = "Groß ansehen";
+    preview.onclick = ev => { ev.preventDefault(); openLightbox(DR_LIST.findIndex(x => x.src === source)); };
+    const image = document.createElement("img");
+    image.src = source;
+    image.alt = `Draw-Things-Ergebnis ${index + 1}: ${prompt}`;
+    image.loading = "lazy";
+    preview.appendChild(image);
+    const download = document.createElement("button");
+    download.className = "btn";
+    download.type = "button";
+    download.textContent = "Bild speichern";
+    download.onclick = () => {
+      const link = document.createElement("a");
+      link.href = source;
+      link.download = `draw-things-${Date.now()}-${index + 1}.png`;
+      link.click();
+    };
+    const copyPrompt = document.createElement("button");
+    copyPrompt.className = "btn"; copyPrompt.type = "button"; copyPrompt.textContent = "📋 Prompt kopieren";
+    copyPrompt.onclick = () => copyToClipboard(prompt);
+    card.append(preview, download, copyPrompt);
+    results.prepend(card);
+  });
+
+  while (results.querySelectorAll(".dt-result").length > 8) results.lastElementChild.remove();
+  if (DR_LIST.length > 8) DR_LIST.length = 8;
+  if (publish) autoSaveImages(images, prompt);
+  if (publish && automationChannel) automationChannel.postMessage({ type: "result", images, prompt });
+}
+
+function syncDrawControls() {
+  const busy = drawGenerationInProgress || autoGenerationRunning;
+  $("#btnRandomize").disabled = busy;
+  $("#btnGenerateOnce").disabled = busy;
+  $("#btnAutoGenerate").disabled = autoStopRequested && drawGenerationInProgress;
+  $("#btnCancelGeneration").disabled = (!drawGenerationInProgress && !autoGenerationRunning) || drawCancelPending;
+  $("#btnAutoGenerate").textContent = autoGenerationRunning
+    ? "⏹ Automatik stoppen"
+    : "▶ Zufalls-Automatik starten";
+  $("#btnAutoGenerate").setAttribute("aria-pressed", String(autoGenerationRunning));
+}
+
+/* Draw Things erwartet den Dateinamen der importierten LoRA, z. B. "ahegao_v2" -> "ahegao_v2_lora_f16.ckpt" */
+function dtLoraFile(name) {
+  const n = String(name || "").trim();
+  if (/\.ckpt$/i.test(n)) return n;
+  if (/_lora_(f16|q\d+p?)$/i.test(n)) return n + ".ckpt";
+  return n.toLowerCase().replace(/\.safetensors$/, "").replace(/[^a-z0-9.]+/g, "_").replace(/^_+|_+$/g, "") + "_lora_f16.ckpt";
+}
+
+/* Test: genau zwei Bilder mit festem Seed, eines ohne und eines mit der LoRA. Sind sie gleich, wurde die LoRA ignoriert. */
+async function testLora(lora, out) {
+  const wrap = out.closest(".lora-test-wrap");
+  if (wrap) {
+    wrap.hidden = false; wrap.classList.remove("collapsed");
+    wrap.querySelector(".lora-test-toggle").textContent = "▾ Testergebnis einklappen";
+  }
+  out.innerHTML = '<div class="t-log"></div><div class="t-imgs"></div>';
+  const logEl = out.querySelector(".t-log"), imgEl = out.querySelector(".t-imgs"), lines = [];
+  const say = t => { lines.push(t); logEl.textContent = lines.join("\n"); };
+  const setLast = t => { lines[lines.length - 1] = t; logEl.textContent = lines.join("\n"); };
+  const show = (b64, cap) => {
+    const f = document.createElement("figure");
+    const im = document.createElement("img"); im.src = String(b64).startsWith("data:") ? b64 : "data:image/png;base64," + b64;
+    const c = document.createElement("figcaption"); c.textContent = cap;
+    f.append(im, c); imgEl.appendChild(f);
+  };
+  if (location.protocol === "file:") { say("❌ Die Seite wurde direkt als Datei geöffnet. Starte im Terminal `python3 dt_bridge.py` und öffne http://localhost:8080."); return; }
+  if (drawGenerationInProgress) { say("⏳ Es läuft gerade eine Generierung – bitte warten."); return; }
+  drawGenerationInProgress = true; syncDrawControls();
+  const file = dtLoraFile(lora.name);
+  say(`LoRA-Datei: ${file}`);
+  try {
+    let o = {};
+    say("⏳ Lese Draw-Things-Einstellungen …");
+    try {
+      const or = await fetch("/sdapi/v1/options");
+      o = await or.json().catch(() => ({}));
+      if (!or.ok) throw new Error("HTTP " + or.status);
+      setLast("✓ Einstellungen gelesen");
+    } catch (e) {
+      setLast(`⚠️ Einstellungen nicht lesbar (${e.message}) – nehme Standardwerte. Läuft Draw Things mit aktivem API Server?`);
+    }
+    const base = {
+      prompt: ["1girl", "solo", "portrait", lora.trigger].filter(Boolean).join(", "),
+      negative_prompt: "lowres, blurry", seed: 424242, batch_count: 1,
+      steps: Math.min(Number(o.steps) || 20, 12),
+      guidance_scale: Number(o.guidance_scale) || 5,
+      width: Number(o.width || o.target_width) || 1024, height: Number(o.height || o.target_height) || 1024
+    };
+    const post = async (payload, label) => {
+      const t0 = Date.now(); say(`⏳ ${label} …`);
+      let r;
+      try { r = await fetch("/sdapi/v1/txt2img", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); }
+      catch (e) { throw new Error(`Keine Verbindung zu Draw Things (${e.message}). Läuft Draw Things mit aktivem API Server (Port 7860)?`); }
+      const raw = await r.text(); let d = {}; try { d = JSON.parse(raw); } catch (e) {}
+      if (!r.ok) throw new Error(`HTTP ${r.status}: ${String(d.error || raw || "").slice(0, 220)}`);
+      if (!d.images || !d.images[0]) throw new Error("Antwort ohne Bild: " + raw.slice(0, 200));
+      setLast(`✓ ${label} (${Math.round((Date.now() - t0) / 1000)} s)`);
+      return d.images[0];
+    };
+    const gen = async (loras, label) => {
+      try { return await post({ ...base, loras }, label); }
+      catch (e) {
+        if (!loras.length && /HTTP 4/.test(e.message)) { lines.pop(); return await post(base, label + " (ohne loras-Feld)"); }
+        throw e;
+      }
+    };
+    const a = await gen([], "Bild 1 ohne LoRA");
+    show(a, "ohne LoRA");
+    const c = await gen([{ file, weight: 1 }], "Bild 2 mit LoRA");
+    show(c, "mit LoRA");
+    if (a === c) { say(`❌ Kein Unterschied: Draw Things hat „${file}“ ignoriert. Prüfe den Dateinamen (Models-Ordner / custom_lora.json) und ob LoRA und Basismodell zur selben Version gehören (z. B. beide SDXL).`); return; }
+    say(`✅ Die Bilder unterscheiden sich – „${file}“ wird sehr wahrscheinlich angewendet. Sieh dir beide Bilder zur Kontrolle an: Das rechte sollte nach der LoRA aussehen.`);
+  } catch (e) {
+    say("❌ " + e.message);
+  } finally {
+    drawGenerationInProgress = false; syncDrawControls();
+  }
+}
+
+async function generateWithDrawThings() {
+  if (drawGenerationInProgress) throw new Error("Es läuft bereits eine Bildgenerierung.");
+  drawGenerationInProgress = true;
+  const controller = new AbortController();
+  activeDrawController = controller;
+  syncDrawControls();
+  dpStart(autoGenerationRunning ? "Zufalls-Bild wird erzeugt" : "Bild wird erzeugt");
+
+  const prompt = buildPositivePrompt(false);
+  const negativePrompt = buildNegativePrompt();
+  const status = $("#dtStatus");
+  try {
+    setDrawStatus("Lese Draw-Things-Einstellungen …");
+    const optionsResponse = await fetch("/sdapi/v1/options", { signal: controller.signal });
+    const options = await optionsResponse.json().catch(() => ({}));
+    if (!optionsResponse.ok) {
+      throw new Error(options.error || `Einstellungen nicht erreichbar (HTTP ${optionsResponse.status})`);
+    }
+
+    DP.cfg = { steps: Number(options.steps) || 20, w: Number(options.width || options.target_width) || 1024, h: Number(options.height || options.target_height) || 1024 };
+    DP.est = dpEstimate(DP.cfg);
+    setDrawStatus("Sende Prompt an Draw Things …");
+    const response = await fetch("/sdapi/v1/txt2img", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
+      body: JSON.stringify({
+        prompt,
+        negative_prompt: negativePrompt,
+        seed: -1,
+        steps: Number(options.steps) || 20,
+        guidance_scale: Number(options.guidance_scale) || 5,
+        batch_count: 1,
+        width: Number(options.width || options.target_width) || 1024,
+        height: Number(options.height || options.target_height) || 1024,
+        loras: state.loras.some(lora => lora.active)
+          ? state.loras.filter(lora => lora.active).map(lora => ({ file: dtLoraFile(lora.name), weight: lora.weight }))
+          : (Array.isArray(options.loras) ? options.loras : [])
+      })
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || `Generierung fehlgeschlagen (HTTP ${response.status})`);
+    if (!Array.isArray(result.images) || result.images.length === 0) {
+      throw new Error("Draw Things hat keine Bilder zurückgegeben.");
+    }
+    dpFinish(true);
+    renderDrawResults(result.images, prompt);
+    return result.images.length;
+  } catch (error) {
+    if (error.name !== "AbortError") { const f = friendlyDtError(error.message); if (f !== error.message) error = new Error(f); }
+    dpFinish(false, drawCancelRequested ? "Abgebrochen" : error.message);
+    if (drawCancelRequested) {
+      const cancelled = new Error("Generierung abgebrochen.");
+      cancelled.name = "AbortError";
+      throw cancelled;
+    }
+    throw error;
+  } finally {
+    activeDrawController = null;
+    drawGenerationInProgress = false;
+    drawCancelRequested = false;
+    syncDrawControls();
+  }
+}
+
+async function generateOnce() {
+  try {
+    const count = await generateWithDrawThings();
+    setDrawStatus(drawCancelFallback
+      ? `Abbrechen wird von Draw Things nicht unterstützt. Das Bild wurde noch fertiggestellt (${count}).`
+      : `Fertig: ${count} Bild(er) in Draw Things erzeugt.`);
+    drawCancelFallback = false;
+  } catch (error) {
+    setDrawStatus(error.name === "AbortError"
+      ? "Bildgenerierung abgebrochen."
+      : `Draw-Things-Fehler: ${error.message}`);
+  }
+}
+
+async function runAutoGeneration() {
+  let completed = 0;
+  DP.batch = { done: 0, target: Number.isFinite(autoGenerationTarget) ? autoGenerationTarget : Infinity };
+  try {
+    while (autoGenerationRunning && completed < autoGenerationTarget) {
+      randomizePrompt(false, autoGenerationFilter);
+      setDrawStatus(`Zufälliger Prompt ${completed + 1}: wird an Draw Things gesendet …`);
+      completed += await generateWithDrawThings();
+      DP.batch.done = completed;
+      if (autoGenerationRunning) {
+        setDrawStatus(`${completed} Bild(er) fertig. Erzeuge den nächsten Zufalls-Prompt …`);
+      }
+    }
+    if (autoGenerationRunning && completed >= autoGenerationTarget) {
+      autoGenerationRunning = false;
+      setDrawStatus(`${completed} Bild(er) fertig. Die eingestellte Anzahl ist erreicht.`);
+    }
+  } catch (error) {
+    autoGenerationRunning = false;
+    autoStopRequested = false;
+    setDrawStatus(error.name === "AbortError"
+      ? "Automatik und laufende Bildgenerierung abgebrochen."
+      : `Automatik angehalten: ${error.message}`);
+  } finally {
+    dpBatchEnd(completed);
+    if (autoStopRequested) {
+      setDrawStatus(drawCancelFallback
+        ? `Kein weiterer Prompt gestartet. Das aktuelle Bild wurde fertiggestellt (${completed}).`
+        : `Automatik gestoppt. ${completed} Bild(er) fertig.`);
+    }
+    autoGenerationRunning = false;
+    autoStopRequested = false;
+    drawCancelFallback = false;
+    syncDrawControls();
+  }
+}
+
+async function cancelDrawGeneration() {
+  const wasAutomatic = autoGenerationRunning;
+  autoGenerationRunning = false;
+  if (wasAutomatic) autoStopRequested = true;
+
+  const controller = activeDrawController;
+  if (!controller) {
+    autoStopRequested = false;
+    setDrawStatus("Automatik abgebrochen.");
+    syncDrawControls();
+    return;
+  }
+
+  drawCancelPending = true;
+  syncDrawControls();
+  setDrawStatus("Abbruch wird an Draw Things gesendet …");
+  try {
+    const response = await fetch("/sdapi/v1/interrupt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}"
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    drawCancelRequested = true;
+    controller.abort();
+    setDrawStatus("Abbruch an Draw Things gesendet …");
+  } catch (error) {
+    drawCancelFallback = true;
+    setDrawStatus("Draw Things kann den laufenden Auftrag hier nicht abbrechen. Es wird kein weiterer Zufalls-Prompt gestartet; das aktuelle Bild läuft noch fertig.");
+  } finally {
+    drawCancelPending = false;
+    syncDrawControls();
+  }
+}
+
+function toggleAutoGeneration() {
+  if (autoGenerationRunning) {
+    autoGenerationRunning = false;
+    autoStopRequested = true;
+    setDrawStatus(drawGenerationInProgress
+      ? "Stop vorgemerkt: Das aktuelle Bild wird noch fertiggestellt."
+      : "Automatik wird beendet …");
+    syncDrawControls();
+    return;
+  }
+  autoStopRequested = false;
+  const requestedCount = Math.floor(Number($("#automationCount").value));
+  autoGenerationTarget = $("input[name='automationMode']:checked").value === "infinite"
+    ? Infinity
+    : Math.min(100, Math.max(1, Number.isFinite(requestedCount) ? requestedCount : 10));
+  autoGenerationFilter = $("#automationFilter").value;
+  $("#automationCount").value = Number.isFinite(autoGenerationTarget) ? autoGenerationTarget : $("#automationCount").value;
+  autoGenerationRunning = true;
+  syncDrawControls();
+  runAutoGeneration();
 }
 
 function savePreset() {
@@ -1478,6 +2563,7 @@ function importBackup(e) {
     try {
       const importedState = JSON.parse(event.target.result);
       state = { ...getDefaultState(), ...importedState };
+      applyAppearance();
       saveState();
 
       renderModels();
@@ -1615,6 +2701,7 @@ function resetEntireState() {
   state.customLibrary = savedCustomLib;
   state.presets = savedPresets;
   state.loras = savedLoras;
+  applyAppearance();
   saveState();
 
   $("#deInput").value = "";
@@ -1635,8 +2722,11 @@ function resetEntireState() {
 }
 
 /* ===== INITIALISIERUNG ===== */
-function init() {
+async function init() {
+  await loadServerState();
   loadState();
+  applyAppearance();
+  if (serverOk && !applyingSyncedState) pushServerState(true);
 
   renderModels();
   renderStyleSwitch();
@@ -1646,6 +2736,7 @@ function init() {
   renderLibrary();
   renderPresets();
   renderCustomChips();
+  initRandomizerControls();
 
   $("#manualInput").value = state.manual || "";
   $("#deInput").value = state.de || "";
@@ -1655,7 +2746,10 @@ function init() {
   $("#btnAddLora").onclick = addLora;
   $("#loraNameInput").addEventListener("keydown", e => { if (e.key === "Enter") addLora(); });
 
-  $("#btnRandomize").onclick = randomizePrompt;
+  $("#btnRandomize").onclick = () => randomizePrompt();
+  $("#btnGenerateOnce").onclick = generateOnce;
+  $("#btnAutoGenerate").onclick = toggleAutoGeneration;
+  $("#btnCancelGeneration").onclick = cancelDrawGeneration;
   $("#btnSavePreset").onclick = savePreset;
   $("#btnExportData").onclick = exportBackup;
   $("#btnImportTrigger").onclick = () => $("#importFileInput").click();
@@ -1675,12 +2769,18 @@ function init() {
   $("#btnClearTags").onclick = clearAllSelectedTags;
   $("#btnResetAll").onclick = resetEntireState;
 
-  $("#btnCopyPos").onclick = () => copyToClipboard($("#posOutput").value);
+  $("#btnCopyPosInline").onclick = () => copyToClipboard($("#posOutput").value);
+  $("#btnGenerateFromPrompt").onclick = generateOnce;
 
   $("#btnCopyNeg").onclick = () => copyToClipboard($("#negOutput").value);
   initTips();
   initShortcuts();
   initWizard();
+  initAutomationMenu();
+  initLoraPage();
+  initGenDock();
+  initTagModes();
+  setupAppearance();
 
   filterTags();
   updatePromptOutputs();
@@ -1950,16 +3050,28 @@ function renderTipWeight() {
   box.querySelector("b").textContent = w.toFixed(1);
 }
 
+function changeWeight(tag, delta) {
+  const current = state.weights[tag] || 1;
+  const next = Math.round(Math.min(1.6, Math.max(0.5, current + delta * 0.1)) * 10) / 10;
+  if (next === 1) delete state.weights[tag]; else state.weights[tag] = next;
+  renderTipWeight();
+  updatePromptOutputs();
+}
+
 let tipBtn = null, tipKey = "tags";
 function showTip(btn) {
   clearTimeout(hideTimer);
   const tag = btn.dataset.tag; if (!tag) return;
-  tipTag = tag; tipBtn = btn;
+  tipBtn = btn;
+  tipTag = tag;
   const meta = tagMeta(tag);
   const known = DESC[tag.toLowerCase()] ? DESC[tag.toLowerCase()].split("|") : null;
   tipKey = btn.closest("#extras") ? "extras" : btn.closest("#negExtras") ? "negExtras" : "tags";
   const canWeigh = tipKey === "tags" && state.tags.includes(tag);
   const isOn = state[tipKey].includes(tag);
+  const isExcluded = (state.randomExcludedTags || []).some(item => item.toLowerCase() === tag.toLowerCase());
+  const isPinned = (state.randomPinnedTags || []).some(item => item.toLowerCase() === tag.toLowerCase());
+  const needsPartner = partnerNeeds(tag);
   const skel = '<div class="tip-skel"></div><div class="tip-skel s2"></div>';
   tip.dataset.n = meta.nsfw ? "1" : "";
   tip.innerHTML =
@@ -1968,7 +3080,8 @@ function showTip(btn) {
     `<div id="tipD">${known ? `<div class="tip-row"><b>${esc(tag)}</b> – ${esc(known[1])}</div>` : skel}</div>` +
     `<div class="tip-cat">${esc(meta.cat)}</div>` +
     (canWeigh ? `<div class="tip-w"><span>Gewichtung</span><button data-w="-1">−</button><b></b><button data-w="1">+</button></div>` : "") +
-    `<div class="tip-act"><button data-act="toggle" class="${isOn ? "off" : "add"}">${isOn ? "✓ Entfernen" : "＋ Hinzufügen"}</button><button data-act="copy">📋 Tag kopieren</button></div>`;
+    `<div class="tip-act"><button data-act="toggle" class="${isOn ? "off" : "add"}">${isOn ? "✓ Entfernen" : "＋ Hinzufügen"}</button><button data-act="copy">📋 Tag kopieren</button></div>` +
+    `<div class="tip-act random-exclude"><button data-act="exclude" class="${isExcluded ? "excluded" : ""}">${isExcluded ? "✓ Vom Zufallswurf ausgeschlossen · wieder zulassen" : "⊘ Vom Zufallswurf ausschließen"}</button><button data-act="pin" class="${isPinned ? "pinned" : ""}">${isPinned ? "✓ Immer dabei · lösen" : "📌 Immer dabei"}</button><button data-act="partner" class="${needsPartner ? "pinned" : ""}" title="Bei Tags mit zweiter Person ergänzt die Partner-Automatik Personenzahl und Geschlecht">${needsPartner ? "✓ Braucht Partner · lösen" : "👥 Braucht Partner"}</button></div>`;
   renderTipWeight();
   tip.classList.add("show");
   placeTip(btn);
@@ -1989,7 +3102,7 @@ function showTip(btn) {
 
 function hideTip(now) {
   clearTimeout(tipTimer); clearTimeout(hideTimer);
-  const go = () => { tip.classList.remove("show"); tipTag = null; };
+  const go = () => { tip.classList.remove("show"); tipTag = null; tipBtn = null; };
   now ? go() : (hideTimer = setTimeout(go, 220));
 }
 
@@ -2004,15 +3117,15 @@ function initTips() {
     const act = e.target.closest("[data-act]");
     if (act && tipBtn) {
       if (act.dataset.act === "copy") copyToClipboard(tipTag);
+      else if (act.dataset.act === "exclude") { toggleRandomList("randomExcludedTags", tipTag); showTip(tipBtn); }
+      else if (act.dataset.act === "partner") { togglePartnerTag(tipTag); showTip(tipBtn); }
+      else if (act.dataset.act === "pin") { toggleRandomList("randomPinnedTags", tipTag); showTip(tipBtn); }
       else { toggleItem(tipKey, tipTag); showTip(tipBtn); }
       return;
     }
     const b = e.target.closest("button[data-w]");
     if (!b || !tipTag) return;
-    const cur = state.weights[tipTag] || 1;
-    const next = Math.round(Math.min(1.6, Math.max(0.5, cur + Number(b.dataset.w) * 0.1)) * 10) / 10;
-    if (next === 1) delete state.weights[tipTag]; else state.weights[tipTag] = next;
-    renderTipWeight(); updatePromptOutputs();
+    changeWeight(tipTag, Number(b.dataset.w));
   });
   /* Handy: gedrückt halten */
   document.addEventListener("pointerdown", e => {
@@ -2077,7 +3190,11 @@ function initShortcuts() {
     const typing = /^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
     if (e.key === "/" && !typing) { e.preventDefault(); $("#search").focus(); }
     else if (e.key === "Escape") { hideTip(true); if (typing) document.activeElement.blur(); }
-    else if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); copyToClipboard($("#posOutput").value); }
+    else if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      if (e.shiftKey) copyToClipboard($("#posOutput").value);
+      else if (!drawGenerationInProgress && !autoGenerationRunning) generateOnce();
+    }
   });
 }
 
@@ -2273,6 +3390,7 @@ function wzResult(page) {
 }
 
 function wzMark() {
+  syncTagMarks();
   document.querySelectorAll("#wzBody .tag").forEach(b => b.classList.toggle("on", (state[b.dataset.k || "tags"] || []).includes(b.dataset.tag)));
   const steps = wzSteps(), st = steps[WZ.step]; let n = 0;
   if (st.type === "cat") n = uniq([...st.sfw, ...st.nsfw]).filter(t => state.tags.includes(t)).length;
@@ -2295,6 +3413,455 @@ function initWizard() {
     else if (!typing && e.key === "ArrowRight") wzNext();
     else if (!typing && e.key === "ArrowLeft") wzGo(-1);
   });
+}
+
+/* ===== LoRA-Seite: eigene Ansicht wie das Automations-Menü (Adresse ?loras=1, Zurück-Taste funktioniert) ===== */
+const LORA_VIEW = new URLSearchParams(location.search).get("loras") === "1";
+function updateLoraLaunch() {
+  const btn = $("#btnLoraPage"); if (!btn) return;
+  const n = (state.loras || []).filter(l => l.active).length;
+  btn.textContent = n ? `🎨 LoRAs verwalten (${n} aktiv)` : "🎨 LoRAs verwalten";
+}
+function openLoraPage(updateHistory = true) {
+  if (updateHistory && new URLSearchParams(location.search).get("loras") !== "1") {
+    const url = new URL(location.href);
+    url.searchParams.set("loras", "1");
+    history.pushState({ loras: true }, "", url);
+  }
+  document.body.classList.add("lora-view");
+  renderLoras();
+  window.scrollTo(0, 0);
+}
+function closeLoraPage(updateHistory = true) {
+  if (updateHistory && new URLSearchParams(location.search).get("loras") === "1") {
+    const url = new URL(location.href);
+    url.searchParams.delete("loras");
+    history.replaceState(null, "", url);
+  }
+  document.body.classList.remove("lora-view");
+  updateLoraLaunch();
+}
+function initLoraPage() {
+  $("#btnLoraPage").onclick = () => openLoraPage();
+  $("#btnCloseLoras").onclick = () => closeLoraPage();
+  document.addEventListener("keydown", e => {
+    const typing = /^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
+    if (e.key === "Escape" && !typing && document.body.classList.contains("lora-view")) closeLoraPage();
+  });
+  window.addEventListener("popstate", () => {
+    if (new URLSearchParams(location.search).get("loras") === "1") openLoraPage(false);
+    else if (document.body.classList.contains("lora-view")) closeLoraPage(false);
+  });
+  updateLoraLaunch();
+  if (LORA_VIEW) openLoraPage(false);
+}
+
+/* ===== FORTSCHRITT: Dock mit Fortschrittsbalken =====
+   Live: fragt /sdapi/v1/progress ab (echter Schritt, ETA). Ohne Live-Daten: lernende Schätzung aus Schritten × Auflösung der bisherigen Bilder. */
+const DP_HIST_KEY = "ps_gen_hist_v2", DP_SOUND_KEY = "ps_sound_v1";
+const DP_TITLE = document.title;
+const DP = { on: false, t0: 0, est: 30000, cfg: null, live: false, last: null, prev: null, eta: null, etaT: 0, stepNow: 0, stepTotal: 0, shown: 0, timer: null, pollTimer: null, hideT: null, polling: false, pollFails: 0, batch: null };
+let dpHist = [];
+try { dpHist = JSON.parse(localStorage.getItem(DP_HIST_KEY) || "[]"); } catch (e) {}
+try { localStorage.removeItem("ps_progress_api_off_v1"); localStorage.removeItem("ps_gen_times_v1"); } catch (e) {}
+const DR_LIST = [];
+let lbIdx = -1;
+
+const dpMedian = a => { const x = [...a].sort((p, q) => p - q); return x[Math.floor(x.length / 2)]; };
+function dpEstimate(cfg) {
+  const all = dpHist.filter(h => h.steps && h.ms);
+  if (!cfg || !cfg.steps) return all.length ? dpMedian(all.slice(-5).map(h => h.ms)) : 30000;
+  const same = all.filter(h => h.steps === cfg.steps && h.w === cfg.w && h.h === cfg.h).slice(-5);
+  if (same.length) return dpMedian(same.map(h => h.ms));
+  const unit = all.slice(-12).map(h => h.ms / (h.steps * h.w * h.h));          // ms pro Schritt und Pixel
+  if (unit.length) return dpMedian(unit) * cfg.steps * cfg.w * cfg.h;
+  return cfg.steps * 1500 * (cfg.w * cfg.h / 1048576);                         // erster Start: ~1,5 s pro Schritt bei 1 MP
+}
+function dpFmt(ms) {
+  const s = Math.max(1, Math.round(ms / 1000));
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} min`;
+}
+const dpClock = ms => { const s = Math.floor(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; };
+
+function dpBeep() {
+  if (!$("#gdSound").checked) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [660, 880].forEach((f, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime + i * 0.18;
+      o.frequency.value = f; o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      o.start(t); o.stop(t + 0.32);
+    });
+  } catch (e) {}
+}
+function dpShow(cls, title) {
+  const dock = $("#genDock");
+  dock.classList.remove("done", "err"); if (cls) dock.classList.add(cls);
+  dock.classList.add("show");
+  if (title) $("#gdTitle").textContent = title;
+  clearTimeout(DP.hideT);
+}
+function dpHideLater(ms) {
+  clearTimeout(DP.hideT);
+  DP.hideT = setTimeout(() => { if (!DP.on) { $("#genDock").classList.remove("show"); document.title = DP_TITLE; } }, ms);
+}
+
+function dpStart(title) {
+  Object.assign(DP, { on: true, t0: Date.now(), live: false, last: null, prev: null, eta: null, stepNow: 0, stepTotal: 0, shown: 0, pollFails: 0, est: dpEstimate(DP.cfg) });
+  dpShow("", title);
+  $("#gdStop").hidden = false;
+  $("#gdBar").style.width = "0%";
+  clearInterval(DP.timer); DP.timer = setInterval(dpRender, 120);
+  clearInterval(DP.pollTimer); DP.pollTimer = setInterval(dpPoll, 700); setTimeout(dpPoll, 400);
+  dpRender();
+}
+
+async function dpPoll() {
+  if (!DP.on || DP.polling) return;
+  DP.polling = true;
+  const c = new AbortController(), to = setTimeout(() => c.abort(), 2500);
+  try {
+    const r = await fetch("/sdapi/v1/progress?skip_current_image=true", { signal: c.signal, cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    if (typeof d.progress !== "number") throw new Error("kein Fortschritt");
+    DP.pollFails = 0;
+    const p = Math.max(0, Math.min(1, d.progress)), now = Date.now();
+    if (p > 0 && !(p > 0.97 && !DP.last && now - DP.t0 < 5000)) {      // 0 = Leerlauf; alte 100 % vom letzten Bild ignorieren
+      if (!DP.last || p >= DP.last.p) { DP.prev = DP.last; DP.last = { p, t: now }; }
+      DP.live = true;
+      const st = d.state || {};
+      if (st.sampling_steps) { DP.stepNow = st.sampling_step || 0; DP.stepTotal = st.sampling_steps; }
+      if (typeof d.eta_relative === "number" && d.eta_relative > 0) { DP.eta = d.eta_relative * 1000; DP.etaT = now; }
+    }
+  } catch (e) {
+    if (++DP.pollFails >= 4) clearInterval(DP.pollTimer);                // ohne Live-Daten läuft die Schätzung weiter
+  } finally { clearTimeout(to); DP.polling = false; }
+}
+
+function dpRender() {
+  if (!DP.on) return;
+  const now = Date.now(), el = now - DP.t0, live = DP.live && !!DP.last;
+  let target;
+  if (live) {
+    const { p, t } = DP.last;
+    const rate = DP.prev && t > DP.prev.t && p > DP.prev.p ? (p - DP.prev.p) / (t - DP.prev.t) : 0;
+    target = p + Math.min(rate * (now - t), 0.04);                       // zwischen zwei Abfragen sanft weiterlaufen
+  } else {
+    const x = el / DP.est;
+    target = x < 0.9 ? x : 0.9 + 0.09 * (1 - Math.exp(-(x - 0.9) * 3));
+  }
+  target = Math.min(target, 0.99);
+  DP.shown = Math.max(DP.shown, DP.shown + (target - DP.shown) * 0.35);
+  const pct = Math.round(DP.shown * 100);
+
+  let left;
+  if (live && DP.eta != null) left = Math.max(0, DP.eta - (now - DP.etaT));
+  else if (live && DP.last.p > 0.05) left = Math.max(0, (DP.last.t - DP.t0) / DP.last.p - el);
+  else left = Math.max(0, DP.est - el);
+
+  const steps = DP.stepTotal || (DP.cfg && DP.cfg.steps) || 0;
+  let phase = "";
+  if (DP.shown < 0.06 && !live) phase = "Bereite vor";
+  else if (DP.shown > 0.95) phase = "Dekodiere Bild";
+  else if (steps) phase = DP.stepTotal ? `Schritt ${DP.stepNow}/${steps}` : `≈ Schritt ${Math.max(1, Math.round(DP.shown * steps))}/${steps}`;
+  let leftTxt = left > 1000 ? `ca. ${dpFmt(left)} übrig` : "gleich fertig";
+  if (!live && el > DP.est * 1.3) leftTxt = "dauert länger als sonst";
+
+  const b = DP.batch, finite = b && Number.isFinite(b.target);
+  $("#gdBar").style.width = pct + "%";
+  $("#gdPct").textContent = pct + " %";
+  $("#gdSrc").textContent = live ? "Live" : "Schätzung";
+  $("#gdSrc").classList.toggle("live", live);
+  $("#gdMeta").textContent = [b ? `Bild ${b.done + 1}${finite ? " von " + b.target : ""}` : "", phase, dpClock(el), leftTxt].filter(Boolean).join(" · ");
+  $("#gdTotalWrap").hidden = !finite;
+  if (finite) {
+    $("#gdTotalBar").style.width = Math.min(100, (b.done + DP.shown) / b.target * 100) + "%";
+    $("#gdTotalMeta").textContent = `Gesamt ≈ ${dpFmt(left + (b.target - b.done - 1) * dpEstimate(DP.cfg))} übrig`;
+  } else $("#gdTotalMeta").textContent = b ? "endlos – bis Stopp" : "";
+  document.title = `⏳ ${pct} %${finite ? ` · ${b.done + 1}/${b.target}` : ""} – ${DP_TITLE}`;
+}
+
+function dpFinish(ok, msg) {
+  if (!DP.on) return;
+  const dur = Date.now() - DP.t0;
+  DP.on = false; clearInterval(DP.timer); clearInterval(DP.pollTimer);
+  if (ok && DP.cfg && DP.cfg.steps) {
+    dpHist = [...dpHist, { steps: DP.cfg.steps, w: DP.cfg.w, h: DP.cfg.h, ms: dur }].slice(-40);
+    try { localStorage.setItem(DP_HIST_KEY, JSON.stringify(dpHist)); } catch (e) {}
+  }
+  dpShow(ok ? "done" : "err", ok ? `✓ Fertig in ${dpFmt(dur)}` : "Nicht erzeugt");
+  if (ok) $("#gdBar").style.width = "100%";
+  $("#gdPct").textContent = ok ? "100 %" : "–";
+  $("#gdMeta").textContent = ok ? "" : (msg || "");
+  $("#gdStop").hidden = true;
+  if (ok && !DP.batch) dpBeep();
+  document.title = ok ? `✓ ${DP_TITLE}` : DP_TITLE;
+  dpHideLater(ok ? 5000 : 9000);
+}
+
+function dpBatchEnd(completed) {
+  const had = DP.batch; DP.batch = null;
+  if (!had || completed < 1) return;
+  if ($("#genDock").classList.contains("err")) return;
+  dpShow("done", `✓ ${completed} Bild${completed === 1 ? "" : "er"} fertig`);
+  $("#gdBar").style.width = "100%"; $("#gdPct").textContent = "100 %";
+  $("#gdMeta").textContent = ""; $("#gdTotalMeta").textContent = ""; $("#gdTotalWrap").hidden = true;
+  dpBeep();
+  dpHideLater(9000);
+}
+
+function friendlyDtError(msg) {
+  const m = String(msg || "");
+  if (/refused|errno 61|errno 111|HTTP 502|Failed to fetch|NetworkError|Load failed/i.test(m))
+    return "Draw Things nicht erreichbar: Ist die App geöffnet, der API Server (Port 7860) eingeschaltet und diese Seite über dt_bridge.py geöffnet?";
+  if (/time ?out|timed out/i.test(m)) return "Zeitüberschreitung: Draw Things antwortet nicht.";
+  return m;
+}
+
+async function autoSaveImages(images, prompt) {
+  if (!state.autoSaveImages || !SERVER_STORE) return;
+  for (const img of images) {
+    try {
+      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
+      if (!autoGenerationRunning) showToast("💾 Gespeichert: " + d.file);
+    } catch (e) { showToast("⚠️ Bild nicht gespeichert: " + e.message); }
+  }
+}
+
+/* ---- Lightbox für Ergebnisse ---- */
+function openLightbox(i) {
+  const it = DR_LIST[i]; if (!it) return;
+  lbIdx = i;
+  $("#lbImg").src = it.src;
+  $("#lbCap").textContent = `${i + 1} / ${DR_LIST.length} · ${it.prompt}`;
+  $("#lightbox").classList.add("open");
+}
+function closeLightbox() { $("#lightbox").classList.remove("open"); }
+function lbStep(d) { if (DR_LIST.length) openLightbox((lbIdx + d + DR_LIST.length) % DR_LIST.length); }
+
+function initGenDock() {
+  try { $("#gdSound").checked = localStorage.getItem(DP_SOUND_KEY) === "1"; } catch (e) {}
+  $("#gdSound").onchange = e => { try { localStorage.setItem(DP_SOUND_KEY, e.target.checked ? "1" : "0"); } catch (x) {} if (e.target.checked) dpBeep(); };
+  $("#gdStop").onclick = () => cancelDrawGeneration();
+  $("#genDock").addEventListener("click", e => { if (!DP.on && !e.target.closest("button,label")) $("#genDock").classList.remove("show"); });
+  $("#chkAutoSave").checked = !!state.autoSaveImages;
+  $("#chkAutoSave").onchange = e => {
+    state.autoSaveImages = e.target.checked; saveState();
+    showToast(!e.target.checked ? "Auto-Speichern aus." : SERVER_STORE ? "💾 Bilder werden im Ordner ps_images gespeichert." : "⚠️ Funktioniert nur, wenn die Seite über dt_bridge.py geöffnet ist.");
+  };
+  $("#lbClose").onclick = closeLightbox;
+  $("#lbPrev").onclick = () => lbStep(-1);
+  $("#lbNext").onclick = () => lbStep(1);
+  $("#lightbox").addEventListener("click", e => { if (e.target === e.currentTarget) closeLightbox(); });
+  $("#lbSave").onclick = () => { const it = DR_LIST[lbIdx]; if (!it) return; const a = document.createElement("a"); a.href = it.src; a.download = `draw-things-${Date.now()}.png`; a.click(); };
+  $("#lbCopy").onclick = () => { const it = DR_LIST[lbIdx]; if (it) copyToClipboard(it.prompt); };
+  $("#btnClearResults").onclick = () => {
+    $("#dtResults").innerHTML = '<p class="hint dt-empty">Generierte Bilder erscheinen hier.</p>';
+    DR_LIST.length = 0; showToast("🗑 Ergebnisse geleert.");
+  };
+  document.addEventListener("keydown", e => {
+    if (!$("#lightbox").classList.contains("open")) return;
+    if (e.key === "Escape") closeLightbox();
+    else if (e.key === "ArrowLeft") lbStep(-1);
+    else if (e.key === "ArrowRight") lbStep(1);
+  });
+  window.addEventListener("beforeunload", e => {
+    if (drawGenerationInProgress || autoGenerationRunning) { e.preventDefault(); e.returnValue = ""; }
+  });
+}
+
+/* ===== DATEI-SPEICHER: Alles wird zusätzlich in prompt_studio_data.json (neben dt_bridge.py) gesichert ===== */
+const SERVER_STORE = location.protocol.startsWith("http");
+let serverOk = null, serverPushTimer = null;
+
+function setSaveStatus(kind) {
+  const el = document.getElementById("saveStatus"); if (!el) return;
+  const t = {
+    file: ["💾 In Datei gesichert", "ok", "Deine Daten (LoRAs, Presets, Tags …) liegen in prompt_studio_data.json neben dt_bridge.py und bleiben auch nach dem Schließen erhalten."],
+    local: ["⚠️ Nur im Browser gespeichert", "warn", "Seite über dt_bridge.py öffnen (http://localhost:8080), dann werden die Daten zusätzlich in einer Datei gesichert."],
+    err: ["⚠️ Datei-Sicherung fehlgeschlagen", "bad", "dt_bridge.py läuft nicht mehr oder ist veraltet. Die Daten sind weiter im Browser gespeichert."]
+  }[kind];
+  el.textContent = t[0]; el.className = "save-pill " + t[1]; el.title = t[2];
+}
+
+async function loadServerState() {
+  if (!SERVER_STORE) { setSaveStatus("local"); return; }
+  try {
+    const r = await fetch("/api/state", { cache: "no-store" });
+    if (r.status === 404) { serverOk = true; return; }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    const srv = data && data.state;
+    let local = null;
+    try { local = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); } catch (e) {}
+    if (srv && (!local || (srv.savedAt || 0) >= (local.savedAt || 0))) localStorage.setItem(STORAGE_KEY, JSON.stringify(srv));
+    serverOk = true;
+  } catch (e) {
+    serverOk = false;
+    setSaveStatus("local");
+    return;
+  }
+  setSaveStatus("file");
+}
+
+function pushServerState(now = false) {
+  if (!SERVER_STORE || serverOk === false) return;
+  clearTimeout(serverPushTimer);
+  const send = async () => {
+    try {
+      const body = JSON.stringify({ version: 1, savedAt: state.savedAt || Date.now(), state });
+      const r = await fetch("/api/state", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: body.length < 60000 });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      serverOk = true; setSaveStatus("file");
+    } catch (e) { setSaveStatus("err"); }
+  };
+  if (now) send(); else serverPushTimer = setTimeout(send, 350);
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && serverPushTimer) pushServerState(true); });
+window.addEventListener("pagehide", () => { if (serverPushTimer) pushServerState(true); });
+
+/* ===== PFLICHT-TAGS & SCHNELL-AUSSCHLIESSEN (Taste X / P + Klick) ===== */
+const tagCatalog = () => uniq([
+  ...Object.values(LIBRARY).flatMap(c => [...c.sfw, ...c.nsfw]),
+  ...(state.customLibrary || []).map(i => i.text).filter(Boolean)
+]);
+
+/* Schaltet einen Tag in der Liste "randomExcludedTags" (ausschließen) oder "randomPinnedTags" (immer dabei) um. Beide Listen schließen sich gegenseitig aus. */
+function toggleRandomList(kind, tag) {
+  const other = kind === "randomExcludedTags" ? "randomPinnedTags" : "randomExcludedTags";
+  const low = String(tag).toLowerCase();
+  const list = state[kind] || (state[kind] = []);
+  const has = list.some(t => t.toLowerCase() === low);
+  state[kind] = has ? list.filter(t => t.toLowerCase() !== low) : [...list, tag];
+  if (!has) state[other] = (state[other] || []).filter(t => t.toLowerCase() !== low);
+  saveState();
+  syncRandomizerControls();
+  return !has;
+}
+
+function renderRandomPinnedPickers() {
+  const pinned = state.randomPinnedTags || (state.randomPinnedTags = []);
+  const sel = new Set(pinned.map(t => t.toLowerCase()));
+  const catalog = tagCatalog();
+  document.querySelectorAll(".randomizer-pinned").forEach(picker => {
+    const chips = picker.querySelector(".random-pinned-chips"), search = picker.querySelector(".random-pin-search"), sugg = picker.querySelector(".random-pin-suggestions");
+    chips.replaceChildren();
+    if (!pinned.length) { const e = document.createElement("span"); e.className = "random-pin-empty"; e.textContent = "Noch keine Pflicht-Tags."; chips.appendChild(e); }
+    pinned.forEach(tag => {
+      const chip = document.createElement("span"); chip.className = "random-pin-chip";
+      const t = document.createElement("span"); t.textContent = "📌 " + tag;
+      const x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.title = `„${tag}“ nicht mehr fest dabei`;
+      x.onclick = () => toggleRandomList("randomPinnedTags", tag);
+      chip.append(t, x); chips.appendChild(chip);
+    });
+    const q = search.value.trim().toLowerCase();
+    const matches = q ? catalog.filter(t => t.toLowerCase().includes(q) && !sel.has(t.toLowerCase())).slice(0, 10) : [];
+    sugg.replaceChildren(); sugg.hidden = !q || !matches.length;
+    matches.forEach(tag => {
+      const o = document.createElement("button"); o.type = "button"; o.className = "random-pin-option"; o.textContent = tag;
+      o.onclick = () => { toggleRandomList("randomPinnedTags", tag); search.focus(); };
+      sugg.appendChild(o);
+    });
+  });
+}
+
+/* Markiert alle Tag-Knöpfe: ⊘ = vom Zufall ausgeschlossen, 📌 = immer dabei */
+function syncTagMarks() {
+  const ex = new Set((state.randomExcludedTags || []).map(t => t.toLowerCase()));
+  const pin = new Set((state.randomPinnedTags || []).map(t => t.toLowerCase()));
+  document.querySelectorAll(".tag[data-tag]").forEach(b => {
+    const k = b.dataset.tag.toLowerCase();
+    b.classList.toggle("is-pinned", pin.has(k));
+    b.classList.toggle("is-excluded", !pin.has(k) && ex.has(k));
+  });
+}
+
+const TM = { mode: null };
+function setTagMode(mode) {
+  TM.mode = TM.mode === mode ? null : mode;
+  document.body.classList.toggle("tagmode-exclude", TM.mode === "exclude");
+  document.body.classList.toggle("tagmode-pin", TM.mode === "pin");
+  $("#btnModeExclude").classList.toggle("active", TM.mode === "exclude");
+  $("#btnModePin").classList.toggle("active", TM.mode === "pin");
+  $("#tmText").textContent = TM.mode === "exclude"
+    ? "⊘ Ausschließen-Modus: Klicke Tags, die Zufallswurf und Automation nie nutzen sollen (nochmal klicken = wieder erlauben)"
+    : TM.mode === "pin" ? "📌 Immer-dabei-Modus: Klicke Tags, die bei jedem Zufallswurf und jeder Automation dabei sein sollen" : "";
+  $("#tagModeBar").classList.toggle("show", !!TM.mode);
+}
+
+function initTagModes() {
+  $("#btnModeExclude").onclick = () => setTagMode("exclude");
+  $("#btnModePin").onclick = () => setTagMode("pin");
+  $("#tmExit").onclick = () => { if (TM.mode) setTagMode(TM.mode); };
+  document.addEventListener("keydown", e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const el = document.activeElement || {};
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName || "") || el.isContentEditable) return;
+    const k = e.key.toLowerCase();
+    if (k === "x") { e.preventDefault(); setTagMode("exclude"); }
+    else if (k === "p") { e.preventDefault(); setTagMode("pin"); }
+    else if (e.key === "Escape" && TM.mode) setTagMode(TM.mode);
+  });
+  /* Klick auf einen Tag im Modus (oder mit Alt/Option) schaltet die Liste um, statt den Tag auszuwählen */
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest(".tag[data-tag]");
+    if (!b || b.closest("#extras, #negExtras") || b.dataset.k === "extras" || b.dataset.k === "negExtras") return;
+    const mode = TM.mode || (e.altKey ? "exclude" : null);
+    if (!mode) return;
+    e.preventDefault(); e.stopPropagation();
+    const on = toggleRandomList(mode === "pin" ? "randomPinnedTags" : "randomExcludedTags", b.dataset.tag);
+    showToast(mode === "pin"
+      ? (on ? `📌 „${b.dataset.tag}“ ist jetzt immer dabei` : `„${b.dataset.tag}“ nicht mehr fest dabei`)
+      : (on ? `⊘ „${b.dataset.tag}“ wird ausgeschlossen` : `„${b.dataset.tag}“ wieder erlaubt`));
+  }, true);
+  syncTagMarks();
+}
+
+/* ===== PARTNER-AUTOMATIK: Tags mit zweiter Person bekommen Personenzahl + Geschlecht, falsches Geschlecht wird gesperrt ===== */
+const PARTNER_CAT = "🔞 Intimität & Sex-Posen";
+/* Tags dieser Kategorie, die KEINE zweite Person brauchen (Einzelpersonen-Posen, Orte, Blickrichtung) */
+const PARTNER_SOLO = new Set(["self touch", "spreading legs", "ass focus", "crotch focus", "presenting ass", "presenting pussy", "fingering", "on bed", "romantic bedroom", "bed scene", "after sex", "touching", "caressing"]);
+/* Tags mit mehreren Partnern */
+const PARTNER_GROUP = new Set(["threesome", "gangbang", "double penetration"]);
+const PARTNER_MODES = {
+  hetero: { pos: ["1girl", "1boy", "hetero"], posGroup: ["1girl", "multiple boys", "hetero"],
+    neg: ["2girls", "multiple girls", "yuri", "futanari", "newhalf"], drop: ["solo", "2girls", "multiple girls", "yuri", "futanari", "newhalf"], dropGroup: ["1boy"] },
+  yuri: { pos: ["2girls", "yuri"], posGroup: ["multiple girls", "yuri"],
+    neg: ["1boy", "multiple boys", "hetero"], drop: ["solo", "1girl", "1boy", "multiple boys", "hetero", "yaoi"], dropGroup: ["2girls"] },
+  yaoi: { pos: ["2boys", "yaoi"], posGroup: ["multiple boys", "yaoi"],
+    neg: ["1girl", "multiple girls", "hetero"], drop: ["solo", "1boy", "1girl", "multiple girls", "hetero", "yuri"], dropGroup: ["2boys"] }
+};
+
+function partnerNeeds(tag) {
+  const k = String(tag).toLowerCase();
+  if ((state.partnerOff || []).some(t => t.toLowerCase() === k)) return false;
+  if ((state.partnerTags || []).some(t => t.toLowerCase() === k)) return true;
+  const cat = LIBRARY[PARTNER_CAT];
+  return !!cat && !PARTNER_SOLO.has(k) && cat.nsfw.some(t => t.toLowerCase() === k);
+}
+
+function partnerContext() {
+  const m = PARTNER_MODES[state.partnerMode];
+  if (!m) return null;
+  const needed = (state.tags || []).filter(partnerNeeds);
+  if (!needed.length) return null;
+  const group = needed.some(t => PARTNER_GROUP.has(t.toLowerCase()));
+  const pos = [...(group ? m.posGroup : m.pos)];
+  if (state.partnerFaceless && state.partnerMode === "hetero") pos.push("faceless male");
+  return { pos, neg: m.neg, drop: new Set([...m.drop, ...(group ? m.dropGroup : [])]) };
+}
+
+function togglePartnerTag(tag) {
+  const k = String(tag).toLowerCase(), cur = partnerNeeds(tag);
+  const rm = (key) => { state[key] = (state[key] || []).filter(t => t.toLowerCase() !== k); };
+  if (cur) { rm("partnerTags"); if (partnerNeeds(tag)) state.partnerOff = [...(state.partnerOff || []), tag]; }
+  else { rm("partnerOff"); if (!partnerNeeds(tag)) state.partnerTags = [...(state.partnerTags || []), tag]; }
+  updatePromptOutputs();
+  showToast(partnerNeeds(tag) ? `👥 „${tag}“ braucht jetzt eine zweite Person` : `„${tag}“ braucht keine zweite Person`);
 }
 
 init();
