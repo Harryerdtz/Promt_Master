@@ -2,59 +2,54 @@
 
 > **Ein mächtiges, browserbasiertes Tool zum Erstellen, Verwalten und Exportieren von Prompts für KI-Bildgenerierung (Stable Diffusion, Midjourney, NovelAI, etc.)** — mit Fokus auf Anime, Hentai & Realistic Styles.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-purple?style=for-the-badge&logo=github)](https://harryerdtz.github.io/Promt_Master/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](index.html)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat&logo=javascript&logoColor=black)](index.html)
-[![No Build Step](https://img.shields.io/badge/No_Build-Required-brightgreen)](index.html)
+[![Python Bridge](https://img.shields.io/badge/Python_Bridge-Required-3776AB?logo=python&logoColor=white)](dt_bridge.py)
 
 ---
 
-## ✨ Features
+## ⚠️ WICHTIG: Das ist eine **lokale App**, keine statische Website
 
-### 🎯 **Prompt-Building**
-- **Tag-basierte Auswahl** — Klickbare Chips für Characters, Outfits, Poses, Settings, Lighting, Quality, etc.
-- **Multi-Style Support** — Anime • Realistic • Hentai (NSFW-Toggle)
-- **Negative Prompts** — Ein-Klick Negative-Embeddings & Quality-Booster
-- **Custom Tags** — Eigene Tags speichern, bearbeiten, löschen (persistiert in `localStorage`)
-- **Presets** — Fertige Prompt-Vorlagen laden/speichern/teilen
+**Das funktioniert NICHT:**
+- ❌ Direkt auf GitHub Pages öffnen
+- ❌ `index.html` per Doppelklick im Browser öffnen (CORS blockiert Draw Things API)
+- ❌ Als "Live Demo" ohne lokalen Server nutzen
 
-### 🔧 **LoRA & Model Management**
-- **LoRA-Slots** (bis zu 5) mit Weight-Slider (0–2.0)
-- **Trigger-Word Auto-Injection** — LoRA-Triggers werden automatisch in den Prompt eingefügt
-- **Model Presets** — SDXL, SD 1.5, Pony, NovelAI, Illustrious, NoobAI, Flux, HiDream, u.v.m.
-- **Style-Switcher** — Anime / Realistic mit dedizierten Tag-Sets
-
-### 📤 **Export & Integration**
-- **Kopieren** — Prompt + Negative Prompt in die Zwischenablage
-- **JSON Export/Import** — Vollständiger State (Tags, LoRAs, Settings, Custom Tags, Presets)
-- **PNG Info Chunk** — Prompt-Metadaten direkt in generierte Bilder einbetten (A1111/ComfyUI-kompatibel)
-- **Civitai / HuggingFace Links** — Direkt zu Model/LoRA-Seiten springen
-
-### 🎨 **UI/UX**
-- **Dark Theme** mit neon-accented Gradients (SFW/NSFW/LoRA/Custom)
-- **Responsive Grid** — Sidebar (Tags) + Sticky Output-Panel rechts
-- **Akkordeon-Sections** — Platzsparend, aufklappbar, Tag-Counter
-- **Filter-Modes** — All / SFW / NSFW Tag-Filter
-- **Toast-Notifications** — Feedback für Copy, Save, Import, Errors
-- **Keyboard Shortcuts** — `Ctrl+Enter` (Copy), `Ctrl+Shift+E` (Export), `Ctrl+Shift+I` (Import)
-
----
-
-## 🚀 Quick Start
-
-```bash
-# Klonen & lokal öffnen
-git clone https://github.com/Harryerdtz/Promt_Master.git
-cd Promt_Master
-open index.html        # macOS
-# oder: xdg-open index.html  # Linux
-# oder: start index.html     # Windows
+**Das MUSS laufen:**
+```
+Browser (http://localhost:8080) 
+    → dt_bridge.py (Python HTTP Server + Proxy auf Port 8080) 
+        → Draw Things API (http://127.0.0.1:7860)
 ```
 
-**Oder direkt im Browser:** https://harryerdtz.github.io/Promt_Master/
+Ohne laufenden `dt_bridge.py` **und** Draw Things funktioniert: keine Bildgenerierung, kein State-Save, keine LoRA-Ladung, kein PNG-Export.
 
-> **Kein Build, keine Dependencies, kein Server** — reine `index.html` öffnen und loslegen.
+---
+
+## 🚀 Quick Start (Richtig)
+
+### Voraussetzungen
+- **Draw Things** (macOS/iOS App) installiert
+- In Draw Things: **Settings → API → Enable** (Port 7860)
+- Python 3.8+
+
+### Installation & Start
+```bash
+# 1. Repo klonen
+git clone https://github.com/Harryerdtz/Promt_Master.git
+cd Promt_Master
+
+# 2. Draw Things starten & API aktivieren (Port 7860)
+
+# 3. Bridge starten (öffnet Browser automatisch auf localhost:8080)
+python3 dt_bridge.py
+
+# Optional: Anderer Port / Draw Things URL
+PORT=9000 DT_URL=http://127.0.0.1:7860 python3 dt_bridge.py
+```
+
+**Stoppen:** `Strg+C` im Terminal
 
 ---
 
@@ -70,15 +65,16 @@ Oben links: Model-Dropdown (SDXL, Pony, Illustrious, …) + Style-Toggle (Anime 
 
 ### 3. **LoRAs hinzufügen**
 - `+ LoRA` → Name, Trigger-Word, Weight (Slider) → **Add**.
-- Aktive LoRAs zeigen Trigger im Promout-Output (`<lora:name:weight>`).
+- Aktive LoRAs zeigen Trigger im Prompt-Output (`<lora:name:weight>`).
 
 ### 4. **Negative Prompts**
 - Unten im Output-Panel: Negative Tags genauso hinzufügen.
 - Presets: `Quality Booster`, `Anatomy Fix`, `Bad Hands`, etc.
 
-### 5. **Exportieren**
+### 5. **Generieren & Exportieren**
 | Action | Shortcut | Ergebnis |
 |--------|----------|----------|
+| **Generate** | — | Sendet Prompt an Draw Things via Bridge |
 | **Copy Prompt** | `Ctrl+Enter` | Prompt + Negative in Clipboard |
 | **Export JSON** | `Ctrl+Shift+E` | `prompt-master-backup.json` (voller State) |
 | **Import JSON** | `Ctrl+Shift+I` | State aus Datei wiederherstellen |
@@ -87,6 +83,10 @@ Oben links: Model-Dropdown (SDXL, Pony, Illustrious, …) + Style-Toggle (Anime 
 ### 6. **Presets nutzen**
 - `Presets` Section → fertige Prompt-Kombis laden
 - Eigene Presets: `Save as Preset` → Name geben → wiederverwendbar
+
+### 7. **Automation / Randomizer**
+- `🎲 Assistent` Button → Schritt-für-Schritt Wizard für Batches
+- `⚡ Automation` Button → Massen-Generierung mit Randomizer (Pin/Exclude Tags, LoRA Weight Randomization, Partner Modes)
 
 ---
 
@@ -98,6 +98,8 @@ Oben links: Model-Dropdown (SDXL, Pony, Illustrious, …) + Style-Toggle (Anime 
 | `Ctrl / Cmd + Shift + E` | JSON-Export herunterladen |
 | `Ctrl / Cmd + Shift + I` | JSON-Import (Datei-Dialog) |
 | `Escape` | Offene Dropdowns/Toasts schließen |
+| `/` | Suchfokus (Tag-Suche) |
+| `Enter` (im Wizard) | Weiter / Generieren |
 
 ---
 
@@ -105,11 +107,18 @@ Oben links: Model-Dropdown (SDXL, Pony, Illustrious, …) + Style-Toggle (Anime 
 
 ```
 Promt_Master/
-├── index.html      # 🎯 Einzige Datei — alles drin (HTML + CSS + JS)
-└── README.md       # Diese Datei
+├── index.html                 # 🎯 UI (HTML + CSS + JS, ~200 KB)
+├── dt_bridge.py               # 🌉 Python HTTP Server + Draw Things Proxy
+├── prompt_studio_data.json    # 💾 Gespeicherter State (Tags, LoRAs, Presets, History)
+├── prompt_studio_data.json.bak# 💾 Backup des vorherigen States
+├── ps_images/                 # 🖼️ Auto-generierte Bilder + Prompt-.txt (wird erstellt)
+└── README.md                  # Diese Datei
 ```
 
-**Architektur:** Single-file Vanilla ES6 Module Pattern (IIFE), State in `localStorage`, zero dependencies.
+**Architektur:**
+- **Frontend:** Single-file Vanilla ES6 (IIFE), State in `localStorage` + Server-Sync via `/api/state`
+- **Backend:** `dt_bridge.py` — `http.server` + Threading, Proxy zu Draw Things `/sdapi/*`, State/Image Persistenz
+- **Draw Things:** Lokale macOS App mit aktivierter API (Port 7860)
 
 ---
 
@@ -161,18 +170,22 @@ CSS Custom Properties in `:root` (ganz oben im `<style>` Block):
 }
 ```
 
+Verfügbare Themes: `neon` (Default), `calm`, `night`, `soft` — via `body[data-theme="..."]`.
+
 ---
 
 ## 💾 Data Persistence
 
-Alles wird im **localStorage** gespeichert (Key: `promptMasterState`):
-- Aktive Tags (SFW/NSFW/Custom/Extras/Negative)
-- LoRA-Slots (Name, Trigger, Weight, Enabled)
-- Custom Tags & Presets
-- Model-Auswahl, Style, Filter-Mode
-- Letzte Prompt-Ausgabe
+**Drei Speicher-Ebenen:**
 
-> **Privatsphäre:** Keine Daten verlassen deinen Browser. Kein Tracking, keine Analytics.
+| Ebene | Ort | Inhalt |
+|-------|-----|--------|
+| **Browser** | `localStorage` (`promptMasterState`) | UI-State für schnelles Laden (Tags, Model, Style, Filter) |
+| **Server (Bridge)** | `prompt_studio_data.json` | Voller State + LoRAs + Presets + Randomizer-History (persistent, überlebt Browser-Neustart) |
+| **Backup** | `prompt_studio_data.json.bak` | Vorheriger Stand vor jedem Save |
+| **Bilder** | `ps_images/YYYYMMDD_HHMMSS_XX.png/.txt` | Generierte Bilder + zugehörige Prompts |
+
+> **Privatsphäre:** Alles läuft **lokal**. Keine Daten verlassen deinen Rechner. Kein Tracking, keine Analytics, keine Cloud.
 
 ---
 
@@ -185,7 +198,25 @@ Alles wird im **localStorage** gespeichert (Key: `promptMasterState`):
 | Safari | 15+ | ✅ Full |
 | Mobile Safari/Chrome | iOS 15+ / Android 10+ | ✅ Touch-optimiert |
 
-Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (HTTPS/localhost).
+Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (nur auf `http://localhost` oder HTTPS).
+
+---
+
+## 🛠️ dt_bridge.py Details
+
+**Endpoints:**
+| Method | Path | Beschreibung |
+|--------|------|--------------|
+| `GET` | `/` | Serviert `index.html` |
+| `GET/POST` | `/api/state` | State laden/speichern (JSON) |
+| `POST` | `/api/save-image` | Base64-Bild + Prompt → `ps_images/` |
+| `*` | `/sdapi/*` | **Proxy** zu Draw Things (löst CORS) |
+
+**Umgebungsvariablen:**
+| Variable | Default | Beschreibung |
+|----------|---------|--------------|
+| `PORT` | `8080` | HTTP Port für Bridge |
+| `DT_URL` | `http://127.0.0.1:7860` | Draw Things API Basis-URL |
 
 ---
 
@@ -193,11 +224,11 @@ Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (HTTPS/localhos
 
 1. Fork repo
 2. Branch: `git checkout -b feature/amazing-thing`
-3. Changes in `index.html` machen
+3. Changes in `index.html` und/oder `dt_bridge.py` machen
 4. Commit: `git commit -m "feat: amazing thing"`
 5. Push & PR öffnen
 
-**Ideen:** Neue Tag-Kategorien, Model-Presets, Export-Formate, Accessibility, i18n, Themes.
+**Ideen:** Neue Tag-Kategorien, Model-Presets, Export-Formate, Accessibility, i18n, Themes, Bridge-Features (z.B. Multi-GPU, Queue-Management).
 
 ---
 
@@ -211,6 +242,7 @@ Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (HTTPS/localhos
 
 - **Tag-Datenbank** — Community-Listen (Danbooru, Civitai, NovelAI, Pony Diffusion)
 - **UI Patterns** — Automatic1111 WebUI, ComfyUI, NovelAI Prompt Editor
+- **Draw Things** — Lokale Stable Diffusion für Apple Silicon (von Liu Liu)
 - **Icons** — Inline SVGs, Unicode-Symbole
 - **Fonts** — Inter (Google Fonts), Fira Code (Monospace)
 
@@ -222,7 +254,7 @@ Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (HTTPS/localhos
 |------|--------------|
 | [🐛 Issues](https://github.com/Harryerdtz/Promt_Master/issues) | Bugs, Feature-Requests |
 | [💬 Discussions](https://github.com/Harryerdtz/Promt_Master/discussions) | Fragen, Showcase, Tipps |
-| [🌐 Live Demo](https://harryerdtz.github.io/Promt_Master/) | Sofort ausprobieren |
+| [📖 Draw Things](https://drawthings.ai/) | Die erforderliche macOS/iOS App |
 
 ---
 
@@ -230,6 +262,6 @@ Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (HTTPS/localhos
 
 **Made with 💜 for the AI Art Community**
 
-*Prompt Master — Because prompting shouldn't be painful.*
+*Prompt Master — Because prompting shouldn't be painful. (And it runs locally.)*
 
 </div>
