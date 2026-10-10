@@ -1,1 +1,177 @@
-print('test')
+#!/usr/bin/env python3
+"""
+Prompt Studio + Draw Things Bridge
+----------------------------------
+Startet die Seite (index.html neben dieser Datei) unter http://localhost:8080
+und leitet alle /sdapi/*-Anfragen an Draw Things (http://127.0.0.1:7860) weiter.
+So gibt es keine Browser-Sperre (CORS).
+
+Start:  python3 dt_bridge.py
+Stop:   Strg+C
+Optional:  PORT=9000 DT_URL=http://127.0.0.1:7860 python3 dt_bridge.py
+"""
+import base64
+import http.server
+import json
+import os
+import socketserver
+import threading
+import time
+import urllib.error
+import urllib.request
+import webbrowser
+
+DT_URL = os.environ.get("DT_URL", "http://127.0.0.1:7860").rstrip("/")
+PORT = int(os.environ.get("PORT", "8080"))
+ROOT = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(ROOT, "prompt_studio_data.json")
+MAX_STATE_BYTES = 30 * 1024 * 1024
+IMG_DIR = os.path.join(ROOT, "ps_images")
+MAX_IMAGE_BYTES = 80 * 1024 * 1024
+
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=ROOT, **kwargs)
+
+    def _proxy(self):
+        length = int(self.headers.get("Content-Length") or 0)
+        body = self.rfile.read(length) if length else None
+        req = urllib.request.Request(
+            DT_URL + self.path, data=body, method=self.command,
+            headers={"Content-Type": self.headers.get("Content-Type", "application/json")},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=3600) as r:
+                data, status = r.read(), r.status
+                ctype = r.headers.get("Content-Type", "application/json")
+        except urllib.error.HTTPError as e:
+            data, status, ctype = e.read(), e.code, "application/json"
+        except Exception as e:
+            msg = str(e).replace('"', "'")
+            data, status, ctype = ('{"error": "%s"}' % msg).encode(), 502, "application/json"
+        self.send_response(status)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
+    def _json(self, status, obj):
+        data = json.dumps(obj).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _state_get(self):
+        if not os.path.exists(DATA_FILE):
+            return self._json(404, {"error": "noch keine Daten"})
+        try:
+            with open(DATA_FILE, "rb") as f:
+                data = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+        except Exception as e:
+            self._json(500, {"error": str(e)})
+
+    def _state_post(self):
+        length = int(self.headers.get("Content-Length") or 0)
+        if length <= 0 or length > MAX_STATE_BYTES:
+            return self._json(413, {"error": "Daten zu gross oder leer"})
+        try:
+            raw = self.rfile.read(length)
+            json.loads(raw)
+            tmp = DATA_FILE + ".tmp"
+            with open(tmp, "wb") as f:
+                f.write(raw)
+            if os.path.exists(DATA_FILE):
+                try:
+                    os.replace(DATA_FILE, DATA_FILE + ".bak")
+                except OSError:
+                    pass
+            os.replace(tmp, DATA_FILE)
+            self._json(200, {"ok": True})
+        except Exception as e:
+            self._json(400, {"error": str(e)})
+
+    def _image_post(self):
+        length = int(self.headers.get("Content-Length") or 0)
+        if length <= 0 or length > MAX_IMAGE_BYTES:
+            return self._json(413, {"error": "Bild zu gross oder leer"})
+        try:
+            data = json.loads(self.rfile.read(length))
+            b64 = str(data.get("image", ""))
+            if b64.startswith("data:"):
+                b64 = b64.split(",", 1)[1]
+            img = base64.b64decode(b64)
+            if img[:8] == b"\x89PNG\r\n\x1a\n":
+                ext = "png"
+            elif img[:3] == b"\xff\xd8\xff":
+                ext = "jpg"
+            elif img[8:12] == b"WEBP":
+                ext = "webp"
+            else:
+                return self._json(400, {"error": "Kein gueltiges Bild"})
+            os.makedirs(IMG_DIR, exist_ok=True)
+            stamp, n = time.strftime("%Y%m%d_%H%M%S"), 1
+            while os.path.exists(os.path.join(IMG_DIR, f"{stamp}_{n:02d}.{ext}")):
+                n += 1
+            name = f"{stamp}_{n:02d}"
+            with open(os.path.join(IMG_DIR, name + "." + ext), "wb") as f:
+                f.write(img)
+            prompt = str(data.get("prompt", "")).strip()
+            if prompt:
+                with open(os.path.join(IMG_DIR, name + ".txt"), "w", encoding="utf-8") as f:
+                    f.write(prompt + "\n")
+            self._json(200, {"ok": True, "file": f"ps_images/{name}.{ext}"})
+        except Exception as e:
+            self._json(400, {"error": str(e)})
+
+    def do_GET(self):
+        if self.path.split("?")[0] == "/api/state":
+            self._state_get()
+        elif self.path.startswith("/sdapi/"):
+            self._proxy()
+        elif self.path == "/favicon.ico":
+            self.send_response(204)
+            self.end_headers()
+        else:
+            super().do_GET()
+
+    def do_POST(self):
+        if self.path.split("?")[0] == "/api/state":
+            self._state_post()
+        elif self.path.split("?")[0] == "/api/save-image":
+            self._image_post()
+        elif self.path.startswith("/sdapi/"):
+            self._proxy()
+        else:
+            self.send_error(404)
+
+    def log_message(self, fmt, *args):
+        first_arg = str(args[0]) if args else ""
+        if "/sdapi/" in first_arg:
+            super().log_message(fmt, *args)
+
+
+class Server(socketserver.ThreadingMixIn, http.server.HTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+
+if __name__ == "__main__":
+    url = f"http://localhost:{PORT}"
+    print(f"Prompt Studio laeuft: {url}\nDraw Things erwartet unter: {DT_URL}\nDaten werden gesichert in: {DATA_FILE}\nBeenden mit Strg+C")
+    threading.Timer(0.8, lambda: webbrowser.open(url)).start()
+    try:
+        Server(("127.0.0.1", PORT), Handler).serve_forever()
+    except KeyboardInterrupt:
+        print("\nBeendet.")
