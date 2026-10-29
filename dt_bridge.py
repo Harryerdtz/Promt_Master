@@ -164,7 +164,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     stem = os.path.splitext(os.path.basename(file))[0]
                     image = next((stem + ext for ext in (".png", ".jpg", ".webp") if os.path.isfile(os.path.join(IMG_DIR, stem + ext))), None)
                     if image:
-                        items.append({"image": "/api/gallery/image/" + image, **meta})
+                        items.append({"id": stem, "image": "/api/gallery/image/" + image, **meta})
                 except (OSError, ValueError):
                     continue
             self._json(200, {"items": items[:500]})
@@ -193,10 +193,39 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404)
 
     def do_POST(self):
-        if self.path.split("?")[0] == "/api/state":
+        path = self.path.split("?", 1)[0]
+        if path == "/api/state":
             self._state_post()
-        elif self.path.split("?")[0] == "/api/save-image":
+        elif path == "/api/save-image":
             self._image_post()
+        elif path.startswith("/api/gallery/metadata/"):
+            name = path.removeprefix("/api/gallery/metadata/")
+            if not name or name != os.path.basename(name) or not all(c.isascii() and (c.isalnum() or c in "_-") for c in name):
+                return self.send_error(404)
+            file = os.path.join(IMG_DIR, name + ".json")
+            if not os.path.isfile(file):
+                return self.send_error(404)
+            length = int(self.headers.get("Content-Length") or 0)
+            if length <= 0 or length > 4096:
+                return self._json(413, {"error": "Metadaten zu gross oder leer"})
+            try:
+                changes = json.loads(self.rfile.read(length))
+                if not isinstance(changes, dict) or any(k not in ("rating", "collection", "notes") for k in changes):
+                    return self._json(400, {"error": "Ungueltige Felder"})
+                with open(file, encoding="utf-8") as f:
+                    meta = json.load(f)
+                if "rating" in changes:
+                    rating = int(changes["rating"])
+                    if not 0 <= rating <= 5: return self._json(400, {"error": "Ungueltige Bewertung"})
+                    meta["rating"] = rating
+                for key in ("collection", "notes"):
+                    if key in changes: meta[key] = str(changes[key])[:500]
+                tmp = file + ".tmp"
+                with open(tmp, "w", encoding="utf-8") as f: json.dump(meta, f, ensure_ascii=False)
+                os.replace(tmp, file)
+                self._json(200, {"ok": True})
+            except (ValueError, OSError, TypeError) as error:
+                self._json(400, {"error": str(error)})
         elif self.path.startswith("/sdapi/"):
             self._proxy()
         else:

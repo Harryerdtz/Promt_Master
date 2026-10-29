@@ -899,6 +899,7 @@ body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14p
 .gallery-view.active{display:block}.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
 .gallery-item{border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;padding:10px}
 .gallery-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}.gallery-item p{font-size:.8rem;color:var(--mute);margin:8px 0;overflow-wrap:anywhere}
+.gallery-item input,.gallery-item select{width:100%;margin:4px 0 8px;padding:7px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--text)}
 body[data-view="gallery"] .layout{display:none}
 </style>
 </head>
@@ -1265,6 +1266,7 @@ body[data-view="gallery"] .layout{display:none}
     <div class="automation-actions">
       <button class="btn" id="btnGenerateOnce" type="button">🖼️ Aktuellen Prompt erzeugen</button>
       <button class="btn primary" id="btnAutoGenerate" type="button" aria-pressed="false">▶ Automatik starten</button>
+      <button class="btn" id="btnPauseGeneration" type="button" disabled>⏸ Pausieren</button>
       <button class="btn danger" id="btnCancelGeneration" type="button" disabled>✕ Abbrechen</button>
     </div>
   </div>
@@ -2088,6 +2090,7 @@ function initRandomizerControls() {
 
 let drawGenerationInProgress = false;
 let autoGenerationRunning = false;
+let autoGenerationPaused = false;
 let autoStopRequested = false;
 let autoGenerationTarget = Infinity;
 let autoGenerationFilter = "all";
@@ -2253,6 +2256,8 @@ function syncDrawControls() {
   $("#btnGenerateOnce").disabled = busy;
   $("#btnAutoGenerate").disabled = autoStopRequested && drawGenerationInProgress;
   $("#btnCancelGeneration").disabled = (!drawGenerationInProgress && !autoGenerationRunning) || drawCancelPending;
+  $("#btnPauseGeneration").disabled = !autoGenerationRunning;
+  $("#btnPauseGeneration").textContent = autoGenerationPaused ? "▶ Fortsetzen" : "⏸ Pausieren";
   $("#btnAutoGenerate").textContent = autoGenerationRunning
     ? "⏹ Automatik stoppen"
     : "▶ Zufalls-Automatik starten";
@@ -2432,6 +2437,8 @@ async function runAutoGeneration() {
   DP.batch = { done: 0, target: Number.isFinite(autoGenerationTarget) ? autoGenerationTarget : Infinity };
   try {
     while (autoGenerationRunning && completed < autoGenerationTarget) {
+      while (autoGenerationPaused && autoGenerationRunning) await new Promise(resolve => setTimeout(resolve, 200));
+      if (!autoGenerationRunning) break;
       randomizePrompt(false, autoGenerationFilter);
       setDrawStatus(`Zufälliger Prompt ${completed + 1}: wird an Draw Things gesendet …`);
       completed += await generateWithDrawThings();
@@ -2451,6 +2458,9 @@ async function runAutoGeneration() {
       ? "Automatik und laufende Bildgenerierung abgebrochen."
       : `Automatik angehalten: ${error.message}`);
   } finally {
+    autoGenerationPaused = false;
+    $("#btnPauseGeneration").disabled = true;
+    $("#btnPauseGeneration").textContent = "⏸ Pausieren";
     dpBatchEnd(completed);
     if (autoStopRequested) {
       setDrawStatus(drawCancelFallback
@@ -2465,6 +2475,7 @@ async function runAutoGeneration() {
 }
 
 async function cancelDrawGeneration() {
+  autoGenerationPaused = false;
   const wasAutomatic = autoGenerationRunning;
   autoGenerationRunning = false;
   if (wasAutomatic) autoStopRequested = true;
@@ -2502,6 +2513,7 @@ async function cancelDrawGeneration() {
 function toggleAutoGeneration() {
   if (autoGenerationRunning) {
     autoGenerationRunning = false;
+    autoGenerationPaused = false;
     autoStopRequested = true;
     setDrawStatus(drawGenerationInProgress
       ? "Stop vorgemerkt: Das aktuelle Bild wird noch fertiggestellt."
@@ -2517,6 +2529,7 @@ function toggleAutoGeneration() {
   autoGenerationFilter = $("#automationFilter").value;
   $("#automationCount").value = Number.isFinite(autoGenerationTarget) ? autoGenerationTarget : $("#automationCount").value;
   autoGenerationRunning = true;
+  autoGenerationPaused = false;
   syncDrawControls();
   runAutoGeneration();
 }
@@ -2804,6 +2817,16 @@ async function loadGallery() {
       const card = document.createElement("article"); card.className = "gallery-item";
       const image = document.createElement("img"); image.src = item.image; image.alt = item.prompt || "Generiertes Bild"; image.loading = "lazy";
       const caption = document.createElement("p"); caption.textContent = item.prompt || "Ohne Prompt";
+      const rating = document.createElement("select"); rating.setAttribute("aria-label", "Bewertung");
+      for (let n = 0; n <= 5; n++) { const option = new Option(n ? `${n} Sterne` : "Keine Bewertung", String(n)); rating.add(option); }
+      rating.value = String(item.rating || 0);
+      const collection = document.createElement("input"); collection.placeholder = "Collection"; collection.value = item.collection || "";
+      const saveMeta = async changes => {
+        const response = await fetch(`/api/gallery/metadata/${encodeURIComponent(item.id)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(changes) });
+        if (!response.ok) showToast("Galerie-Metadaten konnten nicht gespeichert werden.");
+      };
+      rating.onchange = () => saveMeta({ rating: Number(rating.value) });
+      collection.onchange = () => saveMeta({ collection: collection.value });
       const restore = document.createElement("button"); restore.className = "btn"; restore.textContent = "Im Studio verwenden";
       restore.onclick = () => {
         state.manual = item.prompt || ""; state.negCustom = item.negativePrompt || "";
@@ -2812,7 +2835,7 @@ async function loadGallery() {
         $("#manualInput").value = state.manual; $("#negCustom").value = state.negCustom;
         renderModels(); updatePromptOutputs(); showStudioView("studio");
       };
-      card.append(image, caption, restore); grid.append(card);
+      card.append(image, caption, rating, collection, restore); grid.append(card);
     }
   } catch (error) { grid.textContent = "Galerie nicht erreichbar: " + error.message; }
 }
@@ -2868,6 +2891,12 @@ async function init() {
   $("#btnRandomize").onclick = () => randomizePrompt();
   $("#btnGenerateOnce").onclick = generateOnce;
   $("#btnAutoGenerate").onclick = toggleAutoGeneration;
+  $("#btnPauseGeneration").onclick = () => {
+    if (!autoGenerationRunning) return;
+    autoGenerationPaused = !autoGenerationPaused;
+    setDrawStatus(autoGenerationPaused ? "Automatik wird nach dem aktuellen Bild pausiert." : "Automatik wird fortgesetzt.");
+    syncDrawControls();
+  };
   $("#btnCancelGeneration").onclick = cancelDrawGeneration;
   $("#btnSavePreset").onclick = savePreset;
   $("#btnExportData").onclick = exportBackup;
