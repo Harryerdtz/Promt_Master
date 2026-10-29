@@ -1138,6 +1138,9 @@ header p{font-size:.8rem;margin-top:2px}
     </section>
     <section class="card">
       <h2><b></b>Generierung</h2>
+      <p class="hint" id="dtLiveSettings">Draw-Things-Werte werden beim Erzeugen übernommen.</p>
+      <div class="row"><button class="btn" id="btnReadDrawSettings" type="button">Aktuelle Werte aus Draw Things laden</button></div>
+      <details class="generation-details"><summary>Generierungsoptionen anpassen</summary>
       <p class="hint">Leere Felder übernehmen die aktuellen Werte aus Draw Things.</p>
       <div class="randomizer-options">
         <label>Seed<input id="genSeed" type="number" placeholder="Zufällig"></label>
@@ -1146,8 +1149,12 @@ header p{font-size:.8rem;margin-top:2px}
         <label>Sampler<input id="genSampler" type="text" placeholder="Draw Things"></label>
         <label>Breite<input id="genWidth" type="number" min="64" step="64" placeholder="Draw Things"></label>
         <label>Höhe<input id="genHeight" type="number" min="64" step="64" placeholder="Draw Things"></label>
+        <label class="randomizer-check"><input id="genHiresFix" type="checkbox"> Hi-Res-Fix</label>
+        <label>Hi-Res-Stärke<input id="genHiresStrength" type="number" min="0" max="1" step="0.05" placeholder="Draw Things"></label>
+        <label>Schärfe<input id="genSharpness" type="number" min="0" max="10" step="0.1" placeholder="Draw Things"></label>
       </div>
       <button class="btn" id="btnResetGeneration" type="button">Draw-Things-Werte wieder übernehmen</button>
+      </details>
     </section>
   </aside>
 </div>
@@ -2406,6 +2413,9 @@ async function generateWithDrawThings() {
         batch_count: 1,
         width: Number(chosen.width) || Number(options.width || options.target_width) || 1024,
         height: Number(chosen.height) || Number(options.height || options.target_height) || 1024,
+        hires_fix: chosen.hiresFix ?? Boolean(options.hires_fix),
+        hires_fix_strength: chosen.hiresStrength === "" || chosen.hiresStrength == null ? Number(options.hires_fix_strength) || 0.7 : Number(chosen.hiresStrength),
+        sharpness: chosen.sharpness === "" || chosen.sharpness == null ? Number(options.sharpness) || 0 : Number(chosen.sharpness),
         loras: state.loras.some(lora => lora.active)
           ? state.loras.filter(lora => lora.active).map(lora => ({ file: dtLoraFile(lora.name), weight: lora.weight }))
           : (Array.isArray(options.loras) ? options.loras : [])
@@ -3032,6 +3042,35 @@ function showStudioView(view) {
   if (view === "automation" || view === "studio") requestAnimationFrame(resizePromptFields);
   window.scrollTo(0, 0);
 }
+async function loadDrawThingsSettings() {
+  const button = $("#btnReadDrawSettings");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  try {
+    const response = await fetch("/sdapi/v1/options", { signal: AbortSignal.timeout(5000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const options = await response.json();
+    const values = {
+      seed: options.seed, steps: options.steps, cfg: options.guidance_scale,
+      sampler: options.sampler, width: options.width ?? options.target_width,
+      height: options.height ?? options.target_height,
+      hiresFix: Boolean(options.hires_fix), hiresStrength: options.hires_fix_strength,
+      sharpness: options.sharpness
+    };
+    state.generation = { ...state.generation, ...Object.fromEntries(Object.entries(values).filter(([, value]) => value !== undefined && value !== null)) };
+    for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"], ["genHiresStrength", "hiresStrength"], ["genSharpness", "sharpness"]]) {
+      $("#" + id).value = state.generation[key] ?? "";
+    }
+    $("#genHiresFix").checked = Boolean(state.generation.hiresFix);
+    $("#dtLiveSettings").textContent = `${options.model || "Aktives Modell"} · ${options.sampler || "Sampler offen"} · ${options.width || options.target_width || "?"} × ${options.height || options.target_height || "?"} px`;
+    saveState();
+  } catch (error) {
+    $("#dtLiveSettings").textContent = `Draw Things nicht erreichbar: ${error.message}`;
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+  }
+}
 async function init() {
   setupWorkspacePanels();
   setupIcons();
@@ -3053,9 +3092,18 @@ async function init() {
       saveState();
     });
   }
+  for (const [id, key] of [["genHiresFix", "hiresFix"], ["genHiresStrength", "hiresStrength"], ["genSharpness", "sharpness"]]) {
+    const field = document.getElementById(id);
+    field.addEventListener("change", () => {
+      state.generation = { ...(state.generation || {}), [key]: field.type === "checkbox" ? field.checked : field.value };
+      saveState();
+    });
+  }
+  $("#btnReadDrawSettings").onclick = loadDrawThingsSettings;
   $("#btnResetGeneration").onclick = () => {
     state.generation = {};
-    for (const id of ["genSeed", "genSteps", "genCfg", "genSampler", "genWidth", "genHeight"]) document.getElementById(id).value = "";
+    for (const id of ["genSeed", "genSteps", "genCfg", "genSampler", "genWidth", "genHeight", "genHiresStrength", "genSharpness"]) document.getElementById(id).value = "";
+    $("#genHiresFix").checked = false;
     saveState();
     showToast("Draw-Things-Werte werden wieder verwendet.");
   };
@@ -3066,6 +3114,8 @@ async function init() {
   for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"]]) {
     document.getElementById(id).value = (state.generation || {})[key] ?? "";
   }
+  for (const [id, key] of [["genHiresStrength", "hiresStrength"], ["genSharpness", "sharpness"]]) document.getElementById(id).value = (state.generation || {})[key] ?? "";
+  $("#genHiresFix").checked = Boolean((state.generation || {}).hiresFix);
   applyAppearance();
   if (serverOk && !applyingSyncedState) pushServerState(true);
 

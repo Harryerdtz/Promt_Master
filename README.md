@@ -8,6 +8,9 @@ Prompt und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität und Zuf
 Assistent, Automationen, LoRAs und Einstellungen öffnen als Seiten im selben App-Fenster.
 Die verwendeten SVG-Symbole stammen aus [Tabler Icons](https://github.com/tabler/tabler-icons)
 und liegen samt MIT-Lizenz lokal im Ordner `icons/`.
+Die Generierungsoptionen können aktuelle Werte aus Draw Things übernehmen; zusätzlich sind
+Hi-Res-Fix, Hi-Res-Stärke und Schärfe steuerbar. Die Mitte und die Werkzeugspalte scrollen
+getrennt, während die Arbeitsbereiche links sichtbar bleiben.
 
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](index.html)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat&logo=javascript&logoColor=black)](index.html)
