@@ -30,11 +30,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
-        loadWhenReady(view, attempts: 40)
+        loadWhenReady(view, attempts: 120)
     }
 
     private func loadWhenReady(_ view: WKWebView, attempts: Int) {
-        guard attempts > 0 else { return }
+        guard attempts > 0 else {
+            let alert = NSAlert()
+            alert.messageText = "Prompt Master konnte nicht starten"
+            alert.informativeText = "Der lokale Dienst auf Port 8080 ist nicht erreichbar. Prüfe, ob bereits eine andere Prompt-Master-Instanz läuft, und starte die App erneut."
+            alert.runModal()
+            NSApp.terminate(nil)
+            return
+        }
         let url = URL(string: "http://127.0.0.1:8080/")!
         URLSession.shared.dataTask(with: url) { _, response, _ in
             DispatchQueue.main.async {

@@ -1140,6 +1140,7 @@ header p{font-size:.8rem;margin-top:2px}
         <label>Seed<input id="genSeed" type="number" placeholder="Zufällig"></label>
         <label>Steps<input id="genSteps" type="number" min="1" max="150" placeholder="Draw Things"></label>
         <label>CFG<input id="genCfg" type="number" min="0" max="30" step="0.1" placeholder="Draw Things"></label>
+        <label>Sampler<input id="genSampler" type="text" placeholder="Draw Things"></label>
         <label>Breite<input id="genWidth" type="number" min="64" step="64" placeholder="Draw Things"></label>
         <label>Höhe<input id="genHeight" type="number" min="64" step="64" placeholder="Draw Things"></label>
       </div>
@@ -2399,6 +2400,7 @@ async function generateWithDrawThings() {
         seed: chosen.seed === "" || chosen.seed == null ? -1 : Number(chosen.seed),
         steps: Number(chosen.steps) || Number(options.steps) || 20,
         guidance_scale: chosen.cfg === "" || chosen.cfg == null ? (Number(options.guidance_scale) || 5) : Number(chosen.cfg),
+        sampler: chosen.sampler || options.sampler,
         batch_count: 1,
         width: Number(chosen.width) || Number(options.width || options.target_width) || 1024,
         height: Number(chosen.height) || Number(options.height || options.target_height) || 1024,
@@ -2891,8 +2893,20 @@ async function loadGallery() {
       restore.onclick = () => {
         state.manual = item.prompt || ""; state.negCustom = item.negativePrompt || "";
         if (MODELS[item.model]) state.model = item.model;
+        if (Array.isArray(item.loras)) {
+          const active = new Set(item.loras.map(lora => lora.name));
+          state.loras = state.loras.map(lora => ({ ...lora, active: active.has(lora.name) }));
+          renderLoras();
+        }
+        if (item.seed != null) state.generation = { ...(state.generation || {}), seed: String(item.seed) };
+        if (item.settings && typeof item.settings === "object") {
+          state.generation = { ...(state.generation || {}), steps: item.settings.steps == null ? "" : String(item.settings.steps), width: item.settings.w == null ? "" : String(item.settings.w), height: item.settings.h == null ? "" : String(item.settings.h), cfg: item.settings.cfg ?? "", sampler: item.settings.sampler || "" };
+        }
         state.tags = []; state.extras = []; state.custom = []; state.negExtras = [];
         $("#manualInput").value = state.manual; $("#negCustom").value = state.negCustom;
+        for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"]]) {
+          document.getElementById(id).value = state.generation[key] ?? "";
+        }
         renderModels(); updatePromptOutputs(); showStudioView("studio");
       };
       card.append(image, caption, rating, collection, notes, restore); grid.append(card);
@@ -2916,7 +2930,7 @@ async function init() {
   $("#navLoras").onclick = () => $("#btnLoraPage").click();
   $("#navSettings").onclick = () => $("#btnAppearance").click();
   $("#btnLocalSuggest").onclick = suggestLocalTags;
-  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genWidth", "width"], ["genHeight", "height"]]) {
+  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"]]) {
     const field = document.getElementById(id);
     field.addEventListener("change", () => {
       state.generation = { ...(state.generation || {}), [key]: field.value };
@@ -2927,7 +2941,7 @@ async function init() {
   setInterval(checkDrawThingsConnection, 15000);
   await loadServerState();
   loadState();
-  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genWidth", "width"], ["genHeight", "height"]]) {
+  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"]]) {
     document.getElementById(id).value = (state.generation || {})[key] ?? "";
   }
   applyAppearance();
@@ -3835,7 +3849,8 @@ async function autoSaveImages(images, prompt) {
   if (!state.autoSaveImages || !SERVER_STORE) return;
   for (const img of images) {
     try {
-      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, loras: state.loras.filter(l => l.active), settings: DP.cfg, createdAt: new Date().toISOString(), rating: 0, collection: "", notes: "" }) });
+      const requestedSeed = (state.generation || {}).seed;
+      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, seed: requestedSeed === "" || requestedSeed == null ? null : Number(requestedSeed), loras: state.loras.filter(l => l.active), settings: { ...DP.cfg, cfg: (state.generation || {}).cfg, sampler: (state.generation || {}).sampler }, createdAt: new Date().toISOString(), rating: 0, collection: "", notes: "" }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
       if (document.body.dataset.view === "gallery") loadGallery();
