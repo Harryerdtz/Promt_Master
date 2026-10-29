@@ -931,6 +931,7 @@ header p{font-size:.8rem;margin-top:2px}
 
 <nav class="studio-nav" aria-label="Hauptnavigation">
   <button type="button" data-view-target="studio" aria-current="page">Studio</button>
+  <button type="button" data-view-target="creations">Creations</button>
   <button type="button" id="navWizard">Assistent</button>
   <button type="button" data-view-target="library">Bibliothek</button>
   <button type="button" data-view-target="gallery">Galerie</button>
@@ -941,7 +942,7 @@ header p{font-size:.8rem;margin-top:2px}
 <section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><input id="librarySearch" type="search" placeholder="Presets und Tags durchsuchen"><div id="libraryItems" class="gallery-grid"></div></section>
 <section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div class="row"><input id="gallerySearch" type="search" placeholder="Prompts und Collections durchsuchen"><select id="gallerySort" aria-label="Sortierung"><option value="newest">Neueste zuerst</option><option value="oldest">Älteste zuerst</option><option value="rating">Beste Bewertung</option></select><label><input id="galleryFavorites" type="checkbox"> Nur Favoriten</label></div><div id="galleryGrid" class="gallery-grid"></div></section>
 
-<div class="studio-guide" aria-label="Schnellstart"><strong>So startest du</strong><span>Idee eingeben</span><span class="guide-arrow">→</span><span>Modell und Tags wählen</span><span class="guide-arrow">→</span><span>Prompt prüfen und Bild erzeugen</span></div>
+<section id="creationsView" class="gallery-view creations-view" aria-label="Creations"><h2>Creations</h2><p class="hint">Ideen entwickeln, Tags vorschlagen lassen und neue Prompt-Kombinationen ausprobieren.</p><div id="creationsWorkspace"></div><section class="creation-preview"><h3>Prompt-Vorschau</h3><textarea id="creationPreview" readonly aria-label="Prompt-Vorschau"></textarea><button class="btn primary" id="btnOpenStudioFromCreations" type="button">Im Studio ansehen</button></section></section>
 <div class="layout">
   <main>
     <!-- 1. MODELL & RENDER-STIL -->
@@ -1140,7 +1141,7 @@ header p{font-size:.8rem;margin-top:2px}
       <h2><b></b>Generierung</h2>
       <p class="hint" id="dtLiveSettings">Draw-Things-Werte werden beim Erzeugen übernommen.</p>
       <div class="row"><button class="btn" id="btnReadDrawSettings" type="button">Aktuelle Werte aus Draw Things laden</button></div>
-      <details class="generation-details"><summary>Generierungsoptionen anpassen</summary>
+      <div class="generation-details"><h3>Parameter</h3>
       <p class="hint">Leere Felder übernehmen die aktuellen Werte aus Draw Things.</p>
       <div class="randomizer-options">
         <label>Seed<input id="genSeed" type="number" placeholder="Zufällig"></label>
@@ -1154,7 +1155,7 @@ header p{font-size:.8rem;margin-top:2px}
         <label>Schärfe<input id="genSharpness" type="number" min="0" max="10" step="0.1" placeholder="Draw Things"></label>
       </div>
       <button class="btn" id="btnResetGeneration" type="button">Draw-Things-Werte wieder übernehmen</button>
-      </details>
+      </div>
     </section>
   </aside>
 </div>
@@ -1305,11 +1306,15 @@ header p{font-size:.8rem;margin-top:2px}
     <div class="appearance-head"><div><h2 id="appearanceTitle">Einstellungen</h2><p>Darstellung und Verhalten der App.</p></div><button class="btn" id="btnCloseAppearance" type="button">Zum Studio</button></div>
     <div class="appearance-options">
       <label for="themeSelect">Farbprofil
-        <select id="themeSelect"><option value="system">System</option><option value="light">Hell</option><option value="night">Dunkel</option></select>
+        <select id="themeSelect"><option value="night">Schwarz</option><option value="blue">Blau</option><option value="light">Hell</option><option value="system">System</option></select>
       </label>
       <label for="accentColor">Akzentfarbe <input id="accentColor" type="color" value="#7c8ca8"></label>
       <label class="appearance-check"><input id="reduceMotion" type="checkbox"> Animationen reduzieren</label>
+      <label class="appearance-check"><input id="settingsAutoSave" type="checkbox"> Neue Bilder automatisch in der Galerie sichern</label>
+      <label for="settingsGallerySize">Galerie-Bildgröße<select id="settingsGallerySize"><option value="large">Groß</option><option value="extra">Sehr groß</option></select></label>
+      <label for="settingsTagFilter">Tag-Anzeige<select id="settingsTagFilter"><option value="all">Alle Tags</option><option value="sfw">Nur SFW</option><option value="nsfw">Nur NSFW</option></select></label>
     </div>
+    <div class="settings-connection"><h3>Draw Things</h3><p id="settingsConnectionStatus" class="hint">Verbindung über den lokalen API-Server auf Port 7860.</p><button class="btn" id="settingsCheckConnection" type="button">Verbindung prüfen</button></div>
     <div class="appearance-foot"><button class="btn primary" id="btnSaveAppearance" type="button">Übernehmen</button></div>
   </section>
 </div>
@@ -1487,13 +1492,14 @@ function showToast(msg) {
 function applyAppearance() {
   const appearance = { theme: "night", accent: "#2f81f7", reduceMotion: false, ...(state.appearance || {}) };
   appearance.accent = "#2f81f7";
-  if (!["system", "light", "night"].includes(appearance.theme)) appearance.theme = "night";
+  if (!["system", "light", "night", "blue"].includes(appearance.theme)) appearance.theme = "night";
   state.appearance = appearance;
   document.body.dataset.theme = appearance.theme === "system"
     ? (matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "light") : appearance.theme;
   document.body.style.setProperty("--accent", appearance.accent);
   document.body.style.setProperty("--accent-soft", `${appearance.accent}38`);
   document.body.classList.toggle("reduce-motion", Boolean(appearance.reduceMotion));
+  document.body.style.setProperty("--gallery-card-min", (state.gallerySize || "large") === "extra" ? "520px" : "420px");
 }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
   if ((state.appearance || {}).theme === "system") applyAppearance();
@@ -1519,13 +1525,18 @@ function setupAppearance() {
   const theme = $("#themeSelect"), accent = $("#accentColor"), motion = $("#reduceMotion");
   const openModal = () => {
     const a = state.appearance || {};
-    theme.value = ["system", "light", "night"].includes(a.theme) ? a.theme : "night"; accent.value = a.accent || "#0a84ff"; motion.checked = Boolean(a.reduceMotion);
+    theme.value = ["system", "light", "night", "blue"].includes(a.theme) ? a.theme : "night"; accent.value = a.accent || "#2f81f7"; motion.checked = Boolean(a.reduceMotion);
     showStudioView("settings"); theme.focus();
   };
   const closeModal = () => { showStudioView("studio"); open.focus(); };
   open.onclick = openModal; close.onclick = closeModal;
   $("#btnSaveAppearance").onclick = () => {
     state.appearance = { theme: theme.value, accent: accent.value, reduceMotion: motion.checked };
+    state.autoSaveImages = $("#settingsAutoSave").checked;
+    state.gallerySize = $("#settingsGallerySize").value;
+    state.filterMode = $("#settingsTagFilter").value;
+    $("#chkAutoSave").checked = state.autoSaveImages;
+    renderFilterModes(); filterTags();
     applyAppearance(); saveState(); showToast("Design gespeichert");
   };
 }
@@ -1917,6 +1928,7 @@ function updatePromptOutputs(persist = true) {
   if ($("#negOutput").value !== negText) flashEl($("#negOutput"));
   $("#posOutput").value = posText;
   $("#negOutput").value = negText;
+  $("#creationPreview").value = posText;
   resizePromptFields();
   const pn = $("#partnerNote");
   if (pn) {
@@ -2165,7 +2177,8 @@ function moveAutomationWorkspace(visible) {
     $("#automationModal").classList.add("open");
     return;
   }
-  document.querySelector(".out").append(...cards);
+  document.querySelector(".out").append(cards[0], cards[2]);
+  document.querySelector("#creationsWorkspace").prepend(cards[1]);
   document.body.classList.remove("automation-view");
   $("#automationModal").classList.remove("open");
 }
@@ -2851,10 +2864,13 @@ function resetEntireState() {
 /* ===== INITIALISIERUNG ===== */
 function setupWorkspacePanels() {
   const tools = document.querySelector(".layout > main");
+  const random = tools.querySelector(":scope > section.card:nth-of-type(2)");
+  const creations = document.querySelector("#creationsWorkspace");
+  creations.append(document.querySelector("#deInput").closest(".card"), random);
   tools.append(document.querySelector(".layout > .out > .card:last-child"));
   const sections = [...tools.querySelectorAll(":scope > section.card")];
   const definitions = [
-    ["model", "Modell"], ["random", "Zufall"], ["custom", "Eigene Tags"],
+    ["model", "Modell"], ["custom", "Eigene Tags"],
     ["quality", "Qualität"], ["tags", "Tags"], ["generation", "Generierung"]
   ];
   tools.classList.add("tools-main");
@@ -2878,7 +2894,6 @@ function setupWorkspacePanels() {
   });
   tools.prepend(tabs);
   activate("tags");
-  const random = sections[1];
   const advanced = document.createElement("details");
   advanced.className = "advanced-settings";
   advanced.innerHTML = "<summary>Weitere Zufallsregeln</summary>";
@@ -2899,7 +2914,7 @@ function setupWorkspacePanels() {
 }
 function setupIcons() {
   const icons = {
-    '[data-view-target="studio"]': "home", '[data-view-target="library"]': "books",
+    '[data-view-target="studio"]': "home", '[data-view-target="creations"]': "sparkles", '[data-view-target="library"]': "books",
     '[data-view-target="gallery"]': "photo", '#navAutomations': "robot",
     '#navLoras': "adjustments", '#navSettings': "settings", '#navWizard': "wand",
     '#btnGenerateFromPrompt': "player-play", '#btnCopyPosInline': "copy",
@@ -2978,19 +2993,27 @@ function renderGallery() {
     for (const item of items) {
       const card = document.createElement("article"); card.className = "gallery-item";
       const image = document.createElement("img"); image.src = item.image; image.alt = item.prompt || "Generiertes Bild"; image.loading = "lazy";
-      const caption = document.createElement("p"); caption.textContent = item.prompt || "Ohne Prompt";
+      image.tabIndex = 0; image.setAttribute("role", "button"); image.title = "Bild groß ansehen";
+      const openImage = () => {
+        let index = DR_LIST.findIndex(entry => entry.src === item.image);
+        if (index < 0) { DR_LIST.push({ src: item.image, prompt: item.prompt || "" }); index = DR_LIST.length - 1; }
+        openLightbox(index);
+      };
+      image.onclick = openImage;
+      image.onkeydown = event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openImage(); } };
+      const caption = document.createElement("p"); caption.className = "gallery-caption"; caption.textContent = item.prompt || "Ohne Prompt"; caption.title = item.prompt || "";
       const rating = document.createElement("select"); rating.setAttribute("aria-label", "Bewertung");
-      const favorite = document.createElement("button"); favorite.className = "btn"; favorite.textContent = item.favorite ? " Favorit" : " Favorit";
+      const favorite = document.createElement("button"); favorite.className = "btn gallery-favorite"; favorite.textContent = "Favorit"; favorite.setAttribute("aria-pressed", String(Boolean(item.favorite)));
       for (let n = 0; n <= 5; n++) { const option = new Option(n ? `${n} Sterne` : "Keine Bewertung", String(n)); rating.add(option); }
       rating.value = String(item.rating || 0);
-      const collection = document.createElement("input"); collection.placeholder = "Collection"; collection.value = item.collection || "";
-      const notes = document.createElement("input"); notes.placeholder = "Notiz"; notes.value = item.notes || "";
+      const collection = document.createElement("input"); collection.placeholder = "Collection"; collection.setAttribute("aria-label", "Collection"); collection.value = item.collection || "";
+      const notes = document.createElement("input"); notes.placeholder = "Notiz"; notes.setAttribute("aria-label", "Notiz"); notes.value = item.notes || "";
       const saveMeta = async changes => {
         const response = await fetch(`/api/gallery/metadata/${encodeURIComponent(item.id)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(changes) });
         if (!response.ok) showToast("Galerie-Metadaten konnten nicht gespeichert werden.");
       };
       rating.onchange = () => { item.rating = Number(rating.value); saveMeta({ rating: item.rating }); };
-      favorite.onclick = () => { item.favorite = !item.favorite; favorite.textContent = item.favorite ? " Favorit" : " Favorit"; saveMeta({ favorite: item.favorite }); if ($("#galleryFavorites").checked) renderGallery(); };
+      favorite.onclick = () => { item.favorite = !item.favorite; favorite.setAttribute("aria-pressed", String(item.favorite)); saveMeta({ favorite: item.favorite }); if ($("#galleryFavorites").checked) renderGallery(); };
       collection.onchange = () => { item.collection = collection.value; saveMeta({ collection: item.collection }); };
       notes.onchange = () => { item.notes = notes.value; saveMeta({ notes: item.notes }); };
       const restore = document.createElement("button"); restore.className = "btn"; restore.textContent = "Im Studio verwenden";
@@ -3013,7 +3036,12 @@ function renderGallery() {
         }
         renderModels(); updatePromptOutputs(); showStudioView("studio");
       };
-      card.append(image, caption, favorite, rating, collection, notes, restore); grid.append(card);
+      const media = document.createElement("div"); media.className = "gallery-media"; media.append(image, favorite);
+      const details = document.createElement("details"); details.className = "gallery-meta";
+      const summary = document.createElement("summary"); summary.textContent = "Details und Bewertung";
+      details.append(summary, rating, collection, notes);
+      const content = document.createElement("div"); content.className = "gallery-content"; content.append(caption, restore, details);
+      card.append(media, content); grid.append(card);
     }
 }
 async function loadGallery() {
@@ -3032,6 +3060,7 @@ function showStudioView(view) {
   document.body.dataset.view = view;
   $("#galleryView").classList.toggle("active", view === "gallery");
   $("#libraryView").classList.toggle("active", view === "library");
+  $("#creationsView").classList.toggle("active", view === "creations");
   const navIds = { automation: "navAutomations", loras: "navLoras", settings: "navSettings", wizard: "navWizard" };
   document.querySelectorAll(".studio-nav button").forEach(button => {
     if (button.dataset.viewTarget === view || button.id === navIds[view]) button.setAttribute("aria-current", "page");
@@ -3045,9 +3074,13 @@ function showStudioView(view) {
   if (view === "loras") { document.body.classList.add("lora-view"); renderLoras(); }
   if (view === "settings") {
     const a = state.appearance || {};
-    $("#themeSelect").value = ["system", "light", "night"].includes(a.theme) ? a.theme : "night";
+    $("#themeSelect").value = ["system", "light", "night", "blue"].includes(a.theme) ? a.theme : "night";
     $("#accentColor").value = a.accent || "#0a84ff";
     $("#reduceMotion").checked = Boolean(a.reduceMotion);
+    $("#settingsAutoSave").checked = Boolean(state.autoSaveImages);
+    $("#settingsGallerySize").value = state.gallerySize || "large";
+    $("#settingsTagFilter").value = state.filterMode || "all";
+    $("#settingsConnectionStatus").textContent = $("#connectionStatus").textContent;
   }
   if (view === "wizard") $("#wz").classList.add("open");
   if (view === "gallery") loadGallery();
@@ -3092,7 +3125,9 @@ async function init() {
   $("#navAutomations").onclick = () => showStudioView("automation");
   $("#navLoras").onclick = () => showStudioView("loras");
   $("#navSettings").onclick = () => showStudioView("settings");
+  $("#settingsCheckConnection").onclick = async () => { await checkDrawThingsConnection(); $("#settingsConnectionStatus").textContent = $("#connectionStatus").textContent; };
   $("#navWizard").onclick = wzOpen;
+  $("#btnOpenStudioFromCreations").onclick = () => showStudioView("studio");
   $("#gallerySearch").oninput = renderGallery;
   $("#gallerySort").onchange = renderGallery;
   $("#galleryFavorites").onchange = renderGallery;
