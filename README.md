@@ -9,6 +9,8 @@ Blau, Hell und System sowie vier Galeriegrößen, Tag-Anzeige und automatische B
 Assistent, Automationen, LoRAs und Einstellungen öffnen als Seiten im selben App-Fenster.
 Die verwendeten SVG-Symbole stammen aus [Tabler Icons](https://github.com/tabler/tabler-icons)
 und liegen samt MIT-Lizenz lokal im Ordner `icons/`.
+Der Tag-Katalog ist nach SFW- und NSFW-Themen sortiert. Rechtsklick auf einen Tag zeigt
+eine Erklärung für den vollständigen Begriff in einem Popover passend zum gewählten Design.
 Das dunkle Design verwendet Schwarz und Anthrazit mit grünen, blauen und roten Statusfarben.
 Das App-Icon wird lokal aus `scripts/create-app-icon.swift` erzeugt. Die Generierungsoptionen
 können aktuelle Werte aus Draw Things übernehmen; zusätzlich sind
