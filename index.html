@@ -900,7 +900,17 @@ body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14p
 .gallery-item{border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;padding:10px}
 .gallery-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}.gallery-item p{font-size:.8rem;color:var(--mute);margin:8px 0;overflow-wrap:anywhere}
 .gallery-item input,.gallery-item select{width:100%;margin:4px 0 8px;padding:7px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--text)}
-body[data-view="gallery"] .layout{display:none}
+body[data-view="gallery"] .layout,body[data-view="library"] .layout{display:none}
+/* Kompakte macOS-Studio-Leiste */
+header{padding:18px 24px 8px;text-align:left}
+header h1{font-size:clamp(1.6rem,2.2vw,2.1rem);font-weight:750;letter-spacing:-.025em;text-shadow:none}
+header p{font-size:.8rem;margin-top:2px}
+.header-actions{justify-content:flex-start;margin-top:10px;gap:8px}
+.header-actions .wz-launch{padding:8px 12px;font-size:.82rem;box-shadow:none;border-radius:10px}
+.header-actions #btnAutomationMenu,.header-actions #btnLoraPage,.header-actions #btnAppearance{display:none}
+.studio-nav{justify-content:flex-start;padding:0 24px 16px}
+.studio-nav button{padding:7px 12px;font-size:.82rem}
+@media(max-width:900px){.header-actions{flex-wrap:wrap}.layout{display:block}.out{position:static}}
 </style>
 </head>
 <body data-theme="calm">
@@ -920,11 +930,13 @@ body[data-view="gallery"] .layout{display:none}
 
 <nav class="studio-nav" aria-label="Hauptnavigation">
   <button type="button" data-view-target="studio" aria-current="page">Studio</button>
+  <button type="button" data-view-target="library">Bibliothek</button>
   <button type="button" data-view-target="gallery">Galerie</button>
   <button type="button" id="navAutomations">Automationen</button>
   <button type="button" id="navLoras">LoRAs</button>
   <button type="button" id="navSettings">Einstellungen</button>
 </nav>
+<section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><div id="libraryItems" class="gallery-grid"></div></section>
 <section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div id="galleryGrid" class="gallery-grid"></div></section>
 
 <div class="layout">
@@ -1106,8 +1118,10 @@ body[data-view="gallery"] .layout{display:none}
       <div class="row">
         <input type="text" id="deInput" placeholder="z. B. Dämonen-Mädchen mit Hörnern im verschneiten Wald">
         <button class="btn primary" id="btnTranslate">Übersetzen &amp; Hinzufügen</button>
+        <button class="btn" id="btnLocalSuggest" type="button">Lokale Vorschläge</button>
       </div>
       <div class="hint" id="transHint"></div>
+      <div class="chips" id="localSuggestions"></div>
       <label class="l" for="manualInput">Manuelle Schnelleingabe (Komma-getrennt)</label>
       <input type="text" id="manualInput" placeholder="cyberpunk theme, glowing eyes, cinematic detail">
       <div class="chips" id="customChips"></div>
@@ -2805,6 +2819,50 @@ function resetEntireState() {
 }
 
 /* ===== INITIALISIERUNG ===== */
+function suggestLocalTags() {
+  const idea = $("#deInput").value.toLocaleLowerCase("de");
+  const mapping = [
+    [/frau|mädchen|kriegerin|prinzessin/, "1girl"], [/mann|krieger|prinz/, "1boy"],
+    [/allein|solo/, "solo"], [/wald/, "forest"], [/schnee|verschneit/, "snow"],
+    [/berg/, "mountain"], [/stadt/, "city street"], [/strand|meer/, "beach"],
+    [/sonnenuntergang/, "sunset"], [/nacht|mond/, "moonlight"], [/blumen/, "flower field"],
+    [/porträt|portrait/, "portrait"], [/ganzkörper/, "full body"],
+    [/lange haare/, "long hair"], [/blonde haare/, "blonde hair"], [/schwarze haare/, "black hair"],
+    [/blaue augen/, "blue eyes"], [/rote augen/, "red eyes"], [/lächel/, "smile"],
+    [/fantasy|magisch/, "fantasy art"], [/cinematisch|filmisch/, "cinematic lighting"]
+  ];
+  const tags = uniq(mapping.filter(([pattern]) => pattern.test(idea)).map(([, tag]) => tag));
+  const box = $("#localSuggestions"); box.replaceChildren();
+  if (!tags.length) { box.textContent = "Keine lokalen Vorschläge gefunden. Du kannst Tags direkt auswählen oder den Online-Übersetzer nutzen."; return; }
+  for (const tag of tags) {
+    const button = document.createElement("button"); button.className = "btn"; button.textContent = "+ " + tag;
+    button.onclick = () => {
+      if (!state.tags.includes(tag)) state.tags.push(tag);
+      updatePromptOutputs(); button.disabled = true; button.textContent = "✓ " + tag;
+    };
+    box.append(button);
+  }
+}
+function loadLibraryView() {
+  const box = $("#libraryItems"); box.replaceChildren();
+  const presets = state.presets || [];
+  const customTags = state.customLibrary || [];
+  if (!presets.length && !customTags.length) { box.textContent = "Noch keine Presets oder eigenen Tags gespeichert."; return; }
+  for (const preset of presets) {
+    const card = document.createElement("article"); card.className = "gallery-item";
+    const title = document.createElement("h3"); title.textContent = preset.name || "Preset";
+    const action = document.createElement("button"); action.className = "btn"; action.textContent = "Im Studio laden";
+    action.onclick = () => { loadPreset(preset); showStudioView("studio"); };
+    card.append(title, action); box.append(card);
+  }
+  for (const tag of customTags) {
+    const card = document.createElement("article"); card.className = "gallery-item";
+    const title = document.createElement("h3"); title.textContent = tag.text || "Eigener Tag";
+    const action = document.createElement("button"); action.className = "btn"; action.textContent = "Im Studio verwenden";
+    action.onclick = () => { if (!state.tags.includes(tag.text)) state.tags.push(tag.text); updatePromptOutputs(); showStudioView("studio"); };
+    card.append(title, action); box.append(card);
+  }
+}
 async function loadGallery() {
   const grid = $("#galleryGrid");
   grid.replaceChildren();
@@ -2821,12 +2879,14 @@ async function loadGallery() {
       for (let n = 0; n <= 5; n++) { const option = new Option(n ? `${n} Sterne` : "Keine Bewertung", String(n)); rating.add(option); }
       rating.value = String(item.rating || 0);
       const collection = document.createElement("input"); collection.placeholder = "Collection"; collection.value = item.collection || "";
+      const notes = document.createElement("input"); notes.placeholder = "Notiz"; notes.value = item.notes || "";
       const saveMeta = async changes => {
         const response = await fetch(`/api/gallery/metadata/${encodeURIComponent(item.id)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(changes) });
         if (!response.ok) showToast("Galerie-Metadaten konnten nicht gespeichert werden.");
       };
       rating.onchange = () => saveMeta({ rating: Number(rating.value) });
       collection.onchange = () => saveMeta({ collection: collection.value });
+      notes.onchange = () => saveMeta({ notes: notes.value });
       const restore = document.createElement("button"); restore.className = "btn"; restore.textContent = "Im Studio verwenden";
       restore.onclick = () => {
         state.manual = item.prompt || ""; state.negCustom = item.negativePrompt || "";
@@ -2835,24 +2895,27 @@ async function loadGallery() {
         $("#manualInput").value = state.manual; $("#negCustom").value = state.negCustom;
         renderModels(); updatePromptOutputs(); showStudioView("studio");
       };
-      card.append(image, caption, rating, collection, restore); grid.append(card);
+      card.append(image, caption, rating, collection, notes, restore); grid.append(card);
     }
   } catch (error) { grid.textContent = "Galerie nicht erreichbar: " + error.message; }
 }
 function showStudioView(view) {
   document.body.dataset.view = view;
   $("#galleryView").classList.toggle("active", view === "gallery");
+  $("#libraryView").classList.toggle("active", view === "library");
   document.querySelectorAll("[data-view-target]").forEach(button => {
     if (button.dataset.viewTarget === view) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
   });
   if (view === "gallery") loadGallery();
+  if (view === "library") loadLibraryView();
 }
 async function init() {
   document.querySelectorAll("[data-view-target]").forEach(button => button.onclick = () => showStudioView(button.dataset.viewTarget));
   $("#navAutomations").onclick = () => $("#btnAutomationMenu").click();
   $("#navLoras").onclick = () => $("#btnLoraPage").click();
   $("#navSettings").onclick = () => $("#btnAppearance").click();
+  $("#btnLocalSuggest").onclick = suggestLocalTags;
   for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genWidth", "width"], ["genHeight", "height"]]) {
     const field = document.getElementById(id);
     field.addEventListener("change", () => {
@@ -3830,7 +3893,7 @@ let serverOk = null, serverPushTimer = null;
 function setSaveStatus(kind) {
   const el = document.getElementById("saveStatus"); if (!el) return;
   const t = {
-    file: ["💾 In Datei gesichert", "ok", "Deine Daten (LoRAs, Presets, Tags …) liegen in prompt_studio_data.json neben dt_bridge.py und bleiben auch nach dem Schließen erhalten."],
+    file: ["💾 In Datei gesichert", "ok", "Deine Daten (LoRAs, Presets, Tags …) liegen lokal unter Library/Application Support/PromptMaster und bleiben nach dem Schließen erhalten."],
     local: ["⚠️ Nur im Browser gespeichert", "warn", "Seite über dt_bridge.py öffnen (http://localhost:8080), dann werden die Daten zusätzlich in einer Datei gesichert."],
     err: ["⚠️ Datei-Sicherung fehlgeschlagen", "bad", "dt_bridge.py läuft nicht mehr oder ist veraltet. Die Daten sind weiter im Browser gespeichert."]
   }[kind];
