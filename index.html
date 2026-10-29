@@ -1398,6 +1398,14 @@ const LIBRARY = {
   " Beleuchtung & Stimmung": {
     sfw: parseList("cinematic lighting|soft lighting|dramatic lighting|studio lighting|rim light|backlighting|volumetric lighting|god rays|sunbeams|natural light|golden hour|blue hour|sunrise|sunset|moonlight|candlelight|neon lights|neon glow|bioluminescence|glowing|bloom|glow effect|low key|high key|shadowed face|rain|snowfall|starry sky|aurora|warm tones|cold tones|moody|dreamy|ethereal|atmospheric|cozy|serene|top lighting|split lighting|ambient light|dappled sunlight|midday sun|firelight|lantern light|holographic lighting|fireflies|lens glow|chiaroscuro|harsh shadows|soft shadows|cast shadow|ambient occlusion|reflections|caustics|light leaks|volumetric fog|fog|mist|haze|smoke|dust particles|floating particles|sparkles|embers|heavy rain|storm|lightning|overcast|clear sky|cloudy sky|teal and orange|high contrast|muted colors|epic|eerie|nostalgic|lonely|melancholic|romantic atmosphere|peaceful|mysterious|magical|whimsical|tense|dramatic mood|festive|sunlight through window|window light|street lights|city lights|bokeh lights|colored lights|stage lights|spotlight|lens flare|twilight|dawn|midnight|full moon|crescent moon|shooting star|northern lights|cherry blossom petals falling|falling leaves|drifting snow|soap bubbles|paper lanterns|string lights|fairy lights|lava glow|crystal glow|magic circle glow"),
     nsfw: parseList("boudoir lighting|dim lighting|warm glow|red light|neon pink glow|soft window light|steam|sweat highlights|moody shadows|silhouette|backlit sheer curtain|candlelight on skin|erotic ambience|sensual mood|intimate atmosphere|romantic mood|seductive atmosphere|golden skin glow|rim light on skin|dark room|bedside lamp|low light|velvet shadows|purple lighting|rose lighting|amber glow|moonlit skin|steamy atmosphere")
+  },
+  " Porträt & Alltag": {
+    sfw: parseList("adult portrait|candid portrait|editorial portrait|side profile|three-quarter view|seated pose|walking pose|natural expression|relaxed posture|hands in pockets|reading a book|sketching|at a cafe|city park|rainy window|library interior|autumn leaves|soft daylight"),
+    nsfw: []
+  },
+  " Erwachsene Boudoir-Szenen": {
+    sfw: [],
+    nsfw: parseList("adult boudoir portrait|adult couple|consensual intimacy|sensual pose|lace robe|satin sheets|warm bedside light|silhouette through curtains|nude figure study|artistic nude portrait|implied nudity|adult kissing|intimate embrace|romantic bedroom|soft skin highlights|tasteful erotic portrait")
   }
 };
 
@@ -1439,7 +1447,7 @@ const getDefaultState = () => ({
   negCustom: "",
   de: "",
   weights: {},
-  appearance: { theme: "system", accent: "#7c8ca8", reduceMotion: false }
+  appearance: { theme: "night", accent: "#2f81f7", reduceMotion: false }
 });
 
 let state = getDefaultState();
@@ -1452,6 +1460,10 @@ function loadState() {
       state = { ...getDefaultState(), ...loaded };
     }
   } catch (e) { console.error("LocalStorage Load Error:", e); }
+  if (!localStorage.getItem("pm_dark_default_v1")) {
+    if (state.appearance?.theme === "system") state.appearance.theme = "night";
+    localStorage.setItem("pm_dark_default_v1", "1");
+  }
   if (!MODELS[state.model]) state.model = "pony";
 }
 
@@ -1473,8 +1485,8 @@ function showToast(msg) {
 
 /* ===== ERSCHEINUNGSBILD ===== */
 function applyAppearance() {
-  const appearance = { theme: "system", accent: "#0a84ff", reduceMotion: false, ...(state.appearance || {}) };
-  appearance.accent = "#0a84ff";
+  const appearance = { theme: "night", accent: "#2f81f7", reduceMotion: false, ...(state.appearance || {}) };
+  appearance.accent = "#2f81f7";
   if (!["system", "light", "night"].includes(appearance.theme)) appearance.theme = "night";
   state.appearance = appearance;
   document.body.dataset.theme = appearance.theme === "system"
@@ -2839,10 +2851,11 @@ function resetEntireState() {
 /* ===== INITIALISIERUNG ===== */
 function setupWorkspacePanels() {
   const tools = document.querySelector(".layout > main");
+  tools.append(document.querySelector(".layout > .out > .card:last-child"));
   const sections = [...tools.querySelectorAll(":scope > section.card")];
   const definitions = [
     ["model", "Modell"], ["random", "Zufall"], ["custom", "Eigene Tags"],
-    ["quality", "Qualität"], ["tags", "Tags"]
+    ["quality", "Qualität"], ["tags", "Tags"], ["generation", "Generierung"]
   ];
   tools.classList.add("tools-main");
   const tabs = document.createElement("div");

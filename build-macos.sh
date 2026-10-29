@@ -2,6 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+bash scripts/build-icon.sh
 .venv/bin/pyinstaller --noconfirm PromptMaster.spec
 APP="dist/Prompt Master.app"
 rm -rf "$APP"

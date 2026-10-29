@@ -3,12 +3,14 @@
 Lokale macOS-App zum Erstellen von Prompts und Generieren von Bildern mit Draw Things.
 
 Die Oberfläche ist als macOS-Studio aufgebaut: links die Arbeitsbereiche, in der Mitte Idee,
-Prompt und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität und Zufall. Unter
+Prompt und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität, Zufall und Generierung. Unter
 **Einstellungen** folgt das Erscheinungsbild dem System oder lässt sich auf Hell/Dunkel festlegen.
 Assistent, Automationen, LoRAs und Einstellungen öffnen als Seiten im selben App-Fenster.
 Die verwendeten SVG-Symbole stammen aus [Tabler Icons](https://github.com/tabler/tabler-icons)
 und liegen samt MIT-Lizenz lokal im Ordner `icons/`.
-Die Generierungsoptionen können aktuelle Werte aus Draw Things übernehmen; zusätzlich sind
+Das dunkle Design verwendet Schwarz und Anthrazit mit grünen, blauen und roten Statusfarben.
+Das App-Icon wird lokal aus `scripts/create-app-icon.swift` erzeugt. Die Generierungsoptionen
+können aktuelle Werte aus Draw Things übernehmen; zusätzlich sind
 Hi-Res-Fix, Hi-Res-Stärke und Schärfe steuerbar. Die Mitte und die Werkzeugspalte scrollen
 getrennt, während die Arbeitsbereiche links sichtbar bleiben.
 
