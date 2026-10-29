@@ -144,7 +144,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             name = f"{stamp}_{n:02d}"
             with open(os.path.join(IMG_DIR, name + "." + ext), "wb") as f:
                 f.write(img)
-            metadata = {key: data.get(key) for key in ("prompt", "negativePrompt", "model", "seed", "settings", "loras", "createdAt", "rating", "favorite", "collection", "notes")}
+            metadata = {key: data.get(key) for key in ("prompt", "negativePrompt", "model", "seed", "settings", "loras", "presetId", "createdAt", "rating", "favorite", "collection", "notes")}
             with open(os.path.join(IMG_DIR, name + ".json"), "w", encoding="utf-8") as f:
                 json.dump(metadata, f, ensure_ascii=False)
             self._json(200, {"ok": True, "file": f"ps_images/{name}.{ext}"})

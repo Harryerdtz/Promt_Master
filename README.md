@@ -3,9 +3,9 @@
 Lokale macOS-App zum Erstellen von Prompts und Generieren von Bildern mit Draw Things.
 
 Die Oberfläche ist als macOS-Studio aufgebaut: links die Arbeitsbereiche, in der Mitte Prompt
-und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität und Generierung. Ideen und
-Zufallsprompts liegen im eigenen Bereich **Creations**. Unter **Einstellungen** stehen Schwarz,
-Blau, Hell und System sowie Galeriegröße, Tag-Anzeige und automatische Bildspeicherung bereit.
+und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität mit Zufall und Presets sowie
+Generierung. Ideen liegen im eigenen Bereich **Creations**. Unter **Einstellungen** stehen Schwarz,
+Blau, Hell und System sowie vier Galeriegrößen, Tag-Anzeige und automatische Bildspeicherung bereit.
 Assistent, Automationen, LoRAs und Einstellungen öffnen als Seiten im selben App-Fenster.
 Die verwendeten SVG-Symbole stammen aus [Tabler Icons](https://github.com/tabler/tabler-icons)
 und liegen samt MIT-Lizenz lokal im Ordner `icons/`.
@@ -114,8 +114,8 @@ Rechts im Reiter **Modell** das passende Profil (SDXL, Pony, Illustrious) und de
 | **Save as PNG Info** | — | Bild mit eingebetteten Prompt-Metadaten |
 
 ### 6. **Creations und Presets nutzen**
-- Im Bereich **Creations** Ideen übersetzen, lokale Vorschläge ansehen und Prompts mischen.
-- Eigene Presets sichern und später in der Bibliothek laden.
+- Im Bereich **Creations** Ideen übersetzen und lokale Vorschläge ansehen.
+- Unter **Qualität** Prompts mischen und Presets direkt ohne Dialog sichern. Gespeicherte Presets erscheinen in der Bibliothek mit passenden generierten Bildern.
 
 ### 7. **Automation / Randomizer**
 - **Assistent** in der Seitenleiste führt Schritt für Schritt zum Prompt.

@@ -939,10 +939,10 @@ header p{font-size:.8rem;margin-top:2px}
   <button type="button" id="navLoras">LoRAs</button>
   <button type="button" id="navSettings">Einstellungen</button>
 </nav>
-<section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><input id="librarySearch" type="search" placeholder="Presets und Tags durchsuchen"><div id="libraryItems" class="gallery-grid"></div></section>
+<section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><div id="librarySummary" class="library-summary"></div><input id="librarySearch" type="search" placeholder="Presets und Tags durchsuchen"><div id="libraryItems" class="gallery-grid"></div></section>
 <section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div class="row"><input id="gallerySearch" type="search" placeholder="Prompts und Collections durchsuchen"><select id="gallerySort" aria-label="Sortierung"><option value="newest">Neueste zuerst</option><option value="oldest">Älteste zuerst</option><option value="rating">Beste Bewertung</option></select><label><input id="galleryFavorites" type="checkbox"> Nur Favoriten</label></div><div id="galleryGrid" class="gallery-grid"></div></section>
 
-<section id="creationsView" class="gallery-view creations-view" aria-label="Creations"><h2>Creations</h2><p class="hint">Ideen entwickeln, Tags vorschlagen lassen und neue Prompt-Kombinationen ausprobieren.</p><div id="creationsWorkspace"></div><section class="creation-preview"><h3>Prompt-Vorschau</h3><textarea id="creationPreview" readonly aria-label="Prompt-Vorschau"></textarea><button class="btn primary" id="btnOpenStudioFromCreations" type="button">Im Studio ansehen</button></section></section>
+<section id="creationsView" class="gallery-view creations-view" aria-label="Creations"><h2>Creations</h2><p class="hint">Ideen entwickeln und Tags vorschlagen lassen.</p><div id="creationsWorkspace"></div><section class="creation-preview"><h3>Prompt-Vorschau</h3><textarea id="creationPreview" readonly aria-label="Prompt-Vorschau"></textarea><button class="btn primary" id="btnOpenStudioFromCreations" type="button">Im Studio ansehen</button></section></section>
 <div class="layout">
   <main>
     <!-- 1. MODELL & RENDER-STIL -->
@@ -969,6 +969,7 @@ header p{font-size:.8rem;margin-top:2px}
         <button class="btn preset-btn" id="btnRandomize" style="flex:1">Prompt mischen</button>
         <button class="btn primary" id="btnSavePreset">Als Preset sichern</button>
       </div>
+      <label class="preset-name-label" for="presetName">Name für neues Preset<input id="presetName" type="text" maxlength="80" placeholder="z. B. Mein Illustrationsstil" autocomplete="off"></label>
       <div class="randomizer-options">
         <label>Fokus
           <select data-random-setting="randomProfile">
@@ -1016,9 +1017,9 @@ header p{font-size:.8rem;margin-top:2px}
         <div class="random-excluded-chips" aria-live="polite"></div>
         <div class="random-exclude-suggestions" hidden></div>
       </div>
-      <div class="hint" id="dtStatus" role="status" aria-live="polite">Bereit für Draw Things. Für die Verbindung diese Seite über dt_bridge.py öffnen.</div>
+      <div class="hint" id="dtStatus" role="status" aria-live="polite">Bereit für Draw Things.</div>
 
-      <div id="presetListContainer" style="max-height:140px; overflow-y:auto; margin-top:8px;"></div>
+      <div id="presetListContainer"></div>
 
       <div class="row" style="margin-top:12px">
         <button class="btn" id="btnExportData"> Backup Exportieren (.json)</button>
@@ -1311,7 +1312,7 @@ header p{font-size:.8rem;margin-top:2px}
       <label for="accentColor">Akzentfarbe <input id="accentColor" type="color" value="#7c8ca8"></label>
       <label class="appearance-check"><input id="reduceMotion" type="checkbox"> Animationen reduzieren</label>
       <label class="appearance-check"><input id="settingsAutoSave" type="checkbox"> Neue Bilder automatisch in der Galerie sichern</label>
-      <label for="settingsGallerySize">Galerie-Bildgröße<select id="settingsGallerySize"><option value="large">Groß</option><option value="extra">Sehr groß</option></select></label>
+      <label for="settingsGallerySize">Galerie-Bildgröße<select id="settingsGallerySize"><option value="small">Klein</option><option value="medium">Mittel</option><option value="large">Groß</option><option value="extra">Sehr groß</option></select></label>
       <label for="settingsTagFilter">Tag-Anzeige<select id="settingsTagFilter"><option value="all">Alle Tags</option><option value="sfw">Nur SFW</option><option value="nsfw">Nur NSFW</option></select></label>
     </div>
     <div class="settings-connection"><h3>Draw Things</h3><p id="settingsConnectionStatus" class="hint">Verbindung über den lokalen API-Server auf Port 7860.</p><button class="btn" id="settingsCheckConnection" type="button">Verbindung prüfen</button></div>
@@ -1437,6 +1438,7 @@ const getDefaultState = () => ({
   partnerTags: [],
   partnerOff: [],
   autoSaveImages: true,
+  gallerySize: "large",
   generation: {},
   randomHistory: [],
   tags: [],
@@ -1499,7 +1501,7 @@ function applyAppearance() {
   document.body.style.setProperty("--accent", appearance.accent);
   document.body.style.setProperty("--accent-soft", `${appearance.accent}38`);
   document.body.classList.toggle("reduce-motion", Boolean(appearance.reduceMotion));
-  document.body.style.setProperty("--gallery-card-min", (state.gallerySize || "large") === "extra" ? "520px" : "420px");
+  document.body.style.setProperty("--gallery-card-width", { small: "220px", medium: "300px", large: "400px", extra: "520px" }[state.gallerySize] || "400px");
 }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
   if ((state.appearance || {}).theme === "system") applyAppearance();
@@ -1777,7 +1779,7 @@ function renderCustomLibraryTags() {
 
 function renderPresets() {
   const container = $("#presetListContainer");
-  container.innerHTML = "";
+  container.replaceChildren();
 
   if (!state.presets || state.presets.length === 0) {
     container.innerHTML = `<div style="font-size:0.82rem;color:var(--mute);padding:4px">Keine Presets gespeichert.</div>`;
@@ -1787,18 +1789,14 @@ function renderPresets() {
   state.presets.forEach((p, idx) => {
     const div = document.createElement("div");
     div.className = "preset-item";
-    div.innerHTML = `
-      <span> ${p.name}</span>
-      <div>
-        <button class="btn ok" style="padding:3px 8px;font-size:0.75rem">Laden</button>
-        <button class="btn danger" style="padding:3px 8px;font-size:0.75rem"></button>
-      </div>
-    `;
-
-    const [btnLoad, btnDel] = div.querySelectorAll("button");
+    const title = document.createElement("span"); title.textContent = p.name || "Preset";
+    const actions = document.createElement("div");
+    const btnLoad = document.createElement("button"); btnLoad.type = "button"; btnLoad.className = "btn ok"; btnLoad.textContent = "Laden";
+    const btnDel = document.createElement("button"); btnDel.type = "button"; btnDel.className = "btn danger"; btnDel.textContent = "Löschen";
     btnLoad.onclick = () => loadPreset(p);
     btnDel.onclick = () => deletePreset(idx);
-
+    actions.append(btnLoad, btnDel);
+    div.append(title, actions);
     container.appendChild(div);
   });
 }
@@ -2588,23 +2586,30 @@ function toggleAutoGeneration() {
 }
 
 function savePreset() {
-  const name = prompt("Name für das Preset eingeben:", "Mein Preset " + (state.presets.length + 1));
-  if (!name) return;
+  const field = $("#presetName");
+  const name = field.value.trim() || `Mein Preset ${state.presets.length + 1}`;
 
   const presetObj = {
+    id: crypto.randomUUID(),
     name: name,
+    prompt: buildPositivePrompt(false),
+    createdAt: new Date().toISOString(),
     model: state.model,
     styleMode: state.styleMode,
     tags: [...state.tags],
     extras: [...state.extras],
     custom: [...state.custom],
     manual: state.manual,
-    negCustom: state.negCustom
+    negCustom: state.negCustom,
+    generation: { ...state.generation },
+    loras: state.loras.filter(lora => lora.active).map(lora => ({ name: lora.name, weight: lora.weight }))
   };
 
   state.presets.push(presetObj);
+  field.value = "";
   renderPresets();
   saveState();
+  loadLibraryView();
   showToast(" Preset '" + name + "' gespeichert!");
 }
 
@@ -2616,6 +2621,12 @@ function loadPreset(p) {
   state.custom = [...(p.custom || [])];
   state.manual = p.manual || "";
   state.negCustom = p.negCustom || "";
+  state.generation = { ...(p.generation || {}) };
+  if (Array.isArray(p.loras)) {
+    const saved = new Map(p.loras.map(lora => [lora.name, lora.weight]));
+    state.loras = state.loras.map(lora => ({ ...lora, active: saved.has(lora.name), weight: saved.get(lora.name) ?? lora.weight }));
+    renderLoras();
+  }
 
   renderModels();
   renderStyleSwitch();
@@ -2623,6 +2634,10 @@ function loadPreset(p) {
   renderCustomChips();
   $("#manualInput").value = state.manual;
   $("#negCustom").value = state.negCustom;
+  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"], ["genHiresStrength", "hiresStrength"], ["genSharpness", "sharpness"]]) {
+    document.getElementById(id).value = state.generation[key] ?? "";
+  }
+  $("#genHiresFix").checked = Boolean(state.generation.hiresFix);
 
   updatePromptOutputs();
   showToast(" Preset '" + p.name + "' geladen!");
@@ -2866,7 +2881,8 @@ function setupWorkspacePanels() {
   const tools = document.querySelector(".layout > main");
   const random = tools.querySelector(":scope > section.card:nth-of-type(2)");
   const creations = document.querySelector("#creationsWorkspace");
-  creations.append(document.querySelector("#deInput").closest(".card"), random);
+  creations.append(document.querySelector("#deInput").closest(".card"));
+  tools.querySelector(":scope > section.card:nth-of-type(4)").append(random);
   tools.append(document.querySelector(".layout > .out > .card:last-child"));
   const sections = [...tools.querySelectorAll(":scope > section.card")];
   const definitions = [
@@ -2961,16 +2977,24 @@ function suggestLocalTags() {
 }
 function loadLibraryView() {
   const box = $("#libraryItems"); box.replaceChildren();
+  $("#librarySummary").textContent = `${(state.presets || []).length} Presets · ${(state.customLibrary || []).length} eigene Tags · ${galleryItems.length} Bilder in der Galerie`;
   const query = $("#librarySearch").value.trim().toLocaleLowerCase("de");
   const presets = (state.presets || []).filter(item => !query || String(item.name || "").toLocaleLowerCase("de").includes(query));
   const customTags = (state.customLibrary || []).filter(item => !query || String(item.text || "").toLocaleLowerCase("de").includes(query));
   if (!presets.length && !customTags.length) { box.textContent = "Noch keine Presets oder eigenen Tags gespeichert."; return; }
   for (const preset of presets) {
-    const card = document.createElement("article"); card.className = "gallery-item";
+    const card = document.createElement("article"); card.className = "gallery-item library-preset";
+    const picture = galleryItems.find(item => item.presetId === preset.id) || galleryItems.find(item => preset.prompt && item.prompt === preset.prompt);
+    if (picture) {
+      const image = document.createElement("img"); image.className = "library-preset-image";
+      image.src = picture.image; image.alt = `Bild zum Preset ${preset.name}`; image.loading = "lazy";
+      card.append(image);
+    }
     const title = document.createElement("h3"); title.textContent = preset.name || "Preset";
+    const description = document.createElement("p"); description.className = "library-preset-prompt"; description.textContent = preset.prompt || "Gespeicherte Prompt-Kombination";
     const action = document.createElement("button"); action.className = "btn"; action.textContent = "Im Studio laden";
     action.onclick = () => { loadPreset(preset); showStudioView("studio"); };
-    card.append(title, action); box.append(card);
+    card.append(title, description, action); box.append(card);
   }
   for (const tag of customTags) {
     const card = document.createElement("article"); card.className = "gallery-item";
@@ -3050,6 +3074,7 @@ async function loadGallery() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     galleryItems = (await response.json()).items || [];
     renderGallery();
+    if (document.body.dataset.view === "library") loadLibraryView();
   } catch (error) { $("#galleryGrid").textContent = "Galerie nicht erreichbar: " + error.message; }
 }
 function showStudioView(view) {
@@ -3084,7 +3109,7 @@ function showStudioView(view) {
   }
   if (view === "wizard") $("#wz").classList.add("open");
   if (view === "gallery") loadGallery();
-  if (view === "library") loadLibraryView();
+  if (view === "library") { loadLibraryView(); loadGallery(); }
   if (view === "automation" || view === "studio") requestAnimationFrame(resizePromptFields);
   window.scrollTo(0, 0);
 }
@@ -3894,7 +3919,6 @@ const DP_TITLE = document.title;
 const DP = { on: false, t0: 0, est: 30000, cfg: null, live: false, last: null, prev: null, eta: null, etaT: 0, stepNow: 0, stepTotal: 0, shown: 0, timer: null, pollTimer: null, hideT: null, polling: false, pollFails: 0, batch: null };
 let dpHist = [];
 try { dpHist = JSON.parse(localStorage.getItem(DP_HIST_KEY) || "[]"); } catch (e) {}
-try { localStorage.removeItem("ps_progress_api_off_v1"); localStorage.removeItem("ps_gen_times_v1"); } catch (e) {}
 const DR_LIST = [];
 let lbIdx = -1;
 
@@ -3978,7 +4002,8 @@ function dpRender() {
   if (live) {
     const { p, t } = DP.last;
     const rate = DP.prev && t > DP.prev.t && p > DP.prev.p ? (p - DP.prev.p) / (t - DP.prev.t) : 0;
-    target = p + Math.min(rate * (now - t), 0.04);                       // zwischen zwei Abfragen sanft weiterlaufen
+    const liveProgress = Math.min(1, p + Math.min(rate * (now - t), 0.04));
+    target = liveProgress < 0.98 ? liveProgress * 0.9 : 0.9 + 0.08 * (1 - Math.exp(-(el / Math.max(DP.est, 1000))));
   } else {
     const x = el / DP.est;
     target = x < 0.9 ? x : 0.9 + 0.09 * (1 - Math.exp(-(x - 0.9) * 3));
@@ -3988,16 +4013,18 @@ function dpRender() {
   const pct = Math.round(DP.shown * 100);
 
   let left;
-  if (live && DP.eta != null) left = Math.max(0, DP.eta - (now - DP.etaT));
+  if (live && DP.last.p >= 0.98) left = null;
+  else if (live && DP.eta != null) left = Math.max(0, DP.eta - (now - DP.etaT));
   else if (live && DP.last.p > 0.05) left = Math.max(0, (DP.last.t - DP.t0) / DP.last.p - el);
   else left = Math.max(0, DP.est - el);
 
   const steps = DP.stepTotal || (DP.cfg && DP.cfg.steps) || 0;
   let phase = "";
   if (DP.shown < 0.06 && !live) phase = "Bereite vor";
-  else if (DP.shown > 0.95) phase = "Dekodiere Bild";
+  else if (live && DP.last.p >= 0.98) phase = "Bild wird fertiggestellt";
+  else if (DP.shown > 0.95) phase = "Bild wird fertiggestellt";
   else if (steps) phase = DP.stepTotal ? `Schritt ${DP.stepNow}/${steps}` : `≈ Schritt ${Math.max(1, Math.round(DP.shown * steps))}/${steps}`;
-  let leftTxt = left > 1000 ? `ca. ${dpFmt(left)} übrig` : "gleich fertig";
+  let leftTxt = left == null ? "warte auf Draw Things" : left > 1000 ? `ca. ${dpFmt(left)} übrig` : "gleich fertig";
   if (!live && el > DP.est * 1.3) leftTxt = "dauert länger als sonst";
 
   const b = DP.batch, finite = b && Number.isFinite(b.target);
@@ -4009,7 +4036,7 @@ function dpRender() {
   $("#gdTotalWrap").hidden = !finite;
   if (finite) {
     $("#gdTotalBar").style.width = Math.min(100, (b.done + DP.shown) / b.target * 100) + "%";
-    $("#gdTotalMeta").textContent = `Gesamt ≈ ${dpFmt(left + (b.target - b.done - 1) * dpEstimate(DP.cfg))} übrig`;
+    $("#gdTotalMeta").textContent = left == null ? "Aktuelles Bild wird fertiggestellt" : `Gesamt ≈ ${dpFmt(left + (b.target - b.done - 1) * dpEstimate(DP.cfg))} übrig`;
   } else $("#gdTotalMeta").textContent = b ? "endlos – bis Stopp" : "";
   document.title = `⏳ ${pct} %${finite ? ` · ${b.done + 1}/${b.target}` : ""} – ${DP_TITLE}`;
 }
@@ -4052,14 +4079,15 @@ function friendlyDtError(msg) {
 }
 
 async function autoSaveImages(images, prompt) {
-  if (!state.autoSaveImages || !SERVER_STORE) return;
+  const matchingPreset = (state.presets || []).find(preset => preset.prompt === prompt);
+  if ((!state.autoSaveImages && !matchingPreset) || !SERVER_STORE) return;
   for (const img of images) {
     try {
       const requestedSeed = (state.generation || {}).seed;
-      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, seed: requestedSeed === "" || requestedSeed == null ? null : Number(requestedSeed), loras: state.loras.filter(l => l.active), settings: { ...DP.cfg, cfg: (state.generation || {}).cfg, sampler: (state.generation || {}).sampler }, createdAt: new Date().toISOString(), rating: 0, favorite: false, collection: "", notes: "" }) });
+      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, seed: requestedSeed === "" || requestedSeed == null ? null : Number(requestedSeed), loras: state.loras.filter(l => l.active), settings: { ...DP.cfg, cfg: (state.generation || {}).cfg, sampler: (state.generation || {}).sampler }, presetId: matchingPreset?.id || null, createdAt: new Date().toISOString(), rating: 0, favorite: false, collection: "", notes: "" }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
-      if (document.body.dataset.view === "gallery") loadGallery();
+      if (["gallery", "library"].includes(document.body.dataset.view)) loadGallery();
       if (!autoGenerationRunning) showToast(" Gespeichert: " + d.file);
     } catch (e) { showToast(" Bild nicht gespeichert: " + e.message); }
   }
