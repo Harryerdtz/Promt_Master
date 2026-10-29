@@ -5,7 +5,7 @@ a = Analysis(
     ['dt_bridge.py'],
     pathex=[],
     binaries=[],
-    datas=[('index.html', '.')],
+    datas=[('index.html', '.'), ('app-design.css', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

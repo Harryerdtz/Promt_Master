@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Universal Anime, Hentai & AI Prompt Studio Ultra</title>
+<title>Prompt Master</title>
 <style>
 :root {
   --bg: #05070c;
@@ -912,19 +912,20 @@ header p{font-size:.8rem;margin-top:2px}
 .studio-nav button{padding:7px 12px;font-size:.82rem}
 @media(max-width:900px){.header-actions{flex-wrap:wrap}.layout{display:block}.out{position:static}}
 </style>
+<link rel="stylesheet" href="/app-design.css">
 </head>
 <body data-theme="calm">
 
 <header>
   <h1>Prompt Master</h1>
-  <p>Dein Studio für Draw Things</p>
+  <p>Studio für Draw Things</p>
   <div class="header-actions">
-    <button class="wz-launch" id="btnWizard">🧙 Assistent-Modus starten</button>
+    <button class="wz-launch" id="btnWizard">Assistent öffnen</button>
     <button class="wz-launch automation-launch" id="btnAutomationMenu" type="button">⚙ Automationen öffnen</button>
     <button class="wz-launch lora-launch" id="btnLoraPage" type="button">🎨 LoRAs verwalten</button>
     <button class="wz-launch" id="btnAppearance" type="button">⚙ Einstellungen</button>
-    <span class="save-pill" id="saveStatus" role="status">⏳ Speicher wird geprüft …</span>
-    <span class="save-pill" id="connectionStatus" role="status">⏳ Draw Things wird geprüft …</span>
+    <span class="save-pill" id="saveStatus" role="status">Speicher wird geprüft …</span>
+    <span class="save-pill" id="connectionStatus" role="status">Draw Things wird geprüft …</span>
   </div>
 </header>
 
@@ -943,7 +944,7 @@ header p{font-size:.8rem;margin-top:2px}
   <main>
     <!-- 1. MODELL & RENDER-STIL -->
     <section class="card">
-      <h2><b>1</b>Modell &amp; Render-Stil</h2>
+      <h2>Modell und Stil</h2>
       <div class="models" id="models"></div>
 
       <label class="l">Visual Style (Anime/Hentai vs. Realistisch)</label>
@@ -960,10 +961,10 @@ header p{font-size:.8rem;margin-top:2px}
 
     <!-- 3. PROMPT RANDOMIZER & PRESETS -->
     <section class="card">
-      <h2><b>2</b>🎲 Zufalls-Generator &amp; Presets</h2>
+      <h2>Zufall und Presets</h2>
       <div class="row" style="margin-bottom:10px">
-        <button class="btn preset-btn" id="btnRandomize" style="flex:1">🎲 Zufälligen Prompt generieren</button>
-        <button class="btn primary" id="btnSavePreset">💾 Prompt als Preset speichern</button>
+        <button class="btn preset-btn" id="btnRandomize" style="flex:1">Prompt mischen</button>
+        <button class="btn primary" id="btnSavePreset">Als Preset sichern</button>
       </div>
       <div class="randomizer-options">
         <label>Fokus
@@ -1025,7 +1026,7 @@ header p{font-size:.8rem;margin-top:2px}
 
     <!-- 4. CUSTOM TAG CREATOR -->
     <section class="card">
-      <h2><b>3</b>Eigene Tags speichern</h2>
+      <h2>Eigene Tags</h2>
       <div class="row">
         <input type="text" id="newCustomTagInput" placeholder="Neuen Tag eingeben (z. B. 'demon horns', 'tentacle harness')...">
         <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--mute);white-space:nowrap;cursor:pointer">
@@ -1037,13 +1038,13 @@ header p{font-size:.8rem;margin-top:2px}
 
     <!-- 5. MODELL-EXTRAS -->
     <section class="card">
-      <h2><b>4</b>Modell-Spezifische Quality &amp; Rating Tags</h2>
+      <h2>Qualität und Bewertung</h2>
       <div class="tags" style="padding:0" id="extras"></div>
     </section>
 
     <!-- 7. TAG BIBLIOTHEK -->
     <section class="card">
-      <h2><b>6</b>Tag-Bibliothek</h2>
+      <h2>Tag-Bibliothek</h2>
       <div class="bar">
         <div class="legend">
           <span><i style="background:var(--sfw-color)"></i>SFW Tag</span>
@@ -1054,16 +1055,16 @@ header p{font-size:.8rem;margin-top:2px}
         <div class="filter-modes">
           <button class="filter-btn active" data-filter="all">Alle</button>
           <button class="filter-btn" data-filter="sfw">Nur SFW</button>
-          <button class="filter-btn" data-filter="nsfw">🔥 Nur NSFW</button>
+          <button class="filter-btn" data-filter="nsfw">Nur NSFW</button>
         </div>
       </div>
 
       <div class="row" style="margin-bottom:12px">
-        <input type="search" id="search" placeholder="🔍 Tags durchsuchen (z.B. 'ahegao', 'tentacles', 'creampie', 'school uniform')...">
+        <input type="search" id="search" placeholder="Tags suchen" aria-label="Tags suchen">
         <button class="btn danger" id="btnClearTags">Alle Tags abwählen</button>
       </div>
 
-      <div class="hint" style="margin:0 0 8px">ℹ️ <b>Rechtsklick</b> oder <b>Shift+Klick</b> (Handy: gedrückt halten) auf einen Tag öffnet Info und die Aktion zum Ausschließen vom Zufallswurf.</div>
+      <div class="hint" style="margin:0 0 8px"><b>Rechtsklick</b> oder <b>Shift+Klick</b> auf einen Tag öffnet weitere Aktionen.</div>
       <div class="tagmode-toolbar">
         <button class="btn" id="btnModeExclude" type="button" title="Taste X">⊘ Ausschließen-Modus <kbd>X</kbd></button>
         <button class="btn" id="btnModePin" type="button" title="Taste P">📌 Immer-dabei-Modus <kbd>P</kbd></button>
@@ -1079,14 +1080,14 @@ header p{font-size:.8rem;margin-top:2px}
   <!-- RECHTE SPALTE: PROMPT AUSGABE -->
   <aside class="out">
     <section class="card">
-      <h2><b>★</b>Generierter Prompt</h2>
+      <h2>Prompt</h2>
 
       <div class="label positive-label">
         <span>Positive Prompt</span>
         <div class="prompt-label-tools">
           <span class="counter-badge" id="posCounter">0 Zeichen | ~0 Tokens</span>
-          <button class="btn" id="btnCopyPosInline" type="button">📋 Positiv kopieren</button>
-          <button class="btn primary" id="btnGenerateFromPrompt" type="button">▶ Erzeugen</button>
+          <button class="btn" id="btnCopyPosInline" type="button">Kopieren</button>
+          <button class="btn primary" id="btnGenerateFromPrompt" type="button">Bild erzeugen</button>
         </div>
       </div>
       <textarea id="posOutput" readonly></textarea>
@@ -1107,13 +1108,13 @@ header p{font-size:.8rem;margin-top:2px}
       <div class="tags" style="padding:4px 0 0" id="negExtras"></div>
 
       <div class="actions">
-        <button class="btn" id="btnCopyNeg">📋 Negative</button>
-        <button class="btn danger" id="btnResetAll">⚡ Reset All</button>
+        <button class="btn" id="btnCopyNeg">Negativen Prompt kopieren</button>
+        <button class="btn danger" id="btnResetAll">Prompt zurücksetzen</button>
       </div>
     </section>
 
     <section class="card">
-      <h2><b>5</b>Eigene Ideen &amp; Übersetzer</h2>
+      <h2>Idee und eigene Eingaben</h2>
       <label class="l" for="deInput">Eigene Idee auf Deutsch eingeben</label>
       <div class="row">
         <input type="text" id="deInput" placeholder="z. B. Dämonen-Mädchen mit Hörnern im verschneiten Wald">
@@ -1128,7 +1129,7 @@ header p{font-size:.8rem;margin-top:2px}
     </section>
 
     <section class="card">
-      <h2><b>★</b>Draw Things Ergebnisse <label class="res-save" title="Speichert jedes neue Bild automatisch im Ordner ps_images neben dt_bridge.py (nur wenn die Seite über dt_bridge.py geöffnet ist)"><input type="checkbox" id="chkAutoSave"> 💾 Auto-Speichern</label><button class="btn res-clear" id="btnClearResults" type="button" title="Alle Ergebnisse entfernen">🗑 Leeren</button></h2>
+      <h2>Ergebnisse <label class="res-save" title="Neue Bilder lokal in der Galerie speichern"><input type="checkbox" id="chkAutoSave"> In Galerie sichern</label><button class="btn res-clear" id="btnClearResults" type="button" title="Ergebnisse aus dieser Ansicht entfernen">Ansicht leeren</button></h2>
       <div class="dt-results" id="dtResults">
         <p class="hint dt-empty">Generierte Bilder erscheinen hier.</p>
       </div>
@@ -1294,7 +1295,7 @@ header p{font-size:.8rem;margin-top:2px}
     <div class="appearance-head"><div><h2 id="appearanceTitle">Einstellungen</h2><p>Wähle eine Farbwelt und passe die Oberfläche an.</p></div><button class="btn" id="btnCloseAppearance" type="button" aria-label="Einstellungen schließen">×</button></div>
     <div class="appearance-options">
       <label for="themeSelect">Farbprofil
-        <select id="themeSelect"><option value="system">System</option><option value="light">Hell</option><option value="night">Dunkel</option><option value="calm">Ruhig</option><option value="soft">Warm &amp; weich</option><option value="neon">Neon</option></select>
+        <select id="themeSelect"><option value="system">System</option><option value="light">Hell</option><option value="night">Dunkel</option></select>
       </label>
       <label for="accentColor">Akzentfarbe <input id="accentColor" type="color" value="#7c8ca8"></label>
       <label class="appearance-check"><input id="reduceMotion" type="checkbox"> Animationen reduzieren</label>
@@ -1462,7 +1463,8 @@ function showToast(msg) {
 
 /* ===== ERSCHEINUNGSBILD ===== */
 function applyAppearance() {
-  const appearance = { theme: "system", accent: "#7c8ca8", reduceMotion: false, ...(state.appearance || {}) };
+  const appearance = { theme: "system", accent: "#0a84ff", reduceMotion: false, ...(state.appearance || {}) };
+  if (!["system", "light", "night"].includes(appearance.theme)) appearance.theme = "night";
   state.appearance = appearance;
   document.body.dataset.theme = appearance.theme === "system"
     ? (matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "light") : appearance.theme;
@@ -1494,7 +1496,7 @@ function setupAppearance() {
   const theme = $("#themeSelect"), accent = $("#accentColor"), motion = $("#reduceMotion");
   const openModal = () => {
     const a = state.appearance || {};
-    theme.value = a.theme || "system"; accent.value = a.accent || "#7c8ca8"; motion.checked = Boolean(a.reduceMotion);
+    theme.value = ["system", "light", "night"].includes(a.theme) ? a.theme : "night"; accent.value = a.accent || "#0a84ff"; motion.checked = Boolean(a.reduceMotion);
     modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); theme.focus();
   };
   const closeModal = () => { modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true"); open.focus(); };
@@ -2821,6 +2823,35 @@ function resetEntireState() {
 }
 
 /* ===== INITIALISIERUNG ===== */
+function setupWorkspacePanels() {
+  const tools = document.querySelector(".layout > main");
+  const sections = [...tools.querySelectorAll(":scope > section.card")];
+  const definitions = [
+    ["model", "Modell"], ["random", "Zufall"], ["custom", "Eigene Tags"],
+    ["quality", "Qualität"], ["tags", "Tags"]
+  ];
+  tools.classList.add("tools-main");
+  const tabs = document.createElement("div");
+  tabs.className = "tool-tabs";
+  tabs.setAttribute("role", "tablist");
+  tabs.setAttribute("aria-label", "Werkzeuge");
+  const activate = name => {
+    for (const section of sections) section.classList.toggle("is-current-panel", section.dataset.toolPanel === name);
+    for (const button of tabs.querySelectorAll("button")) button.setAttribute("aria-selected", String(button.dataset.panel === name));
+  };
+  definitions.forEach(([name, label], index) => {
+    const section = sections[index];
+    if (!section) return;
+    section.dataset.toolPanel = name;
+    const button = document.createElement("button");
+    button.type = "button"; button.dataset.panel = name; button.textContent = label;
+    button.setAttribute("role", "tab");
+    button.onclick = () => activate(name);
+    tabs.append(button);
+  });
+  tools.prepend(tabs);
+  activate("tags");
+}
 function suggestLocalTags() {
   const idea = $("#deInput").value.toLocaleLowerCase("de");
   const mapping = [
@@ -2937,6 +2968,7 @@ function showStudioView(view) {
   if (view === "library") loadLibraryView();
 }
 async function init() {
+  setupWorkspacePanels();
   document.querySelectorAll("[data-view-target]").forEach(button => button.onclick = () => showStudioView(button.dataset.viewTarget));
   $("#navAutomations").onclick = () => $("#btnAutomationMenu").click();
   $("#navLoras").onclick = () => $("#btnLoraPage").click();
@@ -3924,9 +3956,9 @@ let serverOk = null, serverPushTimer = null;
 function setSaveStatus(kind) {
   const el = document.getElementById("saveStatus"); if (!el) return;
   const t = {
-    file: ["💾 In Datei gesichert", "ok", "Deine Daten (LoRAs, Presets, Tags …) liegen lokal unter Library/Application Support/PromptMaster und bleiben nach dem Schließen erhalten."],
-    local: ["⚠️ Nur im Browser gespeichert", "warn", "Seite über dt_bridge.py öffnen (http://localhost:8080), dann werden die Daten zusätzlich in einer Datei gesichert."],
-    err: ["⚠️ Datei-Sicherung fehlgeschlagen", "bad", "dt_bridge.py läuft nicht mehr oder ist veraltet. Die Daten sind weiter im Browser gespeichert."]
+    file: ["Lokal gesichert", "ok", "Deine Daten (LoRAs, Presets, Tags …) liegen lokal unter Library/Application Support/PromptMaster und bleiben nach dem Schließen erhalten."],
+    local: ["Nur im Browser gespeichert", "warn", "Seite über dt_bridge.py öffnen, dann werden die Daten zusätzlich in einer Datei gesichert."],
+    err: ["Sicherung fehlgeschlagen", "bad", "Der lokale Dienst ist nicht erreichbar. Die Daten sind weiter im Browser gespeichert."]
   }[kind];
   el.textContent = t[0]; el.className = "save-pill " + t[1]; el.title = t[2];
 }

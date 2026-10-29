@@ -2,6 +2,10 @@
 
 Lokale macOS-App zum Erstellen von Prompts und Generieren von Bildern mit Draw Things.
 
+Die Oberfläche ist als macOS-Studio aufgebaut: links die Arbeitsbereiche, in der Mitte Idee,
+Prompt und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität und Zufall. Unter
+**Einstellungen** folgt das Erscheinungsbild dem System oder lässt sich auf Hell/Dunkel festlegen.
+
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](index.html)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat&logo=javascript&logoColor=black)](index.html)
 [![Python Bridge](https://img.shields.io/badge/Python_Bridge-Required-3776AB?logo=python&logoColor=white)](dt_bridge.py)
@@ -27,7 +31,7 @@ gespeichert. Dort liegen der Prompt-State und der Ordner `ps_images`.
 **Für die Bildgenerierung muss laufen:**
 ```
 Prompt Master.app (eigenes macOS-Fenster)
-    → lokale Bridge auf 127.0.0.1:8080
+    → lokale Bridge auf einem freien lokalen Port
         → Draw Things API (http://127.0.0.1:7860)
 ```
 

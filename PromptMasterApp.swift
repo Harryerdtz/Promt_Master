@@ -4,12 +4,15 @@ import WebKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var window: NSWindow!
     private var bridge: Process?
+    private let port = Int.random(in: 20000...60000)
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let executable = Bundle.main.resourceURL!.appendingPathComponent("bridge/PromptMaster")
         let process = Process()
         process.executableURL = executable
-        process.environment = ProcessInfo.processInfo.environment.merging(["PROMPT_MASTER_NO_BROWSER": "1"]) { _, new in new }
+        process.environment = ProcessInfo.processInfo.environment.merging([
+            "PROMPT_MASTER_NO_BROWSER": "1", "PORT": String(port)
+        ]) { _, new in new }
         do {
             try process.run()
             bridge = process
@@ -37,12 +40,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard attempts > 0 else {
             let alert = NSAlert()
             alert.messageText = "Prompt Master konnte nicht starten"
-            alert.informativeText = "Der lokale Dienst auf Port 8080 ist nicht erreichbar. Prüfe, ob bereits eine andere Prompt-Master-Instanz läuft, und starte die App erneut."
+            alert.informativeText = "Der lokale Dienst konnte nicht gestartet werden. Bitte starte die App erneut."
             alert.runModal()
             NSApp.terminate(nil)
             return
         }
-        let url = URL(string: "http://127.0.0.1:8080/")!
+        guard bridge?.isRunning == true else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                self.loadWhenReady(view, attempts: attempts - 1)
+            }
+            return
+        }
+        let url = URL(string: "http://127.0.0.1:\(port)/")!
         URLSession.shared.dataTask(with: url) { _, response, _ in
             DispatchQueue.main.async {
                 if let http = response as? HTTPURLResponse, http.statusCode == 200 {
