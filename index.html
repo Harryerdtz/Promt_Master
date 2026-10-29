@@ -874,7 +874,7 @@ body.lora-view .lora-modal{display:block;padding:18px;animation:fadeIn .25s ease
 .tag.is-excluded{opacity:.55;text-decoration:line-through;text-decoration-color:#ef4444;border-color:rgba(239,68,68,.55)!important}
 .tag.is-excluded::before{content:"⊘ ";color:#f87171;text-decoration:none;display:inline-block}
 .tag.is-pinned{border-color:rgba(34,211,238,.85)!important;box-shadow:0 0 0 1px rgba(34,211,238,.4)}
-.tag.is-pinned::before{content:"📌 ";display:inline-block}
+.tag.is-pinned::before{content:" ";display:inline-block}
 body.tagmode-exclude .tag,body.tagmode-pin .tag{cursor:crosshair}
 body.tagmode-exclude .tag:hover{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.35)}
 body.tagmode-pin .tag:hover{border-color:#22d3ee!important;box-shadow:0 0 0 3px rgba(34,211,238,.35)}
@@ -921,9 +921,9 @@ header p{font-size:.8rem;margin-top:2px}
   <p>Studio für Draw Things</p>
   <div class="header-actions">
     <button class="wz-launch" id="btnWizard">Assistent öffnen</button>
-    <button class="wz-launch automation-launch" id="btnAutomationMenu" type="button">⚙ Automationen öffnen</button>
-    <button class="wz-launch lora-launch" id="btnLoraPage" type="button">🎨 LoRAs verwalten</button>
-    <button class="wz-launch" id="btnAppearance" type="button">⚙ Einstellungen</button>
+    <button class="wz-launch automation-launch" id="btnAutomationMenu" type="button"> Automationen öffnen</button>
+    <button class="wz-launch lora-launch" id="btnLoraPage" type="button"> LoRAs verwalten</button>
+    <button class="wz-launch" id="btnAppearance" type="button"> Einstellungen</button>
     <span class="save-pill" id="saveStatus" role="status">Speicher wird geprüft …</span>
     <span class="save-pill" id="connectionStatus" role="status">Draw Things wird geprüft …</span>
   </div>
@@ -931,6 +931,7 @@ header p{font-size:.8rem;margin-top:2px}
 
 <nav class="studio-nav" aria-label="Hauptnavigation">
   <button type="button" data-view-target="studio" aria-current="page">Studio</button>
+  <button type="button" id="navWizard">Assistent</button>
   <button type="button" data-view-target="library">Bibliothek</button>
   <button type="button" data-view-target="gallery">Galerie</button>
   <button type="button" id="navAutomations">Automationen</button>
@@ -940,6 +941,7 @@ header p{font-size:.8rem;margin-top:2px}
 <section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><input id="librarySearch" type="search" placeholder="Presets und Tags durchsuchen"><div id="libraryItems" class="gallery-grid"></div></section>
 <section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div class="row"><input id="gallerySearch" type="search" placeholder="Prompts und Collections durchsuchen"><select id="gallerySort" aria-label="Sortierung"><option value="newest">Neueste zuerst</option><option value="oldest">Älteste zuerst</option><option value="rating">Beste Bewertung</option></select><label><input id="galleryFavorites" type="checkbox"> Nur Favoriten</label></div><div id="galleryGrid" class="gallery-grid"></div></section>
 
+<div class="studio-guide" aria-label="Schnellstart"><strong>So startest du</strong><span>Idee eingeben</span><span class="guide-arrow">→</span><span>Modell und Tags wählen</span><span class="guide-arrow">→</span><span>Prompt prüfen und Bild erzeugen</span></div>
 <div class="layout">
   <main>
     <!-- 1. MODELL & RENDER-STIL -->
@@ -949,12 +951,12 @@ header p{font-size:.8rem;margin-top:2px}
 
       <label class="l">Visual Style (Anime/Hentai vs. Realistisch)</label>
       <div class="style-switch">
-        <button class="style-btn active" data-style="anime">🌸 Anime / Hentai (2D)</button>
-        <button class="style-btn" data-style="realistic">📸 Realistisch / 3D</button>
+        <button class="style-btn active" data-style="anime"> Anime / Hentai (2D)</button>
+        <button class="style-btn" data-style="realistic"> Realistisch / 3D</button>
       </div>
 
       <div class="settings-info" id="settingsInfo"></div>
-      <div class="res"><span>📐 Auflösung (Klick = kopieren):</span><span id="resChips" style="display:contents"></span></div>
+      <div class="res"><span> Auflösung (Klick = kopieren):</span><span id="resChips" style="display:contents"></span></div>
     </section>
 
 
@@ -989,7 +991,7 @@ header p{font-size:.8rem;margin-top:2px}
         </label>
       </div>
       <div class="randomizer-partner">
-          <label>👥 Partner-Automatik – wenn ein Tag eine zweite Person braucht</label>
+          <label> Partner-Automatik – wenn ein Tag eine zweite Person braucht</label>
           <div class="partner-row">
             <select data-random-setting="partnerMode">
               <option value="hetero">Frau + Mann (1girl, 1boy, hetero)</option>
@@ -999,10 +1001,10 @@ header p{font-size:.8rem;margin-top:2px}
             </select>
             <label class="partner-chk"><input type="checkbox" data-random-setting="partnerFaceless"> Mann ohne Gesicht</label>
           </div>
-          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein (👥).</p>
+          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein ().</p>
         </div>
         <div class="randomizer-pinned">
-          <label>📌 Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
+          <label> Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
           <input type="search" class="random-pin-search" placeholder="Tag suchen und als Pflicht-Tag auswählen …" autocomplete="off">
           <div class="random-pinned-chips" aria-live="polite"></div>
           <div class="random-pin-suggestions" hidden></div>
@@ -1018,8 +1020,8 @@ header p{font-size:.8rem;margin-top:2px}
       <div id="presetListContainer" style="max-height:140px; overflow-y:auto; margin-top:8px;"></div>
 
       <div class="row" style="margin-top:12px">
-        <button class="btn" id="btnExportData">📤 Backup Exportieren (.json)</button>
-        <button class="btn" id="btnImportTrigger">📥 Backup Importieren</button>
+        <button class="btn" id="btnExportData"> Backup Exportieren (.json)</button>
+        <button class="btn" id="btnImportTrigger"> Backup Importieren</button>
         <input type="file" id="importFileInput" accept=".json" style="display:none">
       </div>
     </section>
@@ -1030,9 +1032,9 @@ header p{font-size:.8rem;margin-top:2px}
       <div class="row">
         <input type="text" id="newCustomTagInput" placeholder="Neuen Tag eingeben (z. B. 'demon horns', 'tentacle harness')...">
         <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--mute);white-space:nowrap;cursor:pointer">
-          <input type="checkbox" id="newCustomTagIsNsfw"> 🔞 NSFW?
+          <input type="checkbox" id="newCustomTagIsNsfw">  NSFW?
         </label>
-        <button class="btn primary" id="btnSaveCustomTag">💾 Tag Speichern</button>
+        <button class="btn primary" id="btnSaveCustomTag"> Tag Speichern</button>
       </div>
     </section>
 
@@ -1067,7 +1069,7 @@ header p{font-size:.8rem;margin-top:2px}
       <div class="hint" style="margin:0 0 8px"><b>Rechtsklick</b> oder <b>Shift+Klick</b> auf einen Tag öffnet weitere Aktionen.</div>
       <div class="tagmode-toolbar">
         <button class="btn" id="btnModeExclude" type="button" title="Taste X">⊘ Ausschließen-Modus <kbd>X</kbd></button>
-        <button class="btn" id="btnModePin" type="button" title="Taste P">📌 Immer-dabei-Modus <kbd>P</kbd></button>
+        <button class="btn" id="btnModePin" type="button" title="Taste P"> Immer-dabei-Modus <kbd>P</kbd></button>
         <span class="tagmode-hint">Taste drücken, dann Tags anklicken · Alt/Option + Klick schließt sofort aus</span>
       </div>
       <div class="sel" id="selCount" style="margin-bottom:12px"></div>
@@ -1135,7 +1137,7 @@ header p{font-size:.8rem;margin-top:2px}
       </div>
     </section>
     <section class="card">
-      <h2><b>⚙</b>Generierung</h2>
+      <h2><b></b>Generierung</h2>
       <p class="hint">Leere Felder übernehmen die aktuellen Werte aus Draw Things.</p>
       <div class="randomizer-options">
         <label>Seed<input id="genSeed" type="number" placeholder="Zufällig"></label>
@@ -1145,15 +1147,16 @@ header p{font-size:.8rem;margin-top:2px}
         <label>Breite<input id="genWidth" type="number" min="64" step="64" placeholder="Draw Things"></label>
         <label>Höhe<input id="genHeight" type="number" min="64" step="64" placeholder="Draw Things"></label>
       </div>
+      <button class="btn" id="btnResetGeneration" type="button">Draw-Things-Werte wieder übernehmen</button>
     </section>
   </aside>
 </div>
 
-<div id="wz" class="wz" role="dialog" aria-modal="true" aria-labelledby="wzTitle">
+<div id="wz" class="wz workspace-page" aria-labelledby="wzTitle">
   <div class="wz-panel">
     <div class="wz-top">
       <div><div class="wz-step" id="wzStepLbl"></div><h3 id="wzTitle"></h3></div>
-      <button class="wz-x" id="wzClose" title="Schließen (Esc)">×</button>
+      <button class="wz-x" id="wzClose" title="Zum Studio">Zum Studio</button>
     </div>
     <div class="wz-prog"><i id="wzBar"></i></div>
     <div class="wz-body" id="wzBody"></div>
@@ -1170,7 +1173,7 @@ header p{font-size:.8rem;margin-top:2px}
     <div class="gd-text"><b id="gdTitle">Bild wird erzeugt</b><span id="gdStatus"></span></div>
     <span class="gd-src" id="gdSrc" title="Live = echter Fortschritt von Draw Things, Schätzung = berechnet aus bisherigen Zeiten">Schätzung</span>
     <span class="gd-pct" id="gdPct">0 %</span>
-    <label class="gd-sound" title="Ton abspielen, wenn fertig"><input type="checkbox" id="gdSound"> 🔔</label>
+    <label class="gd-sound" title="Ton abspielen, wenn fertig"><input type="checkbox" id="gdSound"> </label>
     <button class="btn danger gd-stop" id="gdStop" type="button">■ Stopp</button>
   </div>
   <div class="gd-bar"><i id="gdBar"></i></div>
@@ -1182,9 +1185,9 @@ header p{font-size:.8rem;margin-top:2px}
   <button class="lb-nav prev" id="lbPrev" type="button" title="Vorheriges (←)">‹</button>
   <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
   <button class="lb-nav next" id="lbNext" type="button" title="Nächstes (→)">›</button>
-  <div class="lb-actions"><button class="btn" id="lbSave" type="button">💾 Speichern</button><button class="btn" id="lbCopy" type="button">📋 Prompt kopieren</button></div>
+  <div class="lb-actions"><button class="btn" id="lbSave" type="button"> Speichern</button><button class="btn" id="lbCopy" type="button"> Prompt kopieren</button></div>
 </div>
-<div id="loraModal" class="lora-modal" role="dialog" aria-modal="true" aria-labelledby="loraTitle">
+<div id="loraModal" class="lora-modal workspace-page" aria-labelledby="loraTitle">
   <div class="lora-page">
     <div class="automation-head">
       <div><p class="automation-kicker">Draw Things</p><h2 id="loraTitle">LoRA-Manager</h2></div>
@@ -1193,12 +1196,12 @@ header p{font-size:.8rem;margin-top:2px}
     <div class="lora-content">
     <!-- 2. LORA STUDIO (NEU) -->
     <section class="card">
-      <h2><b>🎨</b>LoRA hinzufügen &amp; verwalten</h2>
+      <h2><b></b>LoRA hinzufügen &amp; verwalten</h2>
       <div class="row" style="margin-bottom:10px">
         <input type="text" id="loraNameInput" placeholder="LoRA Dateiname (z. B. 'ahegao_v2' oder 'style_ghibli')">
         <input type="number" id="loraWeightInput" placeholder="Stärke" value="0.8" step="0.05" min="0.1" max="1.5" style="max-width:90px">
         <input type="text" id="loraTriggerInput" placeholder="Trigger-Tag (optional)">
-        <button class="btn lora-btn" id="btnAddLora">➕ LoRA Hinzufügen</button>
+        <button class="btn lora-btn" id="btnAddLora"> LoRA Hinzufügen</button>
       </div>
       <div class="hint">LoRA zuerst in Draw Things importieren (dort wird sie als <code>name_lora_f16.ckpt</code> abgelegt). Hier reicht der Name (z. B. <code>ahegao_v2</code>), die Endung wird ergänzt. Unter jeder LoRA siehst du den gesendeten Dateinamen. Aktive LoRAs ersetzen die LoRAs, die in der App ausgewählt sind. Das Basismodell muss zur LoRA passen (z. B. beide SDXL), sonst wird sie ohne Fehlermeldung ignoriert.</div>
       <div id="loraListContainer" style="margin-top:12px"></div>
@@ -1206,7 +1209,7 @@ header p{font-size:.8rem;margin-top:2px}
     </div>
   </div>
 </div>
-<div id="automationModal" class="automation-modal" role="dialog" aria-modal="true" aria-labelledby="automationTitle">
+<div id="automationModal" class="automation-modal workspace-page" aria-labelledby="automationTitle">
   <div class="automation-panel">
     <div class="automation-head">
       <div><p class="automation-kicker">Draw Things</p><h2 id="automationTitle">Automations-Menü</h2></div>
@@ -1250,7 +1253,7 @@ header p{font-size:.8rem;margin-top:2px}
           </label>
         </div>
         <div class="randomizer-partner">
-          <label>👥 Partner-Automatik – wenn ein Tag eine zweite Person braucht</label>
+          <label> Partner-Automatik – wenn ein Tag eine zweite Person braucht</label>
           <div class="partner-row">
             <select data-random-setting="partnerMode">
               <option value="hetero">Frau + Mann (1girl, 1boy, hetero)</option>
@@ -1260,10 +1263,10 @@ header p{font-size:.8rem;margin-top:2px}
             </select>
             <label class="partner-chk"><input type="checkbox" data-random-setting="partnerFaceless"> Mann ohne Gesicht</label>
           </div>
-          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein (👥).</p>
+          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein ().</p>
         </div>
         <div class="randomizer-pinned">
-          <label>📌 Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
+          <label> Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
           <input type="search" class="random-pin-search" placeholder="Tag suchen und als Pflicht-Tag auswählen …" autocomplete="off">
           <div class="random-pinned-chips" aria-live="polite"></div>
           <div class="random-pin-suggestions" hidden></div>
@@ -1280,19 +1283,19 @@ header p{font-size:.8rem;margin-top:2px}
       <div class="automation-workspace" id="automationWorkspace"></div>
     </div>
     <div class="automation-actions">
-      <button class="btn" id="btnGenerateOnce" type="button">🖼️ Aktuellen Prompt erzeugen</button>
+      <button class="btn" id="btnGenerateOnce" type="button"> Aktuellen Prompt erzeugen</button>
       <button class="btn primary" id="btnAutoGenerate" type="button" aria-pressed="false">▶ Automatik starten</button>
       <button class="btn" id="btnPauseGeneration" type="button" disabled>⏸ Pausieren</button>
-      <button class="btn danger" id="btnCancelGeneration" type="button" disabled>✕ Abbrechen</button>
+      <button class="btn danger" id="btnCancelGeneration" type="button" disabled> Abbrechen</button>
     </div>
   </div>
 </div>
 <div id="tip" role="tooltip"></div>
 <div id="tagModeBar" class="tagmode-bar"><span id="tmText"></span><button class="btn" id="tmExit" type="button">Beenden (Esc)</button></div>
 <div id="toastContainer"></div>
-<div id="appearanceModal" class="appearance-modal" role="dialog" aria-modal="true" aria-labelledby="appearanceTitle" aria-hidden="true">
+<div id="appearanceModal" class="appearance-modal workspace-page" aria-labelledby="appearanceTitle">
   <section class="appearance-panel">
-    <div class="appearance-head"><div><h2 id="appearanceTitle">Einstellungen</h2><p>Wähle eine Farbwelt und passe die Oberfläche an.</p></div><button class="btn" id="btnCloseAppearance" type="button" aria-label="Einstellungen schließen">×</button></div>
+    <div class="appearance-head"><div><h2 id="appearanceTitle">Einstellungen</h2><p>Darstellung und Verhalten der App.</p></div><button class="btn" id="btnCloseAppearance" type="button">Zum Studio</button></div>
     <div class="appearance-options">
       <label for="themeSelect">Farbprofil
         <select id="themeSelect"><option value="system">System</option><option value="light">Hell</option><option value="night">Dunkel</option></select>
@@ -1316,10 +1319,10 @@ let applyingSyncedState = false;
 /* ===== MODELL DEFINITIONEN ===== */
 const MODELS = {
   pony: {
-    label: "🦄 Pony XL",
+    label: " Pony XL",
     prefix: "score_9, score_8_up, score_7_up, ",
     negative: "score_6, score_5, score_4, ugly, bad anatomy, deformed",
-    info: "📌 <b>Pony XL Tipps:</b> Verwendet <code>score_9, score_8_up, score_7_up</code> zwingend ganz am Anfang! Nutze <b>KEIN</b> <code>masterpiece</code> bei Pony XL.",
+    info: " <b>Pony XL Tipps:</b> Verwendet <code>score_9, score_8_up, score_7_up</code> zwingend ganz am Anfang! Nutze <b>KEIN</b> <code>masterpiece</code> bei Pony XL.",
     extras: {
       "Score Ergänzung": parseList("score_6_up|score_5_up|score_4_up"),
       "Source Tag": parseList("source_anime|source_cartoon|source_furry|source_pony"),
@@ -1328,10 +1331,10 @@ const MODELS = {
     neg: parseList("score_5_up|score_4_up|source_furry|source_pony|text|watermark|signature|extra fingers|jpeg artifacts")
   },
   illustrious: {
-    label: "🌟 Illustrious",
+    label: " Illustrious",
     prefix: "masterpiece, newest, best quality, highres, ",
     negative: "lowres, bad anatomy, bad hands, worst quality, low quality, blurry",
-    info: "📌 <b>Illustrious Tipps:</b> Reihenfolge: <i>1girl/1boy</i> → Charakter → Artist → Outfits/Posen → Hintergrund → Quality.",
+    info: " <b>Illustrious Tipps:</b> Reihenfolge: <i>1girl/1boy</i> → Charakter → Artist → Outfits/Posen → Hintergrund → Quality.",
     extras: {
       "Qualität": parseList("masterpiece|best quality|amazing quality|very aesthetic|absurdres"),
       "Epoche & Jahr": parseList("newest|recent|year 2024|year 2023|oldest"),
@@ -1340,10 +1343,10 @@ const MODELS = {
     neg: parseList("signature|watermark|username|logo|text|jpeg artifacts|multiple views|censored|extra digits|furry")
   },
   sdxl: {
-    label: "📷 Universal / SDXL",
+    label: " Universal / SDXL",
     prefix: "masterpiece, highly detailed, sharp focus, ",
     negative: "ugly, blurry, low quality, bad anatomy, distorted, watermark",
-    info: "📌 <b>Universal SDXL Tipps:</b> Perfekt für allgemeine Checkpoints und SDXL Turbo / Lightning Stile.",
+    info: " <b>Universal SDXL Tipps:</b> Perfekt für allgemeine Checkpoints und SDXL Turbo / Lightning Stile.",
     extras: {
       "Qualität": parseList("masterpiece|highly detailed|sharp focus|8k uhd|professional|award winning|photorealistic")
     },
@@ -1353,39 +1356,39 @@ const MODELS = {
 
 /* ===== ERWEITERTE TAG BIBLIOTHEK (MASSIV MEHR NSFW & DETAIL) ===== */
 const LIBRARY = {
-  "✨ Qualität & Rendering": {
+  " Qualität & Rendering": {
     sfw: parseList("masterpiece|best quality|highres|absurdres|ultra detailed|highly detailed|detailed background|detailed face|sharp focus|clean lines|intricate details|official art|key visual|8k uhd|vivid|aesthetic|beautiful|perfect anatomy|perfect hands|simple background|white background|transparent background|no text|no watermark|newest|year 2024|rich colors|dynamic lighting|dramatic shadows|soft focus|cinematic composition|depth of field|bokeh|film grain|chromatic aberration|vibrant colors|high contrast|pastel colors|muted colors|symmetrical composition|rule of thirds|golden ratio|wallpaper|artbook|concept art|sharp lines|soft shading|detailed shading|glossy|matte finish|hdr|raytracing|global illumination|subsurface scattering|volumetric lighting|lens flare|motion blur|light rays|hyperdetailed|photorealistic|realistic|studio quality|professional lighting|clean background|gradient background|black background|very aesthetic|amazing quality|good quality|recent|year 2023|extremely detailed|beautiful composition|dynamic angle|wide shot|close-up|portrait|full body|upper body|cowboy shot|from above|from below|from side|from behind|dutch angle|looking at viewer"),
     nsfw: parseList("uncensored|censored|mosaic censorship|bar censorship|high quality nsfw|detailed body|detailed skin texture|erotic masterpiece|highly detailed intimate areas|explicit content|fine erotic details|detailed anatomy|glossy skin|wet skin shine|skin pores|soft skin|sensual lighting|erotic photography|boudoir quality|adult content|mature content|realistic skin|smooth skin")
   },
-  "🌸 Anime, Hentai & Stile": {
+  " Anime, Hentai & Stile": {
     sfw: parseList("anime style|anime coloring|cel shading|90s anime|retro anime|studio ghibli style|kyoto animation style|trigger style|manga style|lineart|flat color|soft shading|vibrant colors|pastel colors|chibi|kawaii|game CG|visual novel CG|light novel cover|artbook|pixiv|anime screencap|retro artstyle|90s anime style|80s anime style|2000s anime style|modern anime style|slice of life|shounen style|shoujo style|seinen style|josei style|isekai style|mecha style|magical girl style|super deformed|moe|sketch|watercolor (medium)|oil painting (medium)|gouache (medium)|colored pencil (medium)|marker (medium)|pastel (medium)|ink wash painting|sumi-e|ukiyo-e|pixel art|low poly|vaporwave|synthwave|cyberpunk|steampunk|fantasy art|dark fantasy|gothic style|art nouveau|art deco|impressionism|expressionism|surrealism|pop art|minimalism|comic style|manga panel|webtoon style|light novel illustration|makoto shinkai style|ufotable style|painterly|digital painting|3d render|chibi style|western cartoon style|storybook illustration|risograph|screen print|stained glass style|paper cut style"),
     nsfw: parseList("hentai|hentai style|ecchi|doujinshi style|erotic anime artwork|erotic manga style|pin-up art|sensual anime painting|fanservice|suggestive art|ahegao art|succubus style|erotic cg|mind break style|eroge cg|adult game cg|visual novel nsfw cg|pin-up style|retro erotic art|suggestive illustration|nsfw illustration|oekaki|90s hentai style|oil painting nude|life drawing|figure study|nude study|sensual painting|boudoir illustration")
   },
-  "👤 Charakter & Hentai Traits": {
+  " Charakter & Hentai Traits": {
     sfw: parseList("1girl|1boy|2girls|2boys|multiple girls|solo|couple|young adult|muscular|slim|athletic|tall|short|chibi|detailed eyes|expressive eyes|heterochromia|blue eyes|green eyes|brown eyes|red eyes|purple eyes|golden eyes|glowing eyes|long hair|very long hair|short hair|ponytail|twin tails|braid|bob cut|hair bun|curly hair|straight hair|bangs|ahoge|blonde hair|black hair|brown hair|white hair|silver hair|pink hair|blue hair|red hair|green hair|purple hair|gradient hair|multicolored hair|freckles|tattoo|scar|pale skin|tan skin|dark skin|elf ears|horns|wings|tail|cat ears|fox ears|monster girl|succubus|demon girl|angel|vampire|witch|maid|princess|twin braids|side ponytail|low ponytail|high ponytail|hime cut|drill hair|double bun|hair over one eye|hair between eyes|asymmetrical bangs|blunt bangs|sidelocks|long bangs|wavy hair|messy hair|medium hair|pixie cut|undercut|braided ponytail|french braid|side braid|hair ribbon|hair flower|two-tone hair|streaked hair|colored inner hair|grey hair|orange hair|aqua hair|amber eyes|pink eyes|teal eyes|slit pupils|star-shaped pupils|sparkling eyes|long eyelashes|eyeliner|eyeshadow|lipstick|beauty mark|mole under eye|fang|pointy ears|wolf ears|bunny ears|dog ears|animal ears|fox tail|cat tail|angel wings|demon wings|halo|glasses|round glasses|monocle|tall female|athletic build|toned|facial mark|group"),
     nsfw: parseList("ahegao|heart-shaped pupils|flushed face|drooling|saliva|sweat|flushed cheeks|panting|heavy breathing|biting lip|tongue out|eyeball roll|mind break|flustered|lactation|large breasts|medium breasts|small breasts|huge breasts|gigantic breasts|flat chest|cleavage|underboob|sideboob|exposed breasts|bare breasts|nipples|erect nipples|covered nipples|pierced nipples|areolae|pussy|penis|futanari|pubic hair|shaved|toned abs|thick thighs|wide hips|bare shoulders|bare back|bare legs|navel|tan lines|topless|nude|completely nude|wet skin|oiled skin|back dimples|narrow waist|clitoris|anal|curvy|hourglass figure|muscular female|collarbone|wet hair|glistening skin|blush|toned body|slim waist|long legs|mature woman|adult woman|adult man|belly button piercing|body freckles")
   },
-  "🔥 NSFW Gestik, Mimik & Liquid": {
+  " NSFW Gestik, Mimik & Liquid": {
     sfw: parseList("blushing|shy|smirk|wink|pout|open mouth|tongue out|gasping|smile|gentle smile|grin|laughing|embarrassed|surprised|tearful|closed eyes|looking away|looking at viewer|head tilt|nervous|confident|playful|serious|sleepy|determined|worried|happy|calm|expressionless|one eye closed|puffed cheeks|sweatdrop"),
     nsfw: parseList("ahegao face|rolled back eyes|drooling mouth|saliva trail|heavy sweating|cum|cum on face|cum on body|cum on breasts|cum in mouth|facial|creampie|internal cumshot|cum drip|cum overflow|squirt|female ejaculation|lactating breasts|milk drip|sweat beads|glistening skin|messy hair|bound wrists|blindfolded|gagged|drool string|messy makeup|smeared lipstick|seductive smile|bedroom eyes|half-closed eyes|parted lips|biting lip|licking lips|sultry gaze|flustered|heavy breathing|teasing smile|hand over mouth|finger to mouth|hand in hair|sensual pose|water droplets|wet body|dripping water|shower water|soap bubbles|foam|massage oil|oil sheen|steam|sweat drops|heavy blush|lip gloss|half-lidded eyes|over the shoulder glance")
   },
-  "🔞 Intimität & Sex-Posen": {
+  " Intimität & Sex-Posen": {
     sfw: parseList("hugging|cuddling|holding hands|kissing on cheek|forehead kiss|romantic embrace|couple|romantic|kiss on cheek|hand on cheek|slow dance|embrace|leaning on shoulder|sharing umbrella|back-to-back|head on shoulder|lap pillow|piggyback|romantic dinner|date|wedding|candlelight dinner|stargazing together|picnic date"),
     nsfw: parseList("missionary|doggystyle|cowgirl position|reverse cowgirl|standing sex|against wall|69 position|lotus position|mating press|paizuri|breast smothered|fellatio|blowjob|cunnilingus|anal sex|double penetration|gangbang|threesome|after sex|deepthroat|fingering|self touch|spreading legs|ass focus|crotch focus|presenting ass|presenting pussy|straddling|grabbing breasts|pulling hair|spanking|grope|kissing|passionate kiss|neck kiss|embracing|intimate embrace|cuddling in bed|lying together|face to face|bed scene|on bed|touching|caressing|hand on thigh|hand on waist|back hug|kabedon|whispering in ear|romantic bedroom|couple in bed|sensual embrace|nose to nose|forehead touching")
   },
-  "👗 Kleidung, Fetisch & Nudity": {
+  " Kleidung, Fetisch & Nudity": {
     sfw: parseList("casual wear|streetwear|hoodie|t-shirt|tank top|dress shirt|sweater|blazer|jeans|shorts|skirt|pleated skirt|summer dress|evening gown|kimono|yukata|school uniform|sailor uniform|business suit|military uniform|plate armor|robe|cloak|space suit|techwear|gothic outfit|lolita fashion|maid outfit|swimsuit|sportswear|pajamas|apron|crown|witch hat|glasses|sunglasses|headband|hair ribbon|gloves|choker|necklace|stockings|thighhighs|high heels|boots|cardigan|vest|long skirt|overalls|leather jacket|denim jacket|bomber jacket|puffer jacket|flannel shirt|trench coat|raincoat|poncho|sundress|wedding dress|cheongsam|dirndl|hanbok|sari|business attire|suit|tuxedo|necktie|bow tie|lab coat|armor|leather armor|gauntlets|cape|hooded cape|tactical gear|cyberpunk outfit|steampunk outfit|punk fashion|yoga pants|chef uniform|fantasy costume|hat|beanie|scarf|mask|eyepatch|earrings|bracelet|watch|backpack|sneakers|thigh boots|knee socks|leggings|turtleneck|off-shoulder top|sleeveless|long sleeves|detached sleeves|kimono sleeves|miko outfit|nun outfit|police uniform|nurse outfit|office lady outfit|race queen outfit|cheerleader outfit|bunny girl outfit|fur coat|bikini top|sarong|sailor collar|ribbon bow"),
     nsfw: parseList("lingerie|lace lingerie|open lingerie|bra|panties|no panties|garter belt|garter straps|stockings|thighhighs|fishnets|pantyhose|babydoll|negligee|bikini|micro bikini|sling bikini|see-through|transparent clothes|wet clothes|wet shirt|open shirt|unbuttoned|off shoulder|crop top|side slit|backless dress|corset|latex outfit|leather harness|bondage outfit|rope bondage|shibari|bunny suit|bodystocking|towel only|partially clothed|undressing|revealing clothes|sheer clothing|nip slip|no bra|panties aside|clothes lift|skirt lift|shirt lift|torn clothes|virgin killer sweater|apron only|open crotch|leotard|latex catsuit|harness|silk lingerie|lace bra|lace panties|fishnet stockings|silk robe|sheer robe|string bikini|sheer fabric|unbuttoned shirt|latex gloves|dress slipping|strap slip|naked shirt|naked apron|topless|bottomless|nude|artistic nude|implied nudity|covered nipples|bra visible|lingerie set|satin lingerie|open jacket")
   },
-  "🐙 Fetisch, BDSM & Tropes": {
+  " Fetisch, BDSM & Tropes": {
     sfw: parseList("gothic|steampunk|cyberpunk|fantasy|magic|superhero|tsundere|kuudere|dandere|genki girl|ojou-sama|bodyguard|rival|enemies to lovers|maid cafe|idol|magical girl|vampire|witch|elf|demon girl|angel|catgirl|fox girl|kitsune|dragon girl|mermaid|cyborg|android|robot girl|fairy|ghost girl|ninja|samurai|pirate|knight|princess|queen|nun|shrine maiden|office lady|teacher|doctor|nurse|police officer|pilot|racer|athlete|gamer|streamer|cosplay|villainess|heroine|fallen angel|monster girl|harpy|lamia|centaur|oni|yokai"),
     nsfw: parseList("tentacles|tentacle hold|tentacle sex|bondage|tied up|rope bondage|shibari|leather restraints|handcuffs|collar and leash|blindfold|ball gag|bit gag|spanking|whipping|mind control|hypnosis|x-ray|cross-section|public exposure|exhibitionism|gloryhole|pet play|cow girl outfit|succubus tail|demon wings|slime girl|monster girl sex|succubus|dominant female|dominatrix outfit|femdom pose|submissive pose|collar|leash|blindfolded|rope harness|shibari ropes|latex gloves|latex bodysuit|leather corset|leather harness|choker|riding crop|thigh straps|body harness|spiked collar|opera gloves|stiletto heels|fishnet bodysuit|latex stockings")
   },
-  "🏛️ Umgebung & Locations": {
+  " Umgebung & Locations": {
     sfw: parseList("bustling city|city street|neon city|cyberpunk street|rooftop|alley|train station|cafe|library|classroom|school rooftop|bedroom|kitchen|laboratory|spaceship interior|throne room|tavern|castle|shrine|pagoda|skyscraper|tranquil forest|bamboo forest|snowy forest|meadow|flower field|cherry blossoms|garden|mountain|desert|tropical beach|ocean|waterfall|lake|ruins|fantasy village|medieval town|dystopian city|steampunk city|subway station|train interior|car interior|bookstore|museum|arcade|convenience store|gym|hospital|greenhouse|observatory|factory|futuristic interior|cathedral|temple|ancient temple|pyramid|colosseum|modern architecture|brutalist|gothic architecture|victorian house|cabin|lighthouse|bridge|ship deck|airship|enchanted forest|autumn forest|jungle|japanese garden|park|snowy mountain|canyon|savanna|glacier|island|beach|sea cliff|underwater|coral reef|river|cave|volcano|tundra|swamp|abandoned ruins|overgrown ruins|post-apocalyptic|wasteland|space station|alien planet|moon surface|nebula|floating island|village|market|harbor|farm|graveyard|ramen shop|izakaya|train crossing|vending machine|shopping street|festival|fireworks|cherry blossom path|rainy street|bus stop|balcony|living room|attic|library tower|castle garden|ice palace|crystal cave|sunflower field|lavender field|rice field|hot air balloon|ferris wheel|carnival|circus|concert stage"),
     nsfw: parseList("bedroom|dark bedroom|hotel room|love hotel|bathroom|steamy bathroom|bathtub|shower|hot spring|onsen|jacuzzi|dungeon|dungeon chamber|satin sheets|canopy bed|bound on bed|private suite|balcony at night|candlelit room|steamy mirror|backstage|public restroom|sauna|private beach|poolside|yacht deck|rose petals|bedroom at night|messy bed|dressing room|changing room|locker room|spa|massage table|private room|luxury suite|bed with silk sheets|window with curtains|cabin bedroom|tent at night|hammock")
   },
-  "💡 Beleuchtung & Stimmung": {
+  " Beleuchtung & Stimmung": {
     sfw: parseList("cinematic lighting|soft lighting|dramatic lighting|studio lighting|rim light|backlighting|volumetric lighting|god rays|sunbeams|natural light|golden hour|blue hour|sunrise|sunset|moonlight|candlelight|neon lights|neon glow|bioluminescence|glowing|bloom|glow effect|low key|high key|shadowed face|rain|snowfall|starry sky|aurora|warm tones|cold tones|moody|dreamy|ethereal|atmospheric|cozy|serene|top lighting|split lighting|ambient light|dappled sunlight|midday sun|firelight|lantern light|holographic lighting|fireflies|lens glow|chiaroscuro|harsh shadows|soft shadows|cast shadow|ambient occlusion|reflections|caustics|light leaks|volumetric fog|fog|mist|haze|smoke|dust particles|floating particles|sparkles|embers|heavy rain|storm|lightning|overcast|clear sky|cloudy sky|teal and orange|high contrast|muted colors|epic|eerie|nostalgic|lonely|melancholic|romantic atmosphere|peaceful|mysterious|magical|whimsical|tense|dramatic mood|festive|sunlight through window|window light|street lights|city lights|bokeh lights|colored lights|stage lights|spotlight|lens flare|twilight|dawn|midnight|full moon|crescent moon|shooting star|northern lights|cherry blossom petals falling|falling leaves|drifting snow|soap bubbles|paper lanterns|string lights|fairy lights|lava glow|crystal glow|magic circle glow"),
     nsfw: parseList("boudoir lighting|dim lighting|warm glow|red light|neon pink glow|soft window light|steam|sweat highlights|moody shadows|silhouette|backlit sheer curtain|candlelight on skin|erotic ambience|sensual mood|intimate atmosphere|romantic mood|seductive atmosphere|golden skin glow|rim light on skin|dark room|bedside lamp|low light|velvet shadows|purple lighting|rose lighting|amber glow|moonlit skin|steamy atmosphere")
   }
@@ -1464,6 +1467,7 @@ function showToast(msg) {
 /* ===== ERSCHEINUNGSBILD ===== */
 function applyAppearance() {
   const appearance = { theme: "system", accent: "#0a84ff", reduceMotion: false, ...(state.appearance || {}) };
+  appearance.accent = "#0a84ff";
   if (!["system", "light", "night"].includes(appearance.theme)) appearance.theme = "night";
   state.appearance = appearance;
   document.body.dataset.theme = appearance.theme === "system"
@@ -1497,16 +1501,14 @@ function setupAppearance() {
   const openModal = () => {
     const a = state.appearance || {};
     theme.value = ["system", "light", "night"].includes(a.theme) ? a.theme : "night"; accent.value = a.accent || "#0a84ff"; motion.checked = Boolean(a.reduceMotion);
-    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); theme.focus();
+    showStudioView("settings"); theme.focus();
   };
-  const closeModal = () => { modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true"); open.focus(); };
+  const closeModal = () => { showStudioView("studio"); open.focus(); };
   open.onclick = openModal; close.onclick = closeModal;
-  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
   $("#btnSaveAppearance").onclick = () => {
     state.appearance = { theme: theme.value, accent: accent.value, reduceMotion: motion.checked };
-    applyAppearance(); saveState(); closeModal(); showToast("Design gespeichert");
+    applyAppearance(); saveState(); showToast("Design gespeichert");
   };
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
 }
 
 function catId(name) {
@@ -1629,7 +1631,7 @@ function renderLoras() {
         <span class="lora-name">&lt;lora:${lora.name}:${lora.weight}&gt;</span>
         <span class="lora-trigger">${lora.trigger ? 'Trigger: ' + lora.trigger : 'Kein Trigger-Tag'}</span>
         <span class="lora-file">→ sendet Datei: <code></code></span>
-        <button class="btn lora-test" type="button" title="Erzeugt genau zwei Testbilder mit gleichem Seed (ohne und mit LoRA) und vergleicht sie">🔬 Wirkt sie in Draw Things?</button>
+        <button class="btn lora-test" type="button" title="Erzeugt genau zwei Testbilder mit gleichem Seed (ohne und mit LoRA) und vergleicht sie"> Wirkt sie in Draw Things?</button>
         <div class="lora-test-wrap" hidden><button class="lora-test-toggle" type="button">▾ Testergebnis einklappen</button><div class="lora-test-body"><div class="lora-test-out"></div></div></div>
       </div>
       <div class="lora-controls">
@@ -1637,7 +1639,7 @@ function renderLoras() {
         <span class="lora-val">${lora.weight}</span>
         <label class="lora-random-toggle" title="Diese LoRA beim Zufallswürfeln ändern"><input type="checkbox" class="lora-randomize" ${lora.randomizeWeight !== false ? "checked" : ""}> Würfeln</label>
         <button class="btn ${lora.active ? "ok" : ""}" style="padding:4px 10px;font-size:0.78rem">${lora.active ? "Aktiv" : "An"}</button>
-        <button class="btn danger" style="padding:4px 10px;font-size:0.78rem">✕</button>
+        <button class="btn danger" style="padding:4px 10px;font-size:0.78rem"></button>
       </div>
     `;
 
@@ -1676,7 +1678,7 @@ function renderLoras() {
       state.loras.splice(idx, 1);
       renderLoras();
       updatePromptOutputs();
-      showToast("🗑️ LoRA entfernt.");
+      showToast(" LoRA entfernt.");
     };
 
     container.appendChild(div);
@@ -1691,7 +1693,7 @@ function renderLibrary() {
   const customDetails = document.createElement("details");
   customDetails.id = "cat-custom-saved-tags";
   customDetails.open = true;
-  customDetails.innerHTML = `<summary><span>🏷️ Meine Custom-Tags <span class="count" id="count-custom"></span></span></summary>`;
+  customDetails.innerHTML = `<summary><span> Meine Custom-Tags <span class="count" id="count-custom"></span></span></summary>`;
   
   const customTagContainer = document.createElement("div");
   customTagContainer.className = "tags";
@@ -1756,10 +1758,10 @@ function renderPresets() {
     const div = document.createElement("div");
     div.className = "preset-item";
     div.innerHTML = `
-      <span>📌 ${p.name}</span>
+      <span> ${p.name}</span>
       <div>
         <button class="btn ok" style="padding:3px 8px;font-size:0.75rem">Laden</button>
-        <button class="btn danger" style="padding:3px 8px;font-size:0.75rem">✕</button>
+        <button class="btn danger" style="padding:3px 8px;font-size:0.75rem"></button>
       </div>
     `;
 
@@ -1896,11 +1898,12 @@ function updatePromptOutputs(persist = true) {
   if ($("#negOutput").value !== negText) flashEl($("#negOutput"));
   $("#posOutput").value = posText;
   $("#negOutput").value = negText;
+  resizePromptFields();
   const pn = $("#partnerNote");
   if (pn) {
     const pc = partnerContext();
     pn.hidden = !pc;
-    if (pc) pn.textContent = `👥 Partner-Automatik: ${pc.pos.join(", ")} wurde ergänzt. Im Negative: ${pc.neg.join(", ")}`;
+    if (pc) pn.textContent = ` Partner-Automatik: ${pc.pos.join(", ")} wurde ergänzt. Im Negative: ${pc.neg.join(", ")}`;
   }
 
   const posTokens = Math.ceil(posText.length / 4);
@@ -1911,6 +1914,14 @@ function updatePromptOutputs(persist = true) {
 
   syncActiveStates();
   if (persist) saveState();
+}
+
+function resizePromptFields() {
+  for (const id of ["posOutput", "negOutput"]) {
+    const field = document.getElementById(id);
+    field.style.height = "auto";
+    field.style.height = Math.max(id === "posOutput" ? 180 : 140, field.scrollHeight + 2) + "px";
+  }
 }
 
 /* ===== ACTIONS & HANDLERS ===== */
@@ -1951,7 +1962,7 @@ function addLora() {
 
   renderLoras();
   updatePromptOutputs();
-  showToast("✨ LoRA hinzugefügt & aktiviert!");
+  showToast(" LoRA hinzugefügt & aktiviert!");
 }
 
 function randomCategoryWeight(category, profile) {
@@ -2030,7 +2041,7 @@ function randomizePrompt(showMessage = true, filterMode = state.filterMode) {
   state.randomHistory = [...(state.randomHistory || []), signature].slice(-20);
   if (state.randomizeLoraWeights) randomizeActiveLoraWeights();
   updatePromptOutputs();
-  if (showMessage) showToast(`🎲 ${state.tags.length} zufällige Tags · ${profile === "balanced" ? "Ausgewogen" : profile === "character" ? "Charakter" : profile === "scene" ? "Szene & Licht" : "Stil & Qualität"}`);
+  if (showMessage) showToast(` ${state.tags.length} zufällige Tags · ${profile === "balanced" ? "Ausgewogen" : profile === "character" ? "Charakter" : profile === "scene" ? "Szene & Licht" : "Stil & Qualität"}`);
 }
 
 function syncRandomizerControls() {
@@ -2141,28 +2152,11 @@ function moveAutomationWorkspace(visible) {
 }
 
 function openAutomationMenu(updateHistory = true) {
-  if (updateHistory && new URLSearchParams(location.search).get("automation") !== "1") {
-    const url = new URL(location.href);
-    url.searchParams.set("automation", "1");
-    history.pushState({ automation: true }, "", url);
-  }
-  $("#automationFilter").value = state.filterMode || "all";
-  syncRandomizerControls();
-  $("#automationStatus").textContent = $("#dtStatus").textContent;
-  const useCount = $("input[name='automationMode']:checked").value === "count";
-  $("#automationCount").disabled = !useCount;
-  moveAutomationWorkspace(true);
-  document.body.style.overflow = document.body.classList.contains("automation-view") ? "" : "hidden";
+  showStudioView("automation");
 }
 
 function closeAutomationMenu(updateHistory = true) {
-  if (updateHistory && new URLSearchParams(location.search).get("automation") === "1") {
-    const url = new URL(location.href);
-    url.searchParams.delete("automation");
-    history.replaceState(null, "", url);
-  }
-  moveAutomationWorkspace(false);
-  document.body.style.overflow = "";
+  showStudioView("studio");
 }
 
 function applySyncedState(sharedState) {
@@ -2255,7 +2249,7 @@ function renderDrawResults(images, prompt, publish = true) {
       link.click();
     };
     const copyPrompt = document.createElement("button");
-    copyPrompt.className = "btn"; copyPrompt.type = "button"; copyPrompt.textContent = "📋 Prompt kopieren";
+    copyPrompt.className = "btn"; copyPrompt.type = "button"; copyPrompt.textContent = " Prompt kopieren";
     copyPrompt.onclick = () => copyToClipboard(prompt);
     card.append(preview, download, copyPrompt);
     results.prepend(card);
@@ -2269,6 +2263,12 @@ function renderDrawResults(images, prompt, publish = true) {
 
 function syncDrawControls() {
   const busy = drawGenerationInProgress || autoGenerationRunning;
+  const generate = $("#btnGenerateFromPrompt");
+  generate.disabled = busy;
+  generate.setAttribute("aria-busy", String(busy));
+  const label = generate.querySelector(".button-label");
+  if (label) label.textContent = busy ? "Bild wird erzeugt" : "Bild erzeugen";
+  else generate.textContent = busy ? "Bild wird erzeugt" : "Bild erzeugen";
   $("#btnRandomize").disabled = busy;
   $("#btnGenerateOnce").disabled = busy;
   $("#btnAutoGenerate").disabled = autoStopRequested && drawGenerationInProgress;
@@ -2306,7 +2306,7 @@ async function testLora(lora, out) {
     const c = document.createElement("figcaption"); c.textContent = cap;
     f.append(im, c); imgEl.appendChild(f);
   };
-  if (location.protocol === "file:") { say("❌ Die Seite wurde direkt als Datei geöffnet. Starte im Terminal `python3 dt_bridge.py` und öffne http://localhost:8080."); return; }
+  if (location.protocol === "file:") { say(" Die Seite wurde direkt als Datei geöffnet. Starte im Terminal `python3 dt_bridge.py` und öffne http://localhost:8080."); return; }
   if (drawGenerationInProgress) { say("⏳ Es läuft gerade eine Generierung – bitte warten."); return; }
   drawGenerationInProgress = true; syncDrawControls();
   const file = dtLoraFile(lora.name);
@@ -2318,9 +2318,9 @@ async function testLora(lora, out) {
       const or = await fetch("/sdapi/v1/options");
       o = await or.json().catch(() => ({}));
       if (!or.ok) throw new Error("HTTP " + or.status);
-      setLast("✓ Einstellungen gelesen");
+      setLast(" Einstellungen gelesen");
     } catch (e) {
-      setLast(`⚠️ Einstellungen nicht lesbar (${e.message}) – nehme Standardwerte. Läuft Draw Things mit aktivem API Server?`);
+      setLast(` Einstellungen nicht lesbar (${e.message}) – nehme Standardwerte. Läuft Draw Things mit aktivem API Server?`);
     }
     const base = {
       prompt: ["1girl", "solo", "portrait", lora.trigger].filter(Boolean).join(", "),
@@ -2337,7 +2337,7 @@ async function testLora(lora, out) {
       const raw = await r.text(); let d = {}; try { d = JSON.parse(raw); } catch (e) {}
       if (!r.ok) throw new Error(`HTTP ${r.status}: ${String(d.error || raw || "").slice(0, 220)}`);
       if (!d.images || !d.images[0]) throw new Error("Antwort ohne Bild: " + raw.slice(0, 200));
-      setLast(`✓ ${label} (${Math.round((Date.now() - t0) / 1000)} s)`);
+      setLast(` ${label} (${Math.round((Date.now() - t0) / 1000)} s)`);
       return d.images[0];
     };
     const gen = async (loras, label) => {
@@ -2351,10 +2351,10 @@ async function testLora(lora, out) {
     show(a, "ohne LoRA");
     const c = await gen([{ file, weight: 1 }], "Bild 2 mit LoRA");
     show(c, "mit LoRA");
-    if (a === c) { say(`❌ Kein Unterschied: Draw Things hat „${file}“ ignoriert. Prüfe den Dateinamen (Models-Ordner / custom_lora.json) und ob LoRA und Basismodell zur selben Version gehören (z. B. beide SDXL).`); return; }
-    say(`✅ Die Bilder unterscheiden sich – „${file}“ wird sehr wahrscheinlich angewendet. Sieh dir beide Bilder zur Kontrolle an: Das rechte sollte nach der LoRA aussehen.`);
+    if (a === c) { say(` Kein Unterschied: Draw Things hat „${file}“ ignoriert. Prüfe den Dateinamen (Models-Ordner / custom_lora.json) und ob LoRA und Basismodell zur selben Version gehören (z. B. beide SDXL).`); return; }
+    say(` Die Bilder unterscheiden sich – „${file}“ wird sehr wahrscheinlich angewendet. Sieh dir beide Bilder zur Kontrolle an: Das rechte sollte nach der LoRA aussehen.`);
   } catch (e) {
-    say("❌ " + e.message);
+    say(" " + e.message);
   } finally {
     drawGenerationInProgress = false; syncDrawControls();
   }
@@ -2570,7 +2570,7 @@ function savePreset() {
   state.presets.push(presetObj);
   renderPresets();
   saveState();
-  showToast("💾 Preset '" + name + "' gespeichert!");
+  showToast(" Preset '" + name + "' gespeichert!");
 }
 
 function loadPreset(p) {
@@ -2590,14 +2590,14 @@ function loadPreset(p) {
   $("#negCustom").value = state.negCustom;
 
   updatePromptOutputs();
-  showToast("📌 Preset '" + p.name + "' geladen!");
+  showToast(" Preset '" + p.name + "' geladen!");
 }
 
 function deletePreset(idx) {
   state.presets.splice(idx, 1);
   renderPresets();
   saveState();
-  showToast("🗑️ Preset gelöscht.");
+  showToast(" Preset gelöscht.");
 }
 
 function saveNewCustomTag() {
@@ -2625,7 +2625,7 @@ function saveNewCustomTag() {
   renderCustomLibraryTags();
   filterTags();
   updatePromptOutputs();
-  showToast("💾 Tag '" + text + "' dauerhaft gespeichert!");
+  showToast(" Tag '" + text + "' dauerhaft gespeichert!");
 }
 
 function deleteCustomLibraryTag(id) {
@@ -2639,7 +2639,7 @@ function deleteCustomLibraryTag(id) {
     renderCustomLibraryTags();
     filterTags();
     updatePromptOutputs();
-    showToast("🗑️ Tag gelöscht.");
+    showToast(" Tag gelöscht.");
   }
 }
 
@@ -2652,7 +2652,7 @@ function exportBackup() {
   document.body.appendChild(dlAnchor);
   dlAnchor.click();
   dlAnchor.remove();
-  showToast("📤 Backup erfolgreich heruntergeladen!");
+  showToast(" Backup erfolgreich heruntergeladen!");
 }
 
 function importBackup(e) {
@@ -2680,7 +2680,7 @@ function importBackup(e) {
       $("#negCustom").value = state.negCustom || "";
       filterTags();
       updatePromptOutputs();
-      showToast("📥 Backup erfolgreich importiert!");
+      showToast(" Backup erfolgreich importiert!");
     } catch (err) {
       alert("Fehler beim Lesen der JSON-Datei.");
     }
@@ -2699,6 +2699,8 @@ async function translateGermanInput() {
   }
 
   btn.disabled = true;
+  btn.setAttribute("aria-busy", "true");
+  btn.textContent = "Übersetze";
   hint.textContent = "Übersetze...";
 
   try {
@@ -2717,23 +2719,25 @@ async function translateGermanInput() {
       state.custom.push(cleanTag);
     }
 
-    hint.textContent = `✅ Hinzugefügt: "${cleanTag}"`;
+    hint.textContent = ` Hinzugefügt: "${cleanTag}"`;
     $("#deInput").value = "";
     state.de = "";
     renderCustomChips();
     updatePromptOutputs();
-    showToast("🌐 Übersetzt & Hinzugefügt!");
+    showToast(" Übersetzt & Hinzugefügt!");
   } catch (err) {
-    hint.textContent = `❌ Fehler bei der Übersetzung (${err.message}).`;
+    hint.textContent = ` Fehler bei der Übersetzung (${err.message}).`;
   } finally {
     btn.disabled = false;
+    btn.removeAttribute("aria-busy");
+    btn.textContent = "Übersetzen & Hinzufügen";
   }
 }
 
 function copyToClipboard(text) {
   if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
-    showToast("📋 In die Zwischenablage kopiert!");
+    showToast(" In die Zwischenablage kopiert!");
   });
 }
 
@@ -2788,7 +2792,7 @@ function clearAllSelectedTags() {
   state.extras = [];
   state.negExtras = [];
   updatePromptOutputs();
-  showToast("🧹 Alle Tags abgewählt.");
+  showToast(" Alle Tags abgewählt.");
 }
 
 function resetEntireState() {
@@ -2819,7 +2823,7 @@ function resetEntireState() {
   renderCustomChips();
   filterTags();
   updatePromptOutputs();
-  showToast("⚡ System zurückgesetzt.");
+  showToast(" System zurückgesetzt.");
 }
 
 /* ===== INITIALISIERUNG ===== */
@@ -2851,6 +2855,47 @@ function setupWorkspacePanels() {
   });
   tools.prepend(tabs);
   activate("tags");
+  const random = sections[1];
+  const advanced = document.createElement("details");
+  advanced.className = "advanced-settings";
+  advanced.innerHTML = "<summary>Weitere Zufallsregeln</summary>";
+  for (const selector of [".randomizer-partner", ".randomizer-pinned", ".randomizer-exclusions"]) {
+    const block = random.querySelector(selector);
+    if (block) advanced.append(block);
+  }
+  random.append(advanced);
+  const automation = document.querySelector(".automation-settings");
+  const automationAdvanced = document.createElement("details");
+  automationAdvanced.className = "advanced-settings";
+  automationAdvanced.innerHTML = "<summary>Erweiterte Automationsregeln</summary>";
+  for (const selector of [".randomizer-partner", ".randomizer-pinned", ".randomizer-exclusions"]) {
+    const block = automation.querySelector(selector);
+    if (block) automationAdvanced.append(block);
+  }
+  automation.append(automationAdvanced);
+}
+function setupIcons() {
+  const icons = {
+    '[data-view-target="studio"]': "home", '[data-view-target="library"]': "books",
+    '[data-view-target="gallery"]': "photo", '#navAutomations': "robot",
+    '#navLoras': "adjustments", '#navSettings': "settings", '#navWizard': "wand",
+    '#btnGenerateFromPrompt': "player-play", '#btnCopyPosInline': "copy",
+    '#btnRandomize': "dice-5", '#btnSavePreset': "device-floppy",
+    '#btnResetGeneration': "refresh"
+  };
+  for (const [selector, name] of Object.entries(icons)) {
+    const button = document.querySelector(selector);
+    if (!button) continue;
+    const icon = document.createElement("img");
+    icon.src = `/icons/${name}.svg`;
+    icon.alt = "";
+    icon.className = button.closest(".studio-nav") ? "nav-icon" : "control-icon";
+    const label = document.createElement("span");
+    label.className = "button-label";
+    while (button.firstChild) label.append(button.firstChild);
+    button.prepend(icon);
+    button.append(label);
+  }
 }
 function suggestLocalTags() {
   const idea = $("#deInput").value.toLocaleLowerCase("de");
@@ -2871,7 +2916,7 @@ function suggestLocalTags() {
     const button = document.createElement("button"); button.className = "btn"; button.textContent = "+ " + tag;
     button.onclick = () => {
       if (!state.tags.includes(tag)) state.tags.push(tag);
-      updatePromptOutputs(); button.disabled = true; button.textContent = "✓ " + tag;
+      updatePromptOutputs(); button.disabled = true; button.textContent = " " + tag;
     };
     box.append(button);
   }
@@ -2912,7 +2957,7 @@ function renderGallery() {
       const image = document.createElement("img"); image.src = item.image; image.alt = item.prompt || "Generiertes Bild"; image.loading = "lazy";
       const caption = document.createElement("p"); caption.textContent = item.prompt || "Ohne Prompt";
       const rating = document.createElement("select"); rating.setAttribute("aria-label", "Bewertung");
-      const favorite = document.createElement("button"); favorite.className = "btn"; favorite.textContent = item.favorite ? "★ Favorit" : "☆ Favorit";
+      const favorite = document.createElement("button"); favorite.className = "btn"; favorite.textContent = item.favorite ? " Favorit" : " Favorit";
       for (let n = 0; n <= 5; n++) { const option = new Option(n ? `${n} Sterne` : "Keine Bewertung", String(n)); rating.add(option); }
       rating.value = String(item.rating || 0);
       const collection = document.createElement("input"); collection.placeholder = "Collection"; collection.value = item.collection || "";
@@ -2922,7 +2967,7 @@ function renderGallery() {
         if (!response.ok) showToast("Galerie-Metadaten konnten nicht gespeichert werden.");
       };
       rating.onchange = () => { item.rating = Number(rating.value); saveMeta({ rating: item.rating }); };
-      favorite.onclick = () => { item.favorite = !item.favorite; favorite.textContent = item.favorite ? "★ Favorit" : "☆ Favorit"; saveMeta({ favorite: item.favorite }); if ($("#galleryFavorites").checked) renderGallery(); };
+      favorite.onclick = () => { item.favorite = !item.favorite; favorite.textContent = item.favorite ? " Favorit" : " Favorit"; saveMeta({ favorite: item.favorite }); if ($("#galleryFavorites").checked) renderGallery(); };
       collection.onchange = () => { item.collection = collection.value; saveMeta({ collection: item.collection }); };
       notes.onchange = () => { item.notes = notes.value; saveMeta({ notes: item.notes }); };
       const restore = document.createElement("button"); restore.className = "btn"; restore.textContent = "Im Studio verwenden";
@@ -2957,22 +3002,45 @@ async function loadGallery() {
   } catch (error) { $("#galleryGrid").textContent = "Galerie nicht erreichbar: " + error.message; }
 }
 function showStudioView(view) {
+  const previous = document.body.dataset.view || "studio";
+  if (previous === "automation" && view !== "automation") moveAutomationWorkspace(false);
+  if (view !== "loras") document.body.classList.remove("lora-view");
+  if (view !== "wizard") $("#wz").classList.remove("open");
   document.body.dataset.view = view;
   $("#galleryView").classList.toggle("active", view === "gallery");
   $("#libraryView").classList.toggle("active", view === "library");
-  document.querySelectorAll("[data-view-target]").forEach(button => {
-    if (button.dataset.viewTarget === view) button.setAttribute("aria-current", "page");
+  const navIds = { automation: "navAutomations", loras: "navLoras", settings: "navSettings", wizard: "navWizard" };
+  document.querySelectorAll(".studio-nav button").forEach(button => {
+    if (button.dataset.viewTarget === view || button.id === navIds[view]) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
   });
+  if (view === "automation") {
+    $("#automationFilter").value = state.filterMode || "all";
+    syncRandomizerControls();
+    moveAutomationWorkspace(true);
+  }
+  if (view === "loras") { document.body.classList.add("lora-view"); renderLoras(); }
+  if (view === "settings") {
+    const a = state.appearance || {};
+    $("#themeSelect").value = ["system", "light", "night"].includes(a.theme) ? a.theme : "night";
+    $("#accentColor").value = a.accent || "#0a84ff";
+    $("#reduceMotion").checked = Boolean(a.reduceMotion);
+  }
+  if (view === "wizard") $("#wz").classList.add("open");
   if (view === "gallery") loadGallery();
   if (view === "library") loadLibraryView();
+  if (view === "automation" || view === "studio") requestAnimationFrame(resizePromptFields);
+  window.scrollTo(0, 0);
 }
 async function init() {
   setupWorkspacePanels();
+  setupIcons();
+  window.addEventListener("resize", resizePromptFields);
   document.querySelectorAll("[data-view-target]").forEach(button => button.onclick = () => showStudioView(button.dataset.viewTarget));
-  $("#navAutomations").onclick = () => $("#btnAutomationMenu").click();
-  $("#navLoras").onclick = () => $("#btnLoraPage").click();
-  $("#navSettings").onclick = () => $("#btnAppearance").click();
+  $("#navAutomations").onclick = () => showStudioView("automation");
+  $("#navLoras").onclick = () => showStudioView("loras");
+  $("#navSettings").onclick = () => showStudioView("settings");
+  $("#navWizard").onclick = wzOpen;
   $("#gallerySearch").oninput = renderGallery;
   $("#gallerySort").onchange = renderGallery;
   $("#galleryFavorites").onchange = renderGallery;
@@ -2985,6 +3053,12 @@ async function init() {
       saveState();
     });
   }
+  $("#btnResetGeneration").onclick = () => {
+    state.generation = {};
+    for (const id of ["genSeed", "genSteps", "genCfg", "genSampler", "genWidth", "genHeight"]) document.getElementById(id).value = "";
+    saveState();
+    showToast("Draw-Things-Werte werden wieder verwendet.");
+  };
   checkDrawThingsConnection();
   setInterval(checkDrawThingsConnection, 15000);
   await loadServerState();
@@ -3353,8 +3427,8 @@ function showTip(btn) {
     `<div id="tipD">${known ? `<div class="tip-row"><b>${esc(tag)}</b> – ${esc(known[1])}</div>` : skel}</div>` +
     `<div class="tip-cat">${esc(meta.cat)}</div>` +
     (canWeigh ? `<div class="tip-w"><span>Gewichtung</span><button data-w="-1">−</button><b></b><button data-w="1">+</button></div>` : "") +
-    `<div class="tip-act"><button data-act="toggle" class="${isOn ? "off" : "add"}">${isOn ? "✓ Entfernen" : "＋ Hinzufügen"}</button><button data-act="copy">📋 Tag kopieren</button></div>` +
-    `<div class="tip-act random-exclude"><button data-act="exclude" class="${isExcluded ? "excluded" : ""}">${isExcluded ? "✓ Vom Zufallswurf ausgeschlossen · wieder zulassen" : "⊘ Vom Zufallswurf ausschließen"}</button><button data-act="pin" class="${isPinned ? "pinned" : ""}">${isPinned ? "✓ Immer dabei · lösen" : "📌 Immer dabei"}</button><button data-act="partner" class="${needsPartner ? "pinned" : ""}" title="Bei Tags mit zweiter Person ergänzt die Partner-Automatik Personenzahl und Geschlecht">${needsPartner ? "✓ Braucht Partner · lösen" : "👥 Braucht Partner"}</button></div>`;
+    `<div class="tip-act"><button data-act="toggle" class="${isOn ? "off" : "add"}">${isOn ? " Entfernen" : "＋ Hinzufügen"}</button><button data-act="copy"> Tag kopieren</button></div>` +
+    `<div class="tip-act random-exclude"><button data-act="exclude" class="${isExcluded ? "excluded" : ""}">${isExcluded ? " Vom Zufallswurf ausgeschlossen · wieder zulassen" : "⊘ Vom Zufallswurf ausschließen"}</button><button data-act="pin" class="${isPinned ? "pinned" : ""}">${isPinned ? " Immer dabei · lösen" : " Immer dabei"}</button><button data-act="partner" class="${needsPartner ? "pinned" : ""}" title="Bei Tags mit zweiter Person ergänzt die Partner-Automatik Personenzahl und Geschlecht">${needsPartner ? " Braucht Partner · lösen" : " Braucht Partner"}</button></div>`;
   renderTipWeight();
   tip.classList.add("show");
   placeTip(btn);
@@ -3475,28 +3549,26 @@ function initShortcuts() {
 const WZ = { step: 0, dir: 1, q: "" };
 
 function wzSteps() {
-  const st = [{ type: "model", title: "🎛️ Modell & Stil", sub: "Womit erzeugst du das Bild? Das bestimmt die Start-Tags." }];
+  const st = [{ type: "model", title: " Modell & Stil", sub: "Womit erzeugst du das Bild? Das bestimmt die Start-Tags." }];
   Object.entries(LIBRARY).forEach(([cat, d]) => st.push({ type: "cat", title: cat, sfw: d.sfw, nsfw: d.nsfw, sub: "Wähle beliebig viele Tags – oder gehe einfach weiter." }));
   if (state.customLibrary.length) st.push({
     type: "cat", title: "⭐ Deine gespeicherten Tags", sub: "Deine eigenen Tags.",
     sfw: state.customLibrary.filter(i => !i.isNsfw).map(i => i.text),
     nsfw: state.customLibrary.filter(i => i.isNsfw).map(i => i.text)
   });
-  st.push({ type: "extras", title: "🏷️ Qualität & Rating", sub: "Spezielle Tags für " + MODELS[state.model].label + "." });
-  st.push({ type: "own", title: "✍️ Eigene Ideen", sub: "Fehlt noch etwas? Schreib es auf Deutsch oder Englisch." });
-  st.push({ type: "result", title: "✨ Dein Prompt ist fertig", sub: "" });
+  st.push({ type: "extras", title: " Qualität & Rating", sub: "Spezielle Tags für " + MODELS[state.model].label + "." });
+  st.push({ type: "own", title: " Eigene Ideen", sub: "Fehlt noch etwas? Schreib es auf Deutsch oder Englisch." });
+  st.push({ type: "result", title: " Dein Prompt ist fertig", sub: "" });
   return st;
 }
 
 function wzOpen() {
   WZ.step = 0; WZ.dir = 1; WZ.q = "";
-  $("#wz").classList.add("open");
-  document.body.style.overflow = "hidden";
+  showStudioView("wizard");
   wzRender(true);
 }
 function wzClose() {
-  $("#wz").classList.remove("open");
-  document.body.style.overflow = "";
+  showStudioView("studio");
   hideTip(true);
 }
 function wzGo(d) {
@@ -3537,7 +3609,7 @@ function wzModel(page) {
   });
   page.appendChild(g);
   const sw = document.createElement("div"); sw.className = "style-switch"; sw.style.marginTop = "14px";
-  sw.innerHTML = '<button class="style-btn" data-style="anime">🌸 Anime / Hentai (2D)</button><button class="style-btn" data-style="realistic">📸 Realistisch / 3D</button>';
+  sw.innerHTML = '<button class="style-btn" data-style="anime"> Anime / Hentai (2D)</button><button class="style-btn" data-style="realistic"> Realistisch / 3D</button>';
   page.appendChild(sw);
   const info = document.createElement("div"); info.className = "settings-info"; info.innerHTML = MODELS[state.model].info;
   page.appendChild(info);
@@ -3552,10 +3624,10 @@ function wzTagBtn(tag, cls, key, i) {
 function wzCat(page, st) {
   const tools = document.createElement("div"); tools.className = "wz-tools";
   const fm = document.createElement("div"); fm.className = "filter-modes";
-  [["all", "Alle"], ["sfw", "Nur SFW"], ["nsfw", "🔥 Nur NSFW"]].forEach(([k, l]) => {
+  [["all", "Alle"], ["sfw", "Nur SFW"], ["nsfw", " Nur NSFW"]].forEach(([k, l]) => {
     const b = document.createElement("button"); b.className = "filter-btn"; b.dataset.filter = k; b.textContent = l; fm.appendChild(b);
   });
-  const q = document.createElement("input"); q.type = "search"; q.placeholder = "🔍 In dieser Kategorie suchen …"; q.value = WZ.q;
+  const q = document.createElement("input"); q.type = "search"; q.placeholder = " In dieser Kategorie suchen …"; q.value = WZ.q;
   q.oninput = () => { WZ.q = q.value.trim().toLowerCase(); wzApplyFilter(); };
   tools.append(fm, q); page.appendChild(tools);
   const grid = document.createElement("div"); grid.className = "tags wz-grid"; grid.id = "wzGrid";
@@ -3619,9 +3691,9 @@ function wzOwn(page) {
       const en = await translateText(text, "de", "en");
       const clean = en.toLowerCase().replace(/[.!?]+$/, "");
       if (!state.custom.includes(clean)) state.custom.push(clean);
-      hint.textContent = `✅ Hinzugefügt: „${clean}“`;
+      hint.textContent = ` Hinzugefügt: „${clean}“`;
       de.value = ""; renderCustomChips(); updatePromptOutputs(); drawChips(); wzMark();
-    } catch (e) { hint.textContent = `❌ Übersetzung nicht möglich (${e.message}).`; }
+    } catch (e) { hint.textContent = ` Übersetzung nicht möglich (${e.message}).`; }
     finally { btn.disabled = false; }
   };
   btn.onclick = go;
@@ -3647,12 +3719,12 @@ function wzResult(page) {
      <div class="label"><span>Negative Prompt</span><span class="counter-badge">${cnt(neg)}</span></div>
      <textarea id="wzNeg" readonly style="min-height:80px"></textarea>
      <div class="actions">
-       <button class="btn primary" id="wzCopyPos" style="flex:1">📋 Positive kopieren</button>
-       <button class="btn" id="wzCopyNeg">📋 Negative kopieren</button>
+       <button class="btn primary" id="wzCopyPos" style="flex:1"> Positive kopieren</button>
+       <button class="btn" id="wzCopyNeg"> Negative kopieren</button>
      </div>
      <div class="actions">
-       <button class="btn" id="wzRestart">🔁 Von vorn beginnen</button>
-       <button class="btn" id="wzEditor">✏️ Im Editor weiterbearbeiten</button>
+       <button class="btn" id="wzRestart"> Von vorn beginnen</button>
+       <button class="btn" id="wzEditor"> Im Editor weiterbearbeiten</button>
      </div>`);
   page.querySelector("#wzNeg").value = neg;
   wzType(page.querySelector("#wzPos"), pos);
@@ -3671,7 +3743,7 @@ function wzMark() {
   else if (st.type === "own") n = state.custom.length;
   $("#wzCount").textContent = (st.type === "model" || st.type === "result") ? `${state.tags.length} Tags gesamt` : `${n} hier · ${state.tags.length} gesamt`;
   const last = WZ.step === steps.length - 1, beforeLast = WZ.step === steps.length - 2;
-  $("#wzNext").textContent = last ? "✔ Fertig" : beforeLast ? "✨ Prompt erstellen" : (n || st.type === "model") ? "Weiter →" : "Überspringen →";
+  $("#wzNext").textContent = last ? " Fertig" : beforeLast ? " Prompt erstellen" : (n || st.type === "model") ? "Weiter →" : "Überspringen →";
 }
 
 function initWizard() {
@@ -3693,25 +3765,13 @@ const LORA_VIEW = new URLSearchParams(location.search).get("loras") === "1";
 function updateLoraLaunch() {
   const btn = $("#btnLoraPage"); if (!btn) return;
   const n = (state.loras || []).filter(l => l.active).length;
-  btn.textContent = n ? `🎨 LoRAs verwalten (${n} aktiv)` : "🎨 LoRAs verwalten";
+  btn.textContent = n ? ` LoRAs verwalten (${n} aktiv)` : " LoRAs verwalten";
 }
 function openLoraPage(updateHistory = true) {
-  if (updateHistory && new URLSearchParams(location.search).get("loras") !== "1") {
-    const url = new URL(location.href);
-    url.searchParams.set("loras", "1");
-    history.pushState({ loras: true }, "", url);
-  }
-  document.body.classList.add("lora-view");
-  renderLoras();
-  window.scrollTo(0, 0);
+  showStudioView("loras");
 }
 function closeLoraPage(updateHistory = true) {
-  if (updateHistory && new URLSearchParams(location.search).get("loras") === "1") {
-    const url = new URL(location.href);
-    url.searchParams.delete("loras");
-    history.replaceState(null, "", url);
-  }
-  document.body.classList.remove("lora-view");
+  showStudioView("studio");
   updateLoraLaunch();
 }
 function initLoraPage() {
@@ -3864,13 +3924,13 @@ function dpFinish(ok, msg) {
     dpHist = [...dpHist, { steps: DP.cfg.steps, w: DP.cfg.w, h: DP.cfg.h, ms: dur }].slice(-40);
     try { localStorage.setItem(DP_HIST_KEY, JSON.stringify(dpHist)); } catch (e) {}
   }
-  dpShow(ok ? "done" : "err", ok ? `✓ Fertig in ${dpFmt(dur)}` : "Nicht erzeugt");
+  dpShow(ok ? "done" : "err", ok ? ` Fertig in ${dpFmt(dur)}` : "Nicht erzeugt");
   if (ok) $("#gdBar").style.width = "100%";
   $("#gdPct").textContent = ok ? "100 %" : "–";
   $("#gdMeta").textContent = ok ? "" : (msg || "");
   $("#gdStop").hidden = true;
   if (ok && !DP.batch) dpBeep();
-  document.title = ok ? `✓ ${DP_TITLE}` : DP_TITLE;
+  document.title = ok ? ` ${DP_TITLE}` : DP_TITLE;
   dpHideLater(ok ? 5000 : 9000);
 }
 
@@ -3878,7 +3938,7 @@ function dpBatchEnd(completed) {
   const had = DP.batch; DP.batch = null;
   if (!had || completed < 1) return;
   if ($("#genDock").classList.contains("err")) return;
-  dpShow("done", `✓ ${completed} Bild${completed === 1 ? "" : "er"} fertig`);
+  dpShow("done", ` ${completed} Bild${completed === 1 ? "" : "er"} fertig`);
   $("#gdBar").style.width = "100%"; $("#gdPct").textContent = "100 %";
   $("#gdMeta").textContent = ""; $("#gdTotalMeta").textContent = ""; $("#gdTotalWrap").hidden = true;
   dpBeep();
@@ -3902,8 +3962,8 @@ async function autoSaveImages(images, prompt) {
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
       if (document.body.dataset.view === "gallery") loadGallery();
-      if (!autoGenerationRunning) showToast("💾 Gespeichert: " + d.file);
-    } catch (e) { showToast("⚠️ Bild nicht gespeichert: " + e.message); }
+      if (!autoGenerationRunning) showToast(" Gespeichert: " + d.file);
+    } catch (e) { showToast(" Bild nicht gespeichert: " + e.message); }
   }
 }
 
@@ -3926,7 +3986,7 @@ function initGenDock() {
   $("#chkAutoSave").checked = !!state.autoSaveImages;
   $("#chkAutoSave").onchange = e => {
     state.autoSaveImages = e.target.checked; saveState();
-    showToast(!e.target.checked ? "Auto-Speichern aus." : SERVER_STORE ? "💾 Bilder werden im Ordner ps_images gespeichert." : "⚠️ Funktioniert nur, wenn die Seite über dt_bridge.py geöffnet ist.");
+    showToast(!e.target.checked ? "Auto-Speichern aus." : SERVER_STORE ? " Bilder werden im Ordner ps_images gespeichert." : " Funktioniert nur, wenn die Seite über dt_bridge.py geöffnet ist.");
   };
   $("#lbClose").onclick = closeLightbox;
   $("#lbPrev").onclick = () => lbStep(-1);
@@ -3936,7 +3996,7 @@ function initGenDock() {
   $("#lbCopy").onclick = () => { const it = DR_LIST[lbIdx]; if (it) copyToClipboard(it.prompt); };
   $("#btnClearResults").onclick = () => {
     $("#dtResults").innerHTML = '<p class="hint dt-empty">Generierte Bilder erscheinen hier.</p>';
-    DR_LIST.length = 0; showToast("🗑 Ergebnisse geleert.");
+    DR_LIST.length = 0; showToast(" Ergebnisse geleert.");
   };
   document.addEventListener("keydown", e => {
     if (!$("#lightbox").classList.contains("open")) return;
@@ -4028,7 +4088,7 @@ function renderRandomPinnedPickers() {
     if (!pinned.length) { const e = document.createElement("span"); e.className = "random-pin-empty"; e.textContent = "Noch keine Pflicht-Tags."; chips.appendChild(e); }
     pinned.forEach(tag => {
       const chip = document.createElement("span"); chip.className = "random-pin-chip";
-      const t = document.createElement("span"); t.textContent = "📌 " + tag;
+      const t = document.createElement("span"); t.textContent = " " + tag;
       const x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.title = `„${tag}“ nicht mehr fest dabei`;
       x.onclick = () => toggleRandomList("randomPinnedTags", tag);
       chip.append(t, x); chips.appendChild(chip);
@@ -4044,7 +4104,7 @@ function renderRandomPinnedPickers() {
   });
 }
 
-/* Markiert alle Tag-Knöpfe: ⊘ = vom Zufall ausgeschlossen, 📌 = immer dabei */
+/* Markiert alle Tag-Knöpfe: ⊘ = vom Zufall ausgeschlossen,  = immer dabei */
 function syncTagMarks() {
   const ex = new Set((state.randomExcludedTags || []).map(t => t.toLowerCase()));
   const pin = new Set((state.randomPinnedTags || []).map(t => t.toLowerCase()));
@@ -4064,7 +4124,7 @@ function setTagMode(mode) {
   $("#btnModePin").classList.toggle("active", TM.mode === "pin");
   $("#tmText").textContent = TM.mode === "exclude"
     ? "⊘ Ausschließen-Modus: Klicke Tags, die Zufallswurf und Automation nie nutzen sollen (nochmal klicken = wieder erlauben)"
-    : TM.mode === "pin" ? "📌 Immer-dabei-Modus: Klicke Tags, die bei jedem Zufallswurf und jeder Automation dabei sein sollen" : "";
+    : TM.mode === "pin" ? " Immer-dabei-Modus: Klicke Tags, die bei jedem Zufallswurf und jeder Automation dabei sein sollen" : "";
   $("#tagModeBar").classList.toggle("show", !!TM.mode);
 }
 
@@ -4090,14 +4150,14 @@ function initTagModes() {
     e.preventDefault(); e.stopPropagation();
     const on = toggleRandomList(mode === "pin" ? "randomPinnedTags" : "randomExcludedTags", b.dataset.tag);
     showToast(mode === "pin"
-      ? (on ? `📌 „${b.dataset.tag}“ ist jetzt immer dabei` : `„${b.dataset.tag}“ nicht mehr fest dabei`)
+      ? (on ? ` „${b.dataset.tag}“ ist jetzt immer dabei` : `„${b.dataset.tag}“ nicht mehr fest dabei`)
       : (on ? `⊘ „${b.dataset.tag}“ wird ausgeschlossen` : `„${b.dataset.tag}“ wieder erlaubt`));
   }, true);
   syncTagMarks();
 }
 
 /* ===== PARTNER-AUTOMATIK: Tags mit zweiter Person bekommen Personenzahl + Geschlecht, falsches Geschlecht wird gesperrt ===== */
-const PARTNER_CAT = "🔞 Intimität & Sex-Posen";
+const PARTNER_CAT = " Intimität & Sex-Posen";
 /* Tags dieser Kategorie, die KEINE zweite Person brauchen (Einzelpersonen-Posen, Orte, Blickrichtung) */
 const PARTNER_SOLO = new Set(["self touch", "spreading legs", "ass focus", "crotch focus", "presenting ass", "presenting pussy", "fingering", "on bed", "romantic bedroom", "bed scene", "after sex", "touching", "caressing"]);
 /* Tags mit mehreren Partnern */
@@ -4136,7 +4196,7 @@ function togglePartnerTag(tag) {
   if (cur) { rm("partnerTags"); if (partnerNeeds(tag)) state.partnerOff = [...(state.partnerOff || []), tag]; }
   else { rm("partnerOff"); if (!partnerNeeds(tag)) state.partnerTags = [...(state.partnerTags || []), tag]; }
   updatePromptOutputs();
-  showToast(partnerNeeds(tag) ? `👥 „${tag}“ braucht jetzt eine zweite Person` : `„${tag}“ braucht keine zweite Person`);
+  showToast(partnerNeeds(tag) ? ` „${tag}“ braucht jetzt eine zweite Person` : `„${tag}“ braucht keine zweite Person`);
 }
 
 init();

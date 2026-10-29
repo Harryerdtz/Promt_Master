@@ -186,7 +186,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif path == "/favicon.ico":
             self.send_response(204)
             self.end_headers()
-        elif path in ("/", "/index.html", "/app-design.css"):
+        elif path in ("/", "/index.html", "/app-design.css") or (path.startswith("/icons/") and path.removeprefix("/icons/").removesuffix(".svg").replace("-", "").isalnum() and path.endswith(".svg")):
             self.path = "/index.html" if path == "/" else path
             super().do_GET()
         else:

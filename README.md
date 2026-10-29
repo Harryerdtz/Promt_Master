@@ -5,6 +5,9 @@ Lokale macOS-App zum Erstellen von Prompts und Generieren von Bildern mit Draw T
 Die Oberfläche ist als macOS-Studio aufgebaut: links die Arbeitsbereiche, in der Mitte Idee,
 Prompt und Ergebnisse, rechts die Werkzeuge für Modell, Tags, Qualität und Zufall. Unter
 **Einstellungen** folgt das Erscheinungsbild dem System oder lässt sich auf Hell/Dunkel festlegen.
+Assistent, Automationen, LoRAs und Einstellungen öffnen als Seiten im selben App-Fenster.
+Die verwendeten SVG-Symbole stammen aus [Tabler Icons](https://github.com/tabler/tabler-icons)
+und liegen samt MIT-Lizenz lokal im Ordner `icons/`.
 
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](index.html)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat&logo=javascript&logoColor=black)](index.html)
@@ -83,7 +86,7 @@ PORT=9000 DT_URL=http://127.0.0.1:7860 python3 dt_bridge.py
 Oben links: Model-Dropdown (SDXL, Pony, Illustrious, …) + Style-Toggle (Anime 🌸 / Realistic 📸).
 
 ### 2. **Tags zusammenklicken**
-- Sections aufklappen (▾) → Tags anklicken → sie wandern in den **Output-Bereich** (rechts, sticky).
+- Kategorien aufklappen und Tags anklicken. Der fertige Prompt erscheint im mittleren Arbeitsbereich.
 - **Filter** (All / SFW / NSFW) blendet unerwünschte Kategorien aus.
 - **Custom Tags** (`+ Custom` Button) → Name + Wert eingeben → dauerhaft gespeichert.
 
@@ -109,8 +112,8 @@ Oben links: Model-Dropdown (SDXL, Pony, Illustrious, …) + Style-Toggle (Anime 
 - Eigene Presets: `Save as Preset` → Name geben → wiederverwendbar
 
 ### 7. **Automation / Randomizer**
-- `🎲 Assistent` Button → Schritt-für-Schritt Wizard für Batches
-- `⚡ Automation` Button → Massen-Generierung mit Randomizer (Pin/Exclude Tags, LoRA Weight Randomization, Partner Modes)
+- **Assistent** in der Seitenleiste führt Schritt für Schritt zum Prompt.
+- **Automationen** in der Seitenleiste erzeugen mehrere Bilder mit Zufallsregeln. Erweiterte Regeln lassen sich bei Bedarf aufklappen.
 
 ---
 
