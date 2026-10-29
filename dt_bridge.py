@@ -144,7 +144,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             name = f"{stamp}_{n:02d}"
             with open(os.path.join(IMG_DIR, name + "." + ext), "wb") as f:
                 f.write(img)
-            metadata = {key: data.get(key) for key in ("prompt", "negativePrompt", "model", "seed", "settings", "loras", "createdAt", "rating", "collection", "notes")}
+            metadata = {key: data.get(key) for key in ("prompt", "negativePrompt", "model", "seed", "settings", "loras", "createdAt", "rating", "favorite", "collection", "notes")}
             with open(os.path.join(IMG_DIR, name + ".json"), "w", encoding="utf-8") as f:
                 json.dump(metadata, f, ensure_ascii=False)
             self._json(200, {"ok": True, "file": f"ps_images/{name}.{ext}"})
@@ -210,7 +210,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return self._json(413, {"error": "Metadaten zu gross oder leer"})
             try:
                 changes = json.loads(self.rfile.read(length))
-                if not isinstance(changes, dict) or any(k not in ("rating", "collection", "notes") for k in changes):
+                if not isinstance(changes, dict) or any(k not in ("rating", "favorite", "collection", "notes") for k in changes):
                     return self._json(400, {"error": "Ungueltige Felder"})
                 with open(file, encoding="utf-8") as f:
                     meta = json.load(f)
@@ -218,6 +218,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     rating = int(changes["rating"])
                     if not 0 <= rating <= 5: return self._json(400, {"error": "Ungueltige Bewertung"})
                     meta["rating"] = rating
+                if "favorite" in changes:
+                    meta["favorite"] = bool(changes["favorite"])
                 for key in ("collection", "notes"):
                     if key in changes: meta[key] = str(changes[key])[:500]
                 tmp = file + ".tmp"

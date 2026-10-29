@@ -936,8 +936,8 @@ header p{font-size:.8rem;margin-top:2px}
   <button type="button" id="navLoras">LoRAs</button>
   <button type="button" id="navSettings">Einstellungen</button>
 </nav>
-<section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><div id="libraryItems" class="gallery-grid"></div></section>
-<section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div id="galleryGrid" class="gallery-grid"></div></section>
+<section id="libraryView" class="gallery-view" aria-label="Bibliothek"><h2>Bibliothek</h2><p class="hint">Gespeicherte Presets und eigene Tags.</p><input id="librarySearch" type="search" placeholder="Presets und Tags durchsuchen"><div id="libraryItems" class="gallery-grid"></div></section>
+<section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div class="row"><input id="gallerySearch" type="search" placeholder="Prompts und Collections durchsuchen"><select id="gallerySort" aria-label="Sortierung"><option value="newest">Neueste zuerst</option><option value="oldest">Älteste zuerst</option><option value="rating">Beste Bewertung</option></select><label><input id="galleryFavorites" type="checkbox"> Nur Favoriten</label></div><div id="galleryGrid" class="gallery-grid"></div></section>
 
 <div class="layout">
   <main>
@@ -2847,8 +2847,9 @@ function suggestLocalTags() {
 }
 function loadLibraryView() {
   const box = $("#libraryItems"); box.replaceChildren();
-  const presets = state.presets || [];
-  const customTags = state.customLibrary || [];
+  const query = $("#librarySearch").value.trim().toLocaleLowerCase("de");
+  const presets = (state.presets || []).filter(item => !query || String(item.name || "").toLocaleLowerCase("de").includes(query));
+  const customTags = (state.customLibrary || []).filter(item => !query || String(item.text || "").toLocaleLowerCase("de").includes(query));
   if (!presets.length && !customTags.length) { box.textContent = "Noch keine Presets oder eigenen Tags gespeichert."; return; }
   for (const preset of presets) {
     const card = document.createElement("article"); card.className = "gallery-item";
@@ -2865,19 +2866,22 @@ function loadLibraryView() {
     card.append(title, action); box.append(card);
   }
 }
-async function loadGallery() {
+let galleryItems = [];
+function renderGallery() {
   const grid = $("#galleryGrid");
   grid.replaceChildren();
-  try {
-    const response = await fetch("/api/gallery");
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const { items = [] } = await response.json();
-    if (!items.length) { grid.textContent = "Noch keine gespeicherten Bilder."; return; }
+  const query = $("#gallerySearch").value.trim().toLocaleLowerCase("de");
+  const favorites = $("#galleryFavorites").checked;
+  const items = galleryItems.filter(item => (!favorites || item.favorite) && (!query || `${item.prompt || ""} ${item.collection || ""} ${item.notes || ""}`.toLocaleLowerCase("de").includes(query)));
+  if ($("#gallerySort").value === "oldest") items.reverse();
+  if ($("#gallerySort").value === "rating") items.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+  if (!items.length) { grid.textContent = galleryItems.length ? "Keine passenden Bilder." : "Noch keine gespeicherten Bilder."; return; }
     for (const item of items) {
       const card = document.createElement("article"); card.className = "gallery-item";
       const image = document.createElement("img"); image.src = item.image; image.alt = item.prompt || "Generiertes Bild"; image.loading = "lazy";
       const caption = document.createElement("p"); caption.textContent = item.prompt || "Ohne Prompt";
       const rating = document.createElement("select"); rating.setAttribute("aria-label", "Bewertung");
+      const favorite = document.createElement("button"); favorite.className = "btn"; favorite.textContent = item.favorite ? "★ Favorit" : "☆ Favorit";
       for (let n = 0; n <= 5; n++) { const option = new Option(n ? `${n} Sterne` : "Keine Bewertung", String(n)); rating.add(option); }
       rating.value = String(item.rating || 0);
       const collection = document.createElement("input"); collection.placeholder = "Collection"; collection.value = item.collection || "";
@@ -2886,9 +2890,10 @@ async function loadGallery() {
         const response = await fetch(`/api/gallery/metadata/${encodeURIComponent(item.id)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(changes) });
         if (!response.ok) showToast("Galerie-Metadaten konnten nicht gespeichert werden.");
       };
-      rating.onchange = () => saveMeta({ rating: Number(rating.value) });
-      collection.onchange = () => saveMeta({ collection: collection.value });
-      notes.onchange = () => saveMeta({ notes: notes.value });
+      rating.onchange = () => { item.rating = Number(rating.value); saveMeta({ rating: item.rating }); };
+      favorite.onclick = () => { item.favorite = !item.favorite; favorite.textContent = item.favorite ? "★ Favorit" : "☆ Favorit"; saveMeta({ favorite: item.favorite }); if ($("#galleryFavorites").checked) renderGallery(); };
+      collection.onchange = () => { item.collection = collection.value; saveMeta({ collection: item.collection }); };
+      notes.onchange = () => { item.notes = notes.value; saveMeta({ notes: item.notes }); };
       const restore = document.createElement("button"); restore.className = "btn"; restore.textContent = "Im Studio verwenden";
       restore.onclick = () => {
         state.manual = item.prompt || ""; state.negCustom = item.negativePrompt || "";
@@ -2909,9 +2914,16 @@ async function loadGallery() {
         }
         renderModels(); updatePromptOutputs(); showStudioView("studio");
       };
-      card.append(image, caption, rating, collection, notes, restore); grid.append(card);
+      card.append(image, caption, favorite, rating, collection, notes, restore); grid.append(card);
     }
-  } catch (error) { grid.textContent = "Galerie nicht erreichbar: " + error.message; }
+}
+async function loadGallery() {
+  try {
+    const response = await fetch("/api/gallery");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    galleryItems = (await response.json()).items || [];
+    renderGallery();
+  } catch (error) { $("#galleryGrid").textContent = "Galerie nicht erreichbar: " + error.message; }
 }
 function showStudioView(view) {
   document.body.dataset.view = view;
@@ -2929,6 +2941,10 @@ async function init() {
   $("#navAutomations").onclick = () => $("#btnAutomationMenu").click();
   $("#navLoras").onclick = () => $("#btnLoraPage").click();
   $("#navSettings").onclick = () => $("#btnAppearance").click();
+  $("#gallerySearch").oninput = renderGallery;
+  $("#gallerySort").onchange = renderGallery;
+  $("#galleryFavorites").onchange = renderGallery;
+  $("#librarySearch").oninput = loadLibraryView;
   $("#btnLocalSuggest").onclick = suggestLocalTags;
   for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"]]) {
     const field = document.getElementById(id);
@@ -3850,7 +3866,7 @@ async function autoSaveImages(images, prompt) {
   for (const img of images) {
     try {
       const requestedSeed = (state.generation || {}).seed;
-      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, seed: requestedSeed === "" || requestedSeed == null ? null : Number(requestedSeed), loras: state.loras.filter(l => l.active), settings: { ...DP.cfg, cfg: (state.generation || {}).cfg, sampler: (state.generation || {}).sampler }, createdAt: new Date().toISOString(), rating: 0, collection: "", notes: "" }) });
+      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, seed: requestedSeed === "" || requestedSeed == null ? null : Number(requestedSeed), loras: state.loras.filter(l => l.active), settings: { ...DP.cfg, cfg: (state.generation || {}).cfg, sampler: (state.generation || {}).sampler }, createdAt: new Date().toISOString(), rating: 0, favorite: false, collection: "", notes: "" }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
       if (document.body.dataset.view === "gallery") loadGallery();
