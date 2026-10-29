@@ -11,6 +11,8 @@ cp dist/PromptMaster "$APP/Contents/Resources/bridge/PromptMaster"
 cp PromptMaster.icns "$APP/Contents/Resources/PromptMaster.icns"
 /usr/libexec/PlistBuddy -c 'Add :CFBundleExecutable string PromptMaster' "$APP/Contents/Info.plist" 2>/dev/null || true
 /usr/libexec/PlistBuddy -c 'Set :CFBundleExecutable PromptMaster' "$APP/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :NSAppTransportSecurity dict' "$APP/Contents/Info.plist" 2>/dev/null || true
+/usr/libexec/PlistBuddy -c 'Add :NSAppTransportSecurity:NSAllowsLocalNetworking bool true' "$APP/Contents/Info.plist" 2>/dev/null || /usr/libexec/PlistBuddy -c 'Set :NSAppTransportSecurity:NSAllowsLocalNetworking true' "$APP/Contents/Info.plist"
 xattr -cr "$APP"
 codesign --force --deep --sign - "$APP"
 STAGING="$(mktemp -d)"
