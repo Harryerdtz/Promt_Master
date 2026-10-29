@@ -218,8 +218,8 @@ body[data-theme] header p { font-size: 11px; margin: 3px 0 0; color: var(--mute)
 .tools-main > .card { display: none; }
 .tools-main > .card.is-current-panel { display: block; }
 .tool-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   margin: 0 0 16px;
   padding: 4px;
@@ -227,7 +227,7 @@ body[data-theme] header p { font-size: 11px; margin: 3px 0 0; color: var(--mute)
   background: var(--panel2);
 }
 .tool-tabs button {
-  flex: 1 1 auto;
+  min-width: 0;
   padding: 7px 9px;
   border: 0;
   border-radius: 7px;
@@ -461,7 +461,7 @@ button[aria-busy="true"]::before {
   body[data-theme] header { flex-wrap: wrap; }
   .header-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
   .layout > .out { gap: 18px; }
-  .tool-tabs { overflow-x: auto; flex-wrap: nowrap; }
+  body[data-theme] .tool-tabs { display: flex; overflow-x: auto; flex-wrap: nowrap; }
   .tool-tabs button { white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -621,9 +621,7 @@ body[data-view="creations"] .layout { display: none !important; }
 .library-summary { margin: 16px 0; padding: 12px 16px; background: var(--panel); border: 1px solid var(--separator); border-radius: 10px; color: var(--mute); font-size: 13px; }
 .preset-name-label { display: grid; gap: 6px; margin: 0 0 12px; color: var(--mute); font-size: 12px; font-weight: 600; }
 .preset-name-label input { width: 100%; }
-.tools-main > .card[data-tool-panel="quality"] > .card { margin: 20px 0 0; padding: 20px 0 0; border: 0; border-top: 1px solid var(--separator); border-radius: 0; box-shadow: none; background: transparent; }
-.tools-main > .card[data-tool-panel="quality"] > .card:hover { transform: none; box-shadow: none; }
-.tools-main > .card[data-tool-panel="quality"] > .card .randomizer-options { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.tools-main > .card[data-tool-panel="random"] .randomizer-options { grid-template-columns: repeat(2,minmax(0,1fr)); }
 
 /* LoRAs use the neutral dark surface and a restrained active state. */
 body[data-theme="night"] .lora-card-item { background: #161b22; border: 1px solid #30363d; box-shadow: none; }

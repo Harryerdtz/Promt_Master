@@ -2882,12 +2882,12 @@ function setupWorkspacePanels() {
   const random = tools.querySelector(":scope > section.card:nth-of-type(2)");
   const creations = document.querySelector("#creationsWorkspace");
   creations.append(document.querySelector("#deInput").closest(".card"));
-  tools.querySelector(":scope > section.card:nth-of-type(4)").append(random);
   tools.append(document.querySelector(".layout > .out > .card:last-child"));
   const sections = [...tools.querySelectorAll(":scope > section.card")];
   const definitions = [
-    ["model", "Modell"], ["custom", "Eigene Tags"],
-    ["quality", "Qualität"], ["tags", "Tags"], ["generation", "Generierung"]
+    ["model", "Modell", 0], ["custom", "Eigene Tags", 2],
+    ["quality", "Qualität", 3], ["tags", "Tags", 4],
+    ["generation", "Generierung", 5], ["random", "Zufall", 1]
   ];
   tools.classList.add("tools-main");
   const tabs = document.createElement("div");
@@ -2898,8 +2898,8 @@ function setupWorkspacePanels() {
     for (const section of sections) section.classList.toggle("is-current-panel", section.dataset.toolPanel === name);
     for (const button of tabs.querySelectorAll("button")) button.setAttribute("aria-selected", String(button.dataset.panel === name));
   };
-  definitions.forEach(([name, label], index) => {
-    const section = sections[index];
+  definitions.forEach(([name, label, sectionIndex]) => {
+    const section = sections[sectionIndex];
     if (!section) return;
     section.dataset.toolPanel = name;
     const button = document.createElement("button");
