@@ -55,7 +55,7 @@ Die `.app` übernimmt den bisherigen Start von `dt_bridge.py` automatisch.
 
 ### Installation & Start als App
 
-1. `Prompt Master.app` nach `Programme` oder auf den Schreibtisch kopieren.
+1. Die DMG öffnen und `Prompt Master.app` in `Programme` ziehen.
 2. Draw Things öffnen und unter **Settings → API → Enable** aktivieren.
 3. `Prompt Master.app` per Doppelklick starten.
 
