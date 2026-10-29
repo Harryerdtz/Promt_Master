@@ -1,29 +1,38 @@
-# 🎨 Prompt Master — Universal AI Prompt Studio Ultra
+# Prompt Master
 
-> **Ein mächtiges, browserbasiertes Tool zum Erstellen, Verwalten und Exportieren von Prompts für KI-Bildgenerierung (Stable Diffusion, Midjourney, NovelAI, etc.)** — mit Fokus auf Anime, Hentai & Realistic Styles.
+Lokale macOS-App zum Erstellen von Prompts und Generieren von Bildern mit Draw Things.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](index.html)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat&logo=javascript&logoColor=black)](index.html)
 [![Python Bridge](https://img.shields.io/badge/Python_Bridge-Required-3776AB?logo=python&logoColor=white)](dt_bridge.py)
 
 ---
 
-## ⚠️ WICHTIG: Das ist eine **lokale App**, keine statische Website
+## ✅ macOS-App für Draw Things
+
+`Prompt Master.app` kann auf dem Mac per Doppelklick gestartet werden. Die App startet
+automatisch den lokalen Server und zeigt die Oberfläche im eigenen macOS-Fenster. Draw Things muss
+geöffnet sein und seine API auf Port `7860` bereitstellen.
+
+Veränderliche Daten werden dauerhaft unter `~/Library/Application Support/PromptMaster/`
+gespeichert. Dort liegen der Prompt-State und der Ordner `ps_images`.
+
+## ⚠️ WICHTIG: lokale Verbindung
 
 **Das funktioniert NICHT:**
 - ❌ Direkt auf GitHub Pages öffnen
 - ❌ `index.html` per Doppelklick im Browser öffnen (CORS blockiert Draw Things API)
 - ❌ Als "Live Demo" ohne lokalen Server nutzen
 
-**Das MUSS laufen:**
+**Für die Bildgenerierung muss laufen:**
 ```
-Browser (http://localhost:8080) 
-    → dt_bridge.py (Python HTTP Server + Proxy auf Port 8080) 
+Prompt Master.app (eigenes macOS-Fenster)
+    → lokale Bridge auf 127.0.0.1:8080
         → Draw Things API (http://127.0.0.1:7860)
 ```
 
-Ohne laufenden `dt_bridge.py` **und** Draw Things funktioniert: keine Bildgenerierung, kein State-Save, keine LoRA-Ladung, kein PNG-Export.
+Ohne Draw Things funktioniert die Prompt-Oberfläche weiterhin, aber keine Bildgenerierung.
+Die `.app` übernimmt den bisherigen Start von `dt_bridge.py` automatisch.
 
 ---
 
@@ -34,7 +43,18 @@ Ohne laufenden `dt_bridge.py` **und** Draw Things funktioniert: keine Bildgeneri
 - In Draw Things: **Settings → API → Enable** (Port 7860)
 - Python 3.8+
 
-### Installation & Start
+### Installation & Start als App
+
+1. `Prompt Master.app` nach `Programme` oder auf den Schreibtisch kopieren.
+2. Draw Things öffnen und unter **Settings → API → Enable** aktivieren.
+3. `Prompt Master.app` per Doppelklick starten.
+
+Zum Erstellen aus dem Quellcode: `bash build-macos.sh`. Dafür werden Swift und
+die lokale Python-Umgebung mit PyInstaller benötigt. Der fertige Build liegt
+unter `dist/Prompt Master.app`. Persönliche Prompt-Daten werden nicht in die
+App gepackt; bestehende Daten liegen im lokalen Application-Support-Ordner.
+
+### Entwicklung / Start aus dem Quellcode
 ```bash
 # 1. Repo klonen
 git clone https://github.com/Harryerdtz/Promt_Master.git
@@ -185,7 +205,7 @@ Verfügbare Themes: `neon` (Default), `calm`, `night`, `soft` — via `body[data
 | **Backup** | `prompt_studio_data.json.bak` | Vorheriger Stand vor jedem Save |
 | **Bilder** | `ps_images/YYYYMMDD_HHMMSS_XX.png/.txt` | Generierte Bilder + zugehörige Prompts |
 
-> **Privatsphäre:** Alles läuft **lokal**. Keine Daten verlassen deinen Rechner. Kein Tracking, keine Analytics, keine Cloud.
+> **Privatsphäre:** Prompts und Bilder bleiben lokal. Die optionalen Funktionen für Übersetzung und Tag-Erklärungen fragen externe Dienste wie MyMemory, Google Translate, Danbooru und Wikipedia ab; dabei werden die jeweiligen Suchtexte an diese Dienste übertragen.
 
 ---
 
@@ -234,7 +254,7 @@ Benötigt: `localStorage`, `Blob`, `FileReader`, `Clipboard API` (nur auf `http:
 
 ## 📄 License
 
-**MIT License** — frei für privat & kommerziell. Siehe [LICENSE](LICENSE).
+Eine Lizenzdatei ist derzeit nicht enthalten.
 
 ---
 

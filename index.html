@@ -103,6 +103,16 @@ body[data-theme="soft"] {
   --nsfw-grad: linear-gradient(135deg, #866069, #ad7780); --lora-color: #76938b; --lora-grad: linear-gradient(135deg, #5c766f, #76938b);
   --custom-color: #b3996c; --custom-grad: linear-gradient(135deg, #8e774f, #b3996c); --preset-grad: linear-gradient(135deg, #777080, #968b9f);
 }
+body[data-theme="light"] {
+  --bg:#f4f5f7; --panel:#ffffff; --panel2:#edf0f4; --line:rgba(31,41,55,.14);
+  --text:#18202d; --mute:#596579; --panel-glow:rgba(70,100,150,.06);
+  --sfw-color:#2763ba; --sfw-grad:linear-gradient(135deg,#2763ba,#5268bf);
+  --nsfw-color:#a44368; --nsfw-grad:linear-gradient(135deg,#a44368,#b85d83);
+  --lora-color:#157f87; --custom-color:#9b681d; --preset-color:#6355a6;
+  background:#f4f5f7;color:var(--text)
+}
+body[data-theme="light"] .card,body[data-theme="light"] .out .card{box-shadow:0 8px 28px rgba(24,32,45,.07)}
+body[data-theme="light"] textarea,body[data-theme="light"] input,body[data-theme="light"] select{color:var(--text)}
 /* Der ursprüngliche, leuchtende Stil bleibt als bewusstes Neon-Profil erhalten. */
 body[data-theme="neon"] {
   --bg: #05070c; --panel: rgba(15, 18, 30, .75); --panel2: rgba(24, 29, 46, .85);
@@ -882,21 +892,39 @@ body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14p
 .partner-row select{flex:1 1 230px;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
 .partner-chk{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--text);cursor:pointer}
 .partner-note{margin:8px 0 4px;padding:8px 12px;border-radius:10px;border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);color:#a5f3fc;font-size:.78rem;line-height:1.45}
+.studio-nav{display:flex;justify-content:center;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+.studio-nav button{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:9px 15px;cursor:pointer}
+.studio-nav button[aria-current="page"]{background:var(--accent);color:white}
+.gallery-view{max-width:1450px;margin:0 auto;padding:18px;display:none}
+.gallery-view.active{display:block}.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.gallery-item{border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;padding:10px}
+.gallery-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}.gallery-item p{font-size:.8rem;color:var(--mute);margin:8px 0;overflow-wrap:anywhere}
+body[data-view="gallery"] .layout{display:none}
 </style>
 </head>
 <body data-theme="calm">
 
 <header>
-  <h1>Universal Anime &amp; Hentai Prompt Studio Ultra</h1>
-  <p>Perfekt abgestimmt für <b>Draw Things</b>, <b>Pony XL</b>, <b>Illustrious</b> &amp; <b>SDXL</b></p>
+  <h1>Prompt Master</h1>
+  <p>Dein Studio für Draw Things</p>
   <div class="header-actions">
     <button class="wz-launch" id="btnWizard">🧙 Assistent-Modus starten</button>
     <button class="wz-launch automation-launch" id="btnAutomationMenu" type="button">⚙ Automationen öffnen</button>
     <button class="wz-launch lora-launch" id="btnLoraPage" type="button">🎨 LoRAs verwalten</button>
     <button class="wz-launch" id="btnAppearance" type="button">⚙ Einstellungen</button>
     <span class="save-pill" id="saveStatus" role="status">⏳ Speicher wird geprüft …</span>
+    <span class="save-pill" id="connectionStatus" role="status">⏳ Draw Things wird geprüft …</span>
   </div>
 </header>
+
+<nav class="studio-nav" aria-label="Hauptnavigation">
+  <button type="button" data-view-target="studio" aria-current="page">Studio</button>
+  <button type="button" data-view-target="gallery">Galerie</button>
+  <button type="button" id="navAutomations">Automationen</button>
+  <button type="button" id="navLoras">LoRAs</button>
+  <button type="button" id="navSettings">Einstellungen</button>
+</nav>
+<section id="galleryView" class="gallery-view" aria-label="Galerie"><h2>Galerie</h2><p class="hint">Deine lokal gespeicherten Generationen.</p><div id="galleryGrid" class="gallery-grid"></div></section>
 
 <div class="layout">
   <main>
@@ -1090,6 +1118,17 @@ body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14p
         <p class="hint dt-empty">Generierte Bilder erscheinen hier.</p>
       </div>
     </section>
+    <section class="card">
+      <h2><b>⚙</b>Generierung</h2>
+      <p class="hint">Leere Felder übernehmen die aktuellen Werte aus Draw Things.</p>
+      <div class="randomizer-options">
+        <label>Seed<input id="genSeed" type="number" placeholder="Zufällig"></label>
+        <label>Steps<input id="genSteps" type="number" min="1" max="150" placeholder="Draw Things"></label>
+        <label>CFG<input id="genCfg" type="number" min="0" max="30" step="0.1" placeholder="Draw Things"></label>
+        <label>Breite<input id="genWidth" type="number" min="64" step="64" placeholder="Draw Things"></label>
+        <label>Höhe<input id="genHeight" type="number" min="64" step="64" placeholder="Draw Things"></label>
+      </div>
+    </section>
   </aside>
 </div>
 
@@ -1238,7 +1277,7 @@ body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14p
     <div class="appearance-head"><div><h2 id="appearanceTitle">Einstellungen</h2><p>Wähle eine Farbwelt und passe die Oberfläche an.</p></div><button class="btn" id="btnCloseAppearance" type="button" aria-label="Einstellungen schließen">×</button></div>
     <div class="appearance-options">
       <label for="themeSelect">Farbprofil
-        <select id="themeSelect"><option value="calm">Ruhig (empfohlen)</option><option value="night">Nacht</option><option value="soft">Warm &amp; weich</option><option value="neon">Neon (ursprüngliches Design)</option></select>
+        <select id="themeSelect"><option value="system">System</option><option value="light">Hell</option><option value="night">Dunkel</option><option value="calm">Ruhig</option><option value="soft">Warm &amp; weich</option><option value="neon">Neon</option></select>
       </label>
       <label for="accentColor">Akzentfarbe <input id="accentColor" type="color" value="#7c8ca8"></label>
       <label class="appearance-check"><input id="reduceMotion" type="checkbox"> Animationen reduzieren</label>
@@ -1356,7 +1395,8 @@ const getDefaultState = () => ({
   partnerFaceless: false,
   partnerTags: [],
   partnerOff: [],
-  autoSaveImages: false,
+  autoSaveImages: true,
+  generation: {},
   randomHistory: [],
   tags: [],
   custom: [],
@@ -1371,7 +1411,7 @@ const getDefaultState = () => ({
   negCustom: "",
   de: "",
   weights: {},
-  appearance: { theme: "calm", accent: "#7c8ca8", reduceMotion: false }
+  appearance: { theme: "system", accent: "#7c8ca8", reduceMotion: false }
 });
 
 let state = getDefaultState();
@@ -1405,12 +1445,31 @@ function showToast(msg) {
 
 /* ===== ERSCHEINUNGSBILD ===== */
 function applyAppearance() {
-  const appearance = { theme: "calm", accent: "#7c8ca8", reduceMotion: false, ...(state.appearance || {}) };
+  const appearance = { theme: "system", accent: "#7c8ca8", reduceMotion: false, ...(state.appearance || {}) };
   state.appearance = appearance;
-  document.body.dataset.theme = appearance.theme;
+  document.body.dataset.theme = appearance.theme === "system"
+    ? (matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "light") : appearance.theme;
   document.body.style.setProperty("--accent", appearance.accent);
   document.body.style.setProperty("--accent-soft", `${appearance.accent}38`);
   document.body.classList.toggle("reduce-motion", Boolean(appearance.reduceMotion));
+}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if ((state.appearance || {}).theme === "system") applyAppearance();
+});
+
+async function checkDrawThingsConnection() {
+  const el = document.getElementById("connectionStatus");
+  if (!el) return;
+  try {
+    const response = await fetch("/sdapi/v1/options", { signal: AbortSignal.timeout(4000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    el.textContent = "● Draw Things verbunden";
+    el.className = "save-pill ok";
+  } catch (error) {
+    el.textContent = "● Draw Things getrennt";
+    el.className = "save-pill warn";
+    el.title = "Draw Things öffnen und den API-Server auf Port 7860 aktivieren.";
+  }
 }
 
 function setupAppearance() {
@@ -1418,7 +1477,7 @@ function setupAppearance() {
   const theme = $("#themeSelect"), accent = $("#accentColor"), motion = $("#reduceMotion");
   const openModal = () => {
     const a = state.appearance || {};
-    theme.value = a.theme || "calm"; accent.value = a.accent || "#7c8ca8"; motion.checked = Boolean(a.reduceMotion);
+    theme.value = a.theme || "system"; accent.value = a.accent || "#7c8ca8"; motion.checked = Boolean(a.reduceMotion);
     modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); theme.focus();
   };
   const closeModal = () => { modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true"); open.focus(); };
@@ -1775,7 +1834,7 @@ function buildPositivePrompt(includeLoraSyntax = true) {
   const mainTags = partner ? state.tags.filter(t => !partner.drop.has(t.toLowerCase())) : state.tags;
 
   const allParts = [
-    ...commaList(model.prefix),
+    ...(state.model === "illustrious" ? [] : commaList(model.prefix)),
     ...loraStrings,
     ...styleTags,
     ...modelExtras,
@@ -1783,7 +1842,8 @@ function buildPositivePrompt(includeLoraSyntax = true) {
     ...loraTriggers,
     ...mainTags,
     ...state.custom,
-    ...manualTags
+    ...manualTags,
+    ...(state.model === "illustrious" ? commaList(model.prefix) : [])
   ];
   return uniq(allParts).map(p => (state.weights && state.weights[p]) ? `(${p}:${state.weights[p]})` : p).join(", ");
 }
@@ -2286,8 +2346,8 @@ async function generateWithDrawThings() {
   syncDrawControls();
   dpStart(autoGenerationRunning ? "Zufalls-Bild wird erzeugt" : "Bild wird erzeugt");
 
-  const prompt = buildPositivePrompt(false);
-  const negativePrompt = buildNegativePrompt();
+  let prompt = buildPositivePrompt(false);
+  let negativePrompt = buildNegativePrompt();
   const status = $("#dtStatus");
   try {
     setDrawStatus("Lese Draw-Things-Einstellungen …");
@@ -2296,8 +2356,18 @@ async function generateWithDrawThings() {
     if (!optionsResponse.ok) {
       throw new Error(options.error || `Einstellungen nicht erreichbar (HTTP ${optionsResponse.status})`);
     }
+    const activeModel = String(options.model || "").toLowerCase();
+    const detectedModel = activeModel.includes("illustrious") ? "illustrious" : activeModel.includes("pony") ? "pony" : null;
+    if (detectedModel && detectedModel !== state.model) {
+      state.model = detectedModel;
+      renderModels(); updatePromptOutputs();
+      prompt = buildPositivePrompt(false);
+      negativePrompt = buildNegativePrompt();
+      setDrawStatus(`Prompt an das aktive ${MODELS[detectedModel].label}-Modell angepasst.`);
+    }
 
-    DP.cfg = { steps: Number(options.steps) || 20, w: Number(options.width || options.target_width) || 1024, h: Number(options.height || options.target_height) || 1024 };
+    const chosen = state.generation || {};
+    DP.cfg = { steps: Number(chosen.steps) || Number(options.steps) || 20, w: Number(chosen.width) || Number(options.width || options.target_width) || 1024, h: Number(chosen.height) || Number(options.height || options.target_height) || 1024 };
     DP.est = dpEstimate(DP.cfg);
     setDrawStatus("Sende Prompt an Draw Things …");
     const response = await fetch("/sdapi/v1/txt2img", {
@@ -2307,12 +2377,12 @@ async function generateWithDrawThings() {
       body: JSON.stringify({
         prompt,
         negative_prompt: negativePrompt,
-        seed: -1,
-        steps: Number(options.steps) || 20,
-        guidance_scale: Number(options.guidance_scale) || 5,
+        seed: chosen.seed === "" || chosen.seed == null ? -1 : Number(chosen.seed),
+        steps: Number(chosen.steps) || Number(options.steps) || 20,
+        guidance_scale: chosen.cfg === "" || chosen.cfg == null ? (Number(options.guidance_scale) || 5) : Number(chosen.cfg),
         batch_count: 1,
-        width: Number(options.width || options.target_width) || 1024,
-        height: Number(options.height || options.target_height) || 1024,
+        width: Number(chosen.width) || Number(options.width || options.target_width) || 1024,
+        height: Number(chosen.height) || Number(options.height || options.target_height) || 1024,
         loras: state.loras.some(lora => lora.active)
           ? state.loras.filter(lora => lora.active).map(lora => ({ file: dtLoraFile(lora.name), weight: lora.weight }))
           : (Array.isArray(options.loras) ? options.loras : [])
@@ -2722,9 +2792,58 @@ function resetEntireState() {
 }
 
 /* ===== INITIALISIERUNG ===== */
+async function loadGallery() {
+  const grid = $("#galleryGrid");
+  grid.replaceChildren();
+  try {
+    const response = await fetch("/api/gallery");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const { items = [] } = await response.json();
+    if (!items.length) { grid.textContent = "Noch keine gespeicherten Bilder."; return; }
+    for (const item of items) {
+      const card = document.createElement("article"); card.className = "gallery-item";
+      const image = document.createElement("img"); image.src = item.image; image.alt = item.prompt || "Generiertes Bild"; image.loading = "lazy";
+      const caption = document.createElement("p"); caption.textContent = item.prompt || "Ohne Prompt";
+      const restore = document.createElement("button"); restore.className = "btn"; restore.textContent = "Im Studio verwenden";
+      restore.onclick = () => {
+        state.manual = item.prompt || ""; state.negCustom = item.negativePrompt || "";
+        if (MODELS[item.model]) state.model = item.model;
+        state.tags = []; state.extras = []; state.custom = []; state.negExtras = [];
+        $("#manualInput").value = state.manual; $("#negCustom").value = state.negCustom;
+        renderModels(); updatePromptOutputs(); showStudioView("studio");
+      };
+      card.append(image, caption, restore); grid.append(card);
+    }
+  } catch (error) { grid.textContent = "Galerie nicht erreichbar: " + error.message; }
+}
+function showStudioView(view) {
+  document.body.dataset.view = view;
+  $("#galleryView").classList.toggle("active", view === "gallery");
+  document.querySelectorAll("[data-view-target]").forEach(button => {
+    if (button.dataset.viewTarget === view) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  if (view === "gallery") loadGallery();
+}
 async function init() {
+  document.querySelectorAll("[data-view-target]").forEach(button => button.onclick = () => showStudioView(button.dataset.viewTarget));
+  $("#navAutomations").onclick = () => $("#btnAutomationMenu").click();
+  $("#navLoras").onclick = () => $("#btnLoraPage").click();
+  $("#navSettings").onclick = () => $("#btnAppearance").click();
+  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genWidth", "width"], ["genHeight", "height"]]) {
+    const field = document.getElementById(id);
+    field.addEventListener("change", () => {
+      state.generation = { ...(state.generation || {}), [key]: field.value };
+      saveState();
+    });
+  }
+  checkDrawThingsConnection();
+  setInterval(checkDrawThingsConnection, 15000);
   await loadServerState();
   loadState();
+  for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genWidth", "width"], ["genHeight", "height"]]) {
+    document.getElementById(id).value = (state.generation || {})[key] ?? "";
+  }
   applyAppearance();
   if (serverOk && !applyingSyncedState) pushServerState(true);
 
@@ -3624,9 +3743,10 @@ async function autoSaveImages(images, prompt) {
   if (!state.autoSaveImages || !SERVER_STORE) return;
   for (const img of images) {
     try {
-      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt }) });
+      const r = await fetch("/api/save-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img, prompt, negativePrompt: buildNegativePrompt(), model: state.model, loras: state.loras.filter(l => l.active), settings: DP.cfg, createdAt: new Date().toISOString(), rating: 0, collection: "", notes: "" }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
+      if (document.body.dataset.view === "gallery") loadGallery();
       if (!autoGenerationRunning) showToast("💾 Gespeichert: " + d.file);
     } catch (e) { showToast("⚠️ Bild nicht gespeichert: " + e.message); }
   }
