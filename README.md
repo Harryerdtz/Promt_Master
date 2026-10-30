@@ -12,6 +12,9 @@ und liegen samt MIT-Lizenz lokal im Ordner `icons/`.
 Der Tag-Katalog ist nach SFW- und NSFW-Themen sortiert. Rechtsklick auf einen Tag zeigt
 eine Erklärung für den vollständigen Begriff in einem Popover passend zum gewählten Design.
 Die Tag-Auswahl konzentriert sich auf verständliche Bildmerkmale, Posen, Kleidung, Licht und Szenen.
+Im Reiter **Zufall** ist die Partner-Automatik sichtbar. Bei passenden Tags ergänzt sie
+Frau + Mann, zwei Frauen oder zwei Männer im Prompt und entfernt widersprüchliche Personen-Tags.
+Diese Auswahl wird auch in Presets gespeichert.
 Das dunkle Design verwendet Schwarz und Anthrazit mit grünen, blauen und roten Statusfarben.
 Das App-Icon wird lokal aus `scripts/create-app-icon.swift` erzeugt. Die Generierungsoptionen
 können aktuelle Werte aus Draw Things übernehmen; zusätzlich sind

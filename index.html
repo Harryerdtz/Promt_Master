@@ -860,7 +860,7 @@ body.tagmode-pin .tagmode-bar{border-color:rgba(34,211,238,.65);box-shadow:0 14p
 .partner-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .partner-row select{flex:1 1 230px;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit}
 .partner-chk{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--text);cursor:pointer}
-.partner-note{margin:8px 0 4px;padding:8px 12px;border-radius:10px;border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);color:#a5f3fc;font-size:.78rem;line-height:1.45}
+.partner-note{margin:8px 0 4px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:.78rem;line-height:1.45}
 .studio-nav{display:flex;justify-content:center;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
 .studio-nav button{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:9px 15px;cursor:pointer}
 .studio-nav button[aria-current="page"]{background:var(--accent);color:white}
@@ -972,7 +972,7 @@ header p{font-size:.8rem;margin-top:2px}
             </select>
             <label class="partner-chk"><input type="checkbox" data-random-setting="partnerFaceless"> Mann ohne Gesicht</label>
           </div>
-          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein ().</p>
+          <p class="hint">Bei Tags mit zwei Personen ergänzt die App automatisch die gewählte Kombination im positiven Prompt und passende Ausschlüsse im negativen Prompt. Per Rechtsklick auf einen Tag kannst du die Erkennung ändern.</p>
         </div>
         <div class="randomizer-pinned">
           <label> Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
@@ -1241,7 +1241,7 @@ header p{font-size:.8rem;margin-top:2px}
             </select>
             <label class="partner-chk"><input type="checkbox" data-random-setting="partnerFaceless"> Mann ohne Gesicht</label>
           </div>
-          <p class="hint">Setzt die Personenzahl fest und sperrt das falsche Geschlecht im Negative-Prompt. So entsteht die zweite Person nicht mehr als Frau mit männlichen Merkmalen. Welche Tags eine zweite Person brauchen, stellst du im Info-Fenster eines Tags ein ().</p>
+          <p class="hint">Bei Tags mit zwei Personen ergänzt die App automatisch die gewählte Kombination im positiven Prompt und passende Ausschlüsse im negativen Prompt. Per Rechtsklick auf einen Tag kannst du die Erkennung ändern.</p>
         </div>
         <div class="randomizer-pinned">
           <label> Immer dabei – diese Tags sind bei jedem Zufallswurf und jeder Automation enthalten (zusätzlich zu den Zufalls-Tags)</label>
@@ -1896,7 +1896,8 @@ function buildPositivePrompt(includeLoraSyntax = true) {
   }
 
   const partner = partnerContext();
-  const mainTags = partner ? state.tags.filter(t => !partner.drop.has(t.toLowerCase())) : state.tags;
+  const keepPartnerTag = tag => !partner || !partner.drop.has(normalizePartnerTag(tag));
+  const mainTags = state.tags.filter(keepPartnerTag);
 
   const allParts = [
     ...(state.model === "illustrious" ? [] : commaList(model.prefix)),
@@ -1904,10 +1905,10 @@ function buildPositivePrompt(includeLoraSyntax = true) {
     ...styleTags,
     ...modelExtras,
     ...(partner ? partner.pos : []),
-    ...loraTriggers,
+    ...loraTriggers.filter(keepPartnerTag),
     ...mainTags,
-    ...state.custom,
-    ...manualTags,
+    ...state.custom.filter(keepPartnerTag),
+    ...manualTags.filter(keepPartnerTag),
     ...(state.model === "illustrious" ? commaList(model.prefix) : [])
   ];
   return uniq(allParts).map(p => (state.weights && state.weights[p]) ? `(${p}:${state.weights[p]})` : p).join(", ");
@@ -1923,13 +1924,14 @@ function buildNegativePrompt() {
     styleNeg = ["anime", "cartoon", "2d", "sketch", "drawing", "illustration"];
   }
 
+  const partner = partnerContext();
   const allParts = [
     ...commaList(model.negative),
     ...styleNeg,
-    ...(partnerContext() ? partnerContext().neg : []),
+    ...(partner ? partner.neg : []),
     ...activeNegExtras,
     ...manualNeg
-  ];
+  ].filter(tag => !partner || !partner.positive.has(normalizePartnerTag(tag)));
   return uniq(allParts).join(", ");
 }
 
@@ -2617,6 +2619,10 @@ function savePreset() {
     custom: [...state.custom],
     manual: state.manual,
     negCustom: state.negCustom,
+    partnerMode: state.partnerMode,
+    partnerFaceless: state.partnerFaceless,
+    partnerTags: [...state.partnerTags],
+    partnerOff: [...state.partnerOff],
     generation: { ...state.generation },
     loras: state.loras.filter(lora => lora.active).map(lora => ({ name: lora.name, weight: lora.weight }))
   };
@@ -2637,6 +2643,10 @@ function loadPreset(p) {
   state.custom = [...(p.custom || [])];
   state.manual = p.manual || "";
   state.negCustom = p.negCustom || "";
+  if (p.partnerMode !== undefined) state.partnerMode = p.partnerMode;
+  if (p.partnerFaceless !== undefined) state.partnerFaceless = Boolean(p.partnerFaceless);
+  if (Array.isArray(p.partnerTags)) state.partnerTags = [...p.partnerTags];
+  if (Array.isArray(p.partnerOff)) state.partnerOff = [...p.partnerOff];
   state.generation = { ...(p.generation || {}) };
   if (Array.isArray(p.loras)) {
     const saved = new Map(p.loras.map(lora => [lora.name, lora.weight]));
@@ -2648,6 +2658,7 @@ function loadPreset(p) {
   renderStyleSwitch();
   renderExtras();
   renderCustomChips();
+  syncRandomizerControls();
   $("#manualInput").value = state.manual;
   $("#negCustom").value = state.negCustom;
   for (const [id, key] of [["genSeed", "seed"], ["genSteps", "steps"], ["genCfg", "cfg"], ["genSampler", "sampler"], ["genWidth", "width"], ["genHeight", "height"], ["genHiresStrength", "hiresStrength"], ["genSharpness", "sharpness"]]) {
@@ -2930,7 +2941,7 @@ function setupWorkspacePanels() {
   const advanced = document.createElement("details");
   advanced.className = "advanced-settings";
   advanced.innerHTML = "<summary>Weitere Zufallsregeln</summary>";
-  for (const selector of [".randomizer-partner", ".randomizer-pinned", ".randomizer-exclusions"]) {
+  for (const selector of [".randomizer-pinned", ".randomizer-exclusions"]) {
     const block = random.querySelector(selector);
     if (block) advanced.append(block);
   }
@@ -2939,7 +2950,7 @@ function setupWorkspacePanels() {
   const automationAdvanced = document.createElement("details");
   automationAdvanced.className = "advanced-settings";
   automationAdvanced.innerHTML = "<summary>Erweiterte Automationsregeln</summary>";
-  for (const selector of [".randomizer-partner", ".randomizer-pinned", ".randomizer-exclusions"]) {
+  for (const selector of [".randomizer-pinned", ".randomizer-exclusions"]) {
     const block = automation.querySelector(selector);
     if (block) automationAdvanced.append(block);
   }
@@ -4285,38 +4296,52 @@ function initTagModes() {
   syncTagMarks();
 }
 
-/* ===== PARTNER-AUTOMATIK: Tags mit zweiter Person bekommen Personenzahl + Geschlecht, falsches Geschlecht wird gesperrt ===== */
-const PARTNER_CAT = " Intimität & Sex-Posen";
-/* Tags dieser Kategorie, die KEINE zweite Person brauchen (Einzelpersonen-Posen, Orte, Blickrichtung) */
-const PARTNER_SOLO = new Set(["self touch", "spreading legs", "ass focus", "crotch focus", "presenting ass", "presenting pussy", "fingering", "on bed", "romantic bedroom", "bed scene", "after sex", "touching", "caressing"]);
-/* Tags mit mehreren Partnern */
+/* Partner-Tags bleiben unabhängig von der Sortierung der Tag-Bibliothek. */
+const PARTNER_REQUIRED = new Set([
+  "couple", "adult couple", "hugging", "holding hands", "kissing", "kissing on cheek",
+  "adult kissing", "romantic embrace", "intimate embrace", "sensual embrace", "passionate kiss",
+  "neck kiss", "cuddling in bed", "couple in bed", "lying together", "hand on thigh",
+  "hand on waist", "slow embrace", "close body contact", "mutual affection", "holding each other",
+  "touching faces", "cheek caress", "embracing from behind", "intimate eye contact",
+  "close embrace", "tender touch", "sharing a bed", "couple lying down", "hands intertwined",
+  "gentle kiss", "forehead kiss in bed", "mutual gaze", "face to face", "back hug",
+  "forehead touching", "slow dance", "sharing umbrella", "stargazing together",
+  "picnic date", "romantic dinner", "date", "wedding", "spanking", "grope",
+  "missionary", "doggystyle", "cowgirl position", "reverse cowgirl",
+  "standing sex", "against wall", "69 position", "lotus position", "mating press",
+  "paizuri", "fellatio", "blowjob", "cunnilingus", "anal sex", "double penetration",
+  "gangbang", "threesome", "deepthroat", "breast smothered"
+]);
 const PARTNER_GROUP = new Set(["threesome", "gangbang", "double penetration"]);
 const PARTNER_MODES = {
   hetero: { pos: ["1girl", "1boy", "hetero"], posGroup: ["1girl", "multiple boys", "hetero"],
-    neg: ["2girls", "multiple girls", "yuri", "futanari", "newhalf"], drop: ["solo", "2girls", "multiple girls", "yuri", "futanari", "newhalf"], dropGroup: ["1boy"] },
+    neg: ["2girls", "multiple girls", "yuri", "futanari", "newhalf"], drop: ["solo", "2girls", "2boys", "multiple girls", "multiple boys", "yuri", "yaoi", "futanari", "newhalf"], dropGroup: ["1boy"] },
   yuri: { pos: ["2girls", "yuri"], posGroup: ["multiple girls", "yuri"],
-    neg: ["1boy", "multiple boys", "hetero"], drop: ["solo", "1girl", "1boy", "multiple boys", "hetero", "yaoi"], dropGroup: ["2girls"] },
+    neg: ["1boy", "2boys", "multiple boys", "hetero"], drop: ["solo", "1girl", "1boy", "2boys", "multiple boys", "hetero", "yaoi"], dropGroup: ["2girls"] },
   yaoi: { pos: ["2boys", "yaoi"], posGroup: ["multiple boys", "yaoi"],
-    neg: ["1girl", "multiple girls", "hetero"], drop: ["solo", "1boy", "1girl", "multiple girls", "hetero", "yuri"], dropGroup: ["2boys"] }
+    neg: ["1girl", "2girls", "multiple girls", "hetero"], drop: ["solo", "1boy", "1girl", "2girls", "multiple girls", "hetero", "yuri"], dropGroup: ["2boys"] }
 };
 
+function normalizePartnerTag(tag) {
+  return String(tag || "").trim().toLowerCase().replace(/^\((.*):[\d.]+\)$/, "$1");
+}
+
 function partnerNeeds(tag) {
-  const k = String(tag).toLowerCase();
+  const k = normalizePartnerTag(tag);
   if ((state.partnerOff || []).some(t => t.toLowerCase() === k)) return false;
   if ((state.partnerTags || []).some(t => t.toLowerCase() === k)) return true;
-  const cat = LIBRARY[PARTNER_CAT];
-  return !!cat && !PARTNER_SOLO.has(k) && cat.nsfw.some(t => t.toLowerCase() === k);
+  return PARTNER_REQUIRED.has(k);
 }
 
 function partnerContext() {
   const m = PARTNER_MODES[state.partnerMode];
   if (!m) return null;
-  const needed = (state.tags || []).filter(partnerNeeds);
+  const needed = [...(state.tags || []), ...(state.custom || []), ...commaList(state.manual)].filter(partnerNeeds);
   if (!needed.length) return null;
-  const group = needed.some(t => PARTNER_GROUP.has(t.toLowerCase()));
+  const group = needed.some(t => PARTNER_GROUP.has(normalizePartnerTag(t)));
   const pos = [...(group ? m.posGroup : m.pos)];
   if (state.partnerFaceless && state.partnerMode === "hetero") pos.push("faceless male");
-  return { pos, neg: m.neg, drop: new Set([...m.drop, ...(group ? m.dropGroup : [])]) };
+  return { pos, neg: m.neg, positive: new Set(pos.map(normalizePartnerTag)), drop: new Set([...m.drop, ...(group ? m.dropGroup : [])]) };
 }
 
 function togglePartnerTag(tag) {
