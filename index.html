@@ -1404,28 +1404,53 @@ const TAG_CATEGORIES = {
 };
 const previousCategories = Object.entries(LIBRARY);
 for (const key of Object.keys(LIBRARY)) delete LIBRARY[key];
+
+// Ein Thema pro Kategorie: die Kennzeichnung bleibt am einzelnen Tag erhalten.
+const CATEGORY_NAMES = {
+  "SFW · Figuren & Auftreten": "Figuren & Körper",
+  "SFW · Haare & Augen": "Haare & Augen",
+  "SFW · Kleidung & Accessoires": "Kleidung & Accessoires",
+  "SFW · Kunststil & Medium": "Kunststil & Medium",
+  "SFW · Kamera & Komposition": "Posen & Komposition",
+  "SFW · Orte & Natur": "Orte & Natur",
+  "SFW · Licht & Farbe": "Licht, Farbe & Stimmung",
+  "SFW · Stimmung & Ausdruck": "Mimik & Ausdruck",
+  "SFW · Wetter & Jahreszeiten": "Wetter & Jahreszeiten",
+  "SFW · Architektur & Innenräume": "Räume & Architektur",
+  "NSFW · Körper & Nacktheit": "Figuren & Körper",
+  "NSFW · Unterwäsche & Stoffe": "Kleidung & Accessoires",
+  "NSFW · Nähe & Berührung": "Nähe & Interaktion",
+  "NSFW · Posen & Blickwinkel": "Posen & Komposition",
+  "NSFW · Fetisch & Accessoires": "Accessoires & Rollenspiel",
+  "NSFW · Licht & Kulisse": "Licht, Farbe & Stimmung",
+  "NSFW · Szenen & Räume": "Räume & Architektur",
+  "NSFW · Einfache Bildstile": "Kunststil & Medium",
+  "Qualität & Rendering": "Qualität & Rendering",
+  "Anime, Hentai & Stile": "Kunststil & Medium",
+  "Charakter & Hentai Traits": "Figuren & Körper",
+  "NSFW Gestik, Mimik & Liquid": "Mimik & Ausdruck",
+  "Intimität & Sex-Posen": "Nähe & Interaktion",
+  "Kleidung, Fetisch & Nudity": "Kleidung & Accessoires",
+  "Fetisch, BDSM & Tropes": "Accessoires & Rollenspiel",
+  "Umgebung & Locations": "Orte & Natur",
+  "Beleuchtung & Stimmung": "Licht, Farbe & Stimmung",
+  "Porträt & Alltag": "Posen & Komposition"
+};
 const placedTags = new Set();
-for (const [name, group] of Object.entries(TAG_CATEGORIES)) {
-  LIBRARY[name] = { sfw: [], nsfw: [] };
+function addCategoryTags(name, group) {
+  const title = CATEGORY_NAMES[name.trim()];
+  if (!title) throw new Error("Unbekannte Tag-Kategorie: " + name);
+  const target = LIBRARY[title] ||= { sfw: [], nsfw: [] };
   for (const mode of ["sfw", "nsfw"]) {
     for (const tag of group[mode]) {
       if (placedTags.has(tag)) continue;
       placedTags.add(tag);
-      LIBRARY[name][mode].push(tag);
+      target[mode].push(tag);
     }
   }
 }
-for (const [name, group] of previousCategories) {
-  const remaining = { sfw: [], nsfw: [] };
-  for (const mode of ["sfw", "nsfw"]) {
-    for (const tag of group[mode]) {
-      if (placedTags.has(tag)) continue;
-      placedTags.add(tag);
-      remaining[mode].push(tag);
-    }
-  }
-  if (remaining.sfw.length || remaining.nsfw.length) LIBRARY[name.trim()] = remaining;
-}
+for (const [name, group] of Object.entries(TAG_CATEGORIES)) addCategoryTags(name, group);
+for (const [name, group] of previousCategories) addCategoryTags(name, group);
 for (const group of Object.values(LIBRARY)) {
   group.sfw.sort((a, b) => a.localeCompare(b, "en"));
   group.nsfw.sort((a, b) => a.localeCompare(b, "en"));
