@@ -35,11 +35,11 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['/Users/henry.f.hempeicloud.com/Desktop/Promt_Master/PromptMaster.icns'],
+    icon=['PromptMaster.icns'],
 )
 app = BUNDLE(
     exe,
     name='PromptMaster.app',
-    icon='/Users/henry.f.hempeicloud.com/Desktop/Promt_Master/PromptMaster.icns',
+    icon='PromptMaster.icns',
     bundle_identifier='com.promptmaster.app',
 )

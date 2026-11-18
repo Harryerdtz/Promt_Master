@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 bash scripts/build-icon.sh
-.venv/bin/pyinstaller --noconfirm PromptMaster.spec
+"${PYINSTALLER_BIN:-.venv/bin/pyinstaller}" --noconfirm PromptMaster.spec
 APP="dist/Prompt Master.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources/bridge"
